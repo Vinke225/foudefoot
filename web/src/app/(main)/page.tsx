@@ -7,6 +7,7 @@ import Image from "next/image";
 import { createClient } from "@/utils/supabase/server";
 import { PostInteractions } from "@/components/social/PostInteractions";
 import { CreatePost } from "@/components/social/CreatePost";
+import { getMatchSlug } from "@/utils/match";
 
 export const revalidate = 0; // Disable caching for realtime feel
 
@@ -66,7 +67,7 @@ export default async function Home() {
           <div className="flex w-max space-x-5">
             
             {matches?.map((match) => (
-              <Link key={match.id} href={`/matchs/${match.id}`}>
+              <Link key={match.id} href={`/matchs/${getMatchSlug(match)}`}>
                 <div className="w-65 bg-white rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.03)] border border-gray-100 shrink-0 flex flex-col cursor-pointer hover:shadow-[0_4px_15px_rgba(0,0,0,0.05)] transition-shadow">
                   <div className="p-5 flex-1">
                     <div className="flex justify-between items-center text-[10px] font-bold mb-4">

@@ -30,15 +30,31 @@ export default async function MatchDetailPage(props: { params: Promise<{ id: str
 
   const supabase = await createClient();
   
-  const { data: match } = await supabase
-    .from('matches')
-    .select('*')
-    .eq('id', params.id)
-    .single();
+  let match = null;
+  const idParam = params.id;
+  
+  // Si l'URL utilise un slug (ex: france-vs-espagne-12345)
+  if (!idParam.includes('-') || idParam.split('-').length > 5) {
+    const parts = idParam.split('-');
+    const apiId = parts[parts.length - 1];
+    if (/^\d+$/.test(apiId)) {
+      const { data } = await supabase.from('matches').select('*').eq('api_id', apiId).single();
+      match = data;
+    }
+  }
+  
+  // Fallback si c'est un UUID classique ou si la recherche par API ID a échoué
+  if (!match && idParam.length === 36 && idParam.includes('-')) {
+    const { data } = await supabase.from('matches').select('*').eq('id', idParam).single();
+    match = data;
+  }
 
   if (!match) {
     notFound();
   }
+
+  const { getMatchSlug } = await import("@/utils/match");
+  const matchSlug = getMatchSlug(match);
 
   const isFinished = ['FT', 'Finished', 'Terminé'].includes(match.status);
 
@@ -103,12 +119,12 @@ export default async function MatchDetailPage(props: { params: Promise<{ id: str
               </div>
               
               <div className="flex border-t border-gray-100 bg-white overflow-x-auto">
-                <Link href={`/matchs/${match.id}?tab=direct`} className={`flex-1 py-4 text-center font-bold border-b-[3px] text-[14px] transition-colors whitespace-nowrap px-2 ${tab === 'direct' ? 'border-primary text-black' : 'border-transparent text-gray-500 hover:text-black'}`}>Direct</Link>
-                <Link href={`/matchs/${match.id}?tab=evenements`} className={`flex-1 py-4 text-center font-bold border-b-[3px] text-[14px] transition-colors whitespace-nowrap px-2 ${tab === 'evenements' ? 'border-primary text-black' : 'border-transparent text-gray-500 hover:text-black'}`}>Événements</Link>
-                <Link href={`/matchs/${match.id}?tab=predictions`} className={`flex-1 py-4 text-center font-bold border-b-[3px] text-[14px] transition-colors whitespace-nowrap px-2 ${tab === 'predictions' ? 'border-primary text-black' : 'border-transparent text-gray-500 hover:text-black'}`}>Prédictions</Link>
-                <Link href={`/matchs/${match.id}?tab=chat`} className={`flex-1 py-4 text-center font-bold border-b-[3px] text-[14px] transition-colors whitespace-nowrap px-2 ${tab === 'chat' ? 'border-primary text-black' : 'border-transparent text-gray-500 hover:text-black'}`}>Chat</Link>
-                <Link href={`/matchs/${match.id}?tab=stats`} className={`flex-1 py-4 text-center font-bold border-b-[3px] text-[14px] transition-colors whitespace-nowrap px-2 ${tab === 'stats' ? 'border-primary text-black' : 'border-transparent text-gray-500 hover:text-black'}`}>Stats</Link>
-                <Link href={`/matchs/${match.id}?tab=lineups`} className={`flex-1 py-4 text-center font-bold border-b-[3px] text-[14px] transition-colors whitespace-nowrap px-2 ${tab === 'lineups' ? 'border-primary text-black' : 'border-transparent text-gray-500 hover:text-black'}`}>Compos</Link>
+                <Link href={`/matchs/${matchSlug}?tab=direct`} className={`flex-1 py-4 text-center font-bold border-b-[3px] text-[14px] transition-colors whitespace-nowrap px-2 ${tab === 'direct' ? 'border-primary text-black' : 'border-transparent text-gray-500 hover:text-black'}`}>Direct</Link>
+                <Link href={`/matchs/${matchSlug}?tab=evenements`} className={`flex-1 py-4 text-center font-bold border-b-[3px] text-[14px] transition-colors whitespace-nowrap px-2 ${tab === 'evenements' ? 'border-primary text-black' : 'border-transparent text-gray-500 hover:text-black'}`}>Événements</Link>
+                <Link href={`/matchs/${matchSlug}?tab=predictions`} className={`flex-1 py-4 text-center font-bold border-b-[3px] text-[14px] transition-colors whitespace-nowrap px-2 ${tab === 'predictions' ? 'border-primary text-black' : 'border-transparent text-gray-500 hover:text-black'}`}>Prédictions</Link>
+                <Link href={`/matchs/${matchSlug}?tab=chat`} className={`flex-1 py-4 text-center font-bold border-b-[3px] text-[14px] transition-colors whitespace-nowrap px-2 ${tab === 'chat' ? 'border-primary text-black' : 'border-transparent text-gray-500 hover:text-black'}`}>Chat</Link>
+                <Link href={`/matchs/${matchSlug}?tab=stats`} className={`flex-1 py-4 text-center font-bold border-b-[3px] text-[14px] transition-colors whitespace-nowrap px-2 ${tab === 'stats' ? 'border-primary text-black' : 'border-transparent text-gray-500 hover:text-black'}`}>Stats</Link>
+                <Link href={`/matchs/${matchSlug}?tab=lineups`} className={`flex-1 py-4 text-center font-bold border-b-[3px] text-[14px] transition-colors whitespace-nowrap px-2 ${tab === 'lineups' ? 'border-primary text-black' : 'border-transparent text-gray-500 hover:text-black'}`}>Compos</Link>
               </div>
             </div>
           </div>

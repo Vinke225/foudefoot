@@ -62,11 +62,11 @@ export async function GET() {
       statistics?: Array<Record<string, unknown>>;
     }
 
-    const importantLeagues = ["1", "3", "4", "17", "24", "28", "29", "61", "152", "166", "175", "207", "302", "345"];
+    const importantLeagues = ["28", "152", "302", "207", "175", "168"];
     
     const matchesToInsert = fixtures
       .filter((match: ApiFootballMatch) => match.match_id && match.match_hometeam_name && match.match_awayteam_name)
-      .filter((match: any) => importantLeagues.includes(match.league_id?.toString()) || match.country_name === "World")
+      .filter((match: any) => importantLeagues.includes(match.league_id?.toString()))
       .map((match: any) => {
         let score = null;
         if (match.match_hometeam_score !== "" && match.match_awayteam_score !== "") {

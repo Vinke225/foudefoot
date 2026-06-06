@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { startConversation } from "@/actions/messages";
 import { redirect } from "next/navigation";
+import { getMatchSlug } from "@/utils/match";
 
 export async function RightSidebar() {
   const supabase = await createClient();
@@ -55,7 +56,7 @@ export async function RightSidebar() {
             matches.map((match, index) => {
               const isLive = match.status === 'LIVE' || match.status === 'HT';
               return (
-                <Link key={match.id} href={`/matchs/${match.id}`} className={`flex items-center justify-between group cursor-pointer ${index > 0 && !isLive ? 'pt-4 mt-2 border-t border-gray-100' : 'pt-1'}`}>
+                <Link key={match.id} href={`/matchs/${getMatchSlug(match)}`} className={`flex items-center justify-between group cursor-pointer ${index > 0 && !isLive ? 'pt-4 mt-2 border-t border-gray-100' : 'pt-1'}`}>
                   <div className="flex items-center gap-3 w-[35%]">
                     {match.home_logo ? (
                       <img src={match.home_logo} alt={match.home_team} className={`w-6 h-6 rounded-full object-contain border border-gray-100 bg-white p-0.5 ${!isLive && 'opacity-80'}`} />

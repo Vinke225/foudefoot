@@ -2,6 +2,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import Link from "next/link";
 import { CalendarDays } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
+import { getMatchSlug } from "@/utils/match";
 
 export const revalidate = 0;
 
@@ -55,7 +56,7 @@ export default async function MatchsPage(props: { searchParams: Promise<{ tab?: 
               const isUpcoming = match.status === 'NS';
 
               return (
-                <Link key={match.id} href={`/matchs/${match.id}`} className="block">
+                <Link key={match.id} href={`/matchs/${getMatchSlug(match)}`} className="block">
                   <div className={`bg-white rounded-[24px] shadow-[0_2px_15px_rgba(0,0,0,0.03)] border border-gray-100 hover:shadow-[0_8px_25px_rgba(0,0,0,0.05)] transition-shadow cursor-pointer overflow-hidden ${isFinished ? 'opacity-75 hover:opacity-100' : ''}`}>
                     <div className="p-6">
                       
