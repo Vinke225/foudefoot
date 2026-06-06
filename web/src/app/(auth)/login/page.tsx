@@ -8,15 +8,36 @@ import { Eye, EyeOff } from "lucide-react";
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const supabase = createClient();
   const router = useRouter();
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccessMsg(null);
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/update-password`,
+      });
+      if (error) throw error;
+      setSuccessMsg("Un email contenant un lien de réinitialisation vous a été envoyé. Vérifiez votre boîte de réception.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Erreur lors de l'envoi de l'email");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,8 +53,6 @@ export default function LoginPage() {
         
         if (signUpError) throw signUpError;
         
-        // Simulating immediate login and user record creation for MVP
-        // In a real app, you'd use triggers or wait for email confirmation
         const { data: { user }, error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -83,7 +102,7 @@ export default function LoginPage() {
     }
   };
 
-  const showButtons = !isLogin && !isSignUp;
+  const showButtons = !isLogin && !isSignUp && !isResetting;
 
   return (
     <div className="relative w-full min-h-screen flex items-center justify-center overflow-y-auto bg-zinc-950 py-10">
@@ -151,6 +170,53 @@ export default function LoginPage() {
                 Continuer avec Google
               </button>
             </div>
+          ) : isResetting ? (
+            <form onSubmit={handleResetPassword} className="bg-black/40 backdrop-blur-xl border border-white/10 p-6 rounded-3xl animate-in fade-in slide-in-from-bottom-4">
+              <h2 className="text-2xl font-bold text-white mb-2">Mot de passe oublié</h2>
+              <p className="text-gray-400 text-sm mb-6">Saisissez votre email pour recevoir un lien de réinitialisation.</p>
+              
+              {error && (
+                <div className="bg-red-500/20 text-red-200 p-3 rounded-xl text-sm font-medium mb-4 border border-red-500/50">
+                  {error}
+                </div>
+              )}
+              {successMsg && (
+                <div className="bg-green-500/20 text-green-200 p-3 rounded-xl text-sm font-medium mb-4 border border-green-500/50">
+                  {successMsg}
+                </div>
+              )}
+
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-bold text-gray-300 block mb-1">Email</label>
+                  <input 
+                    type="email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    placeholder="fan@football.com"
+                  />
+                </div>
+                
+                <div className="pt-2 flex gap-3">
+                  <button 
+                    type="button" 
+                    onClick={() => { setIsResetting(false); setError(null); setSuccessMsg(null); }}
+                    className="h-12 px-6 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-colors"
+                  >
+                    Retour
+                  </button>
+                  <button 
+                    type="submit" 
+                    disabled={loading}
+                    className="flex-1 h-12 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl shadow-[0_0_15px_rgba(30,143,69,0.3)] transition-all disabled:opacity-50"
+                  >
+                    {loading ? "Envoi..." : "Envoyer le lien"}
+                  </button>
+                </div>
+              </div>
+            </form>
           ) : (
             <form onSubmit={handleAuth} className="bg-black/40 backdrop-blur-xl border border-white/10 p-6 rounded-3xl animate-in fade-in slide-in-from-bottom-4">
               <h2 className="text-2xl font-bold text-white mb-6">
@@ -209,12 +275,23 @@ export default function LoginPage() {
                       {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
                   </div>
+                  {!isSignUp && (
+                    <div className="flex justify-end mt-2">
+                      <button 
+                        type="button"
+                        onClick={() => { setIsLogin(false); setIsResetting(true); setError(null); }}
+                        className="text-sm text-primary hover:text-primary/80 transition-colors"
+                      >
+                        Mot de passe oublié ?
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="pt-2 flex gap-3">
                   <button 
                     type="button" 
-                    onClick={() => { setIsLogin(false); setIsSignUp(false); setError(null); }}
+                    onClick={() => { setIsLogin(false); setIsSignUp(false); setIsResetting(false); setError(null); }}
                     className="h-12 px-6 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-colors"
                   >
                     Retour
