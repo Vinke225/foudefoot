@@ -8,12 +8,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Camera, Image as ImageIcon } from "lucide-react";
 
-export function ProfileForm({ profile }: { profile: Record<string, unknown> }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function ProfileForm({ profile }: { profile: any }) {
   const [isPending, setIsPending] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
-  const [avatarPreview, setAvatarPreview] = useState<string | null>((profile.avatar as string) || null);
-  const [coverPreview, setCoverPreview] = useState<string | null>((profile.cover_url as string) || null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(profile?.avatar || null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(profile?.cover_url || null);
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -89,7 +90,7 @@ export function ProfileForm({ profile }: { profile: Record<string, unknown> }) {
           <label className="text-sm font-bold text-gray-700 block mb-2">Pseudo</label>
           <Input 
             name="username" 
-            defaultValue={profile.username || ""} 
+            defaultValue={profile?.username || ""} 
             className="h-12 bg-gray-50 border-transparent focus-visible:ring-1 focus-visible:ring-primary rounded-xl"
             placeholder="Votre pseudo"
             required
@@ -100,7 +101,7 @@ export function ProfileForm({ profile }: { profile: Record<string, unknown> }) {
           <label className="text-sm font-bold text-gray-700 block mb-2">Pays</label>
           <Input 
             name="country" 
-            defaultValue={profile.country || ""} 
+            defaultValue={profile?.country || ""} 
             className="h-12 bg-gray-50 border-transparent focus-visible:ring-1 focus-visible:ring-primary rounded-xl"
             placeholder="Ex: France, Côte d'Ivoire, Sénégal..."
           />
@@ -110,7 +111,7 @@ export function ProfileForm({ profile }: { profile: Record<string, unknown> }) {
           <label className="text-sm font-bold text-gray-700 block mb-2">Bio</label>
           <Textarea 
             name="bio" 
-            defaultValue={profile.bio || ""} 
+            defaultValue={profile?.bio || ""} 
             className="min-h-30 bg-gray-50 border-transparent focus-visible:ring-1 focus-visible:ring-primary rounded-xl resize-none"
             placeholder="Parlez-nous de votre passion pour le foot..."
           />

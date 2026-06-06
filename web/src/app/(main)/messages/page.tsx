@@ -47,11 +47,20 @@ export default async function MessagesPage() {
           </div>
         ) : (
           <div className="space-y-1 mt-2">
-            {conversations.map((convo: { id: string; user1: Record<string, unknown>; user2: Record<string, unknown>; private_messages: Record<string, unknown>[] }) => {
-              const otherUser = convo.user1.id === user.id ? convo.user2 : convo.user1;
-              const sortedMessages = (convo.private_messages || []).sort((a: Record<string, unknown>, b: Record<string, unknown>) => new Date(b.created_at as string).getTime() - new Date(a.created_at as string).getTime());
+            {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              conversations.map((convo: any) => {
+              const user1 = Array.isArray(convo.user1) ? convo.user1[0] : convo.user1;
+              const user2 = Array.isArray(convo.user2) ? convo.user2[0] : convo.user2;
+              
+              const otherUser = user1?.id === user?.id ? user2 : user1;
+              
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const sortedMessages = (convo.private_messages || []).sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
               const lastMessage = sortedMessages[0];
-              const isUnread = lastMessage && !lastMessage.is_read && lastMessage.sender_id !== user.id;
+              const isUnread = lastMessage && !lastMessage.is_read && lastMessage.sender_id !== user?.id;
+
+              if (!otherUser) return null;
 
               return (
                 <Link 
@@ -60,8 +69,8 @@ export default async function MessagesPage() {
                   className="flex items-center gap-4 p-3 rounded-2xl hover:bg-white transition-colors group cursor-pointer border border-transparent hover:border-gray-100 hover:shadow-[0_2px_10px_rgba(0,0,0,0.02)]"
                 >
                   <Avatar className="w-14 h-14 border border-gray-100 shrink-0">
-                    <AvatarImage src={otherUser.avatar || undefined} className="object-cover" />
-                    <AvatarFallback className="text-lg bg-gray-100 text-gray-600 font-bold">{otherUser.username?.[0] || "?"}</AvatarFallback>
+                    <AvatarImage src={otherUser?.avatar || undefined} className="object-cover" />
+                    <AvatarFallback className="text-lg bg-gray-100 text-gray-600 font-bold">{otherUser?.username?.[0] || "?"}</AvatarFallback>
                   </Avatar>
                   
                   <div className="flex-1 min-w-0">
