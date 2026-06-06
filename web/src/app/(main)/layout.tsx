@@ -1,6 +1,7 @@
 import { LeftSidebar } from "@/components/layout/LeftSidebar";
 import { RightSidebar } from "@/components/layout/RightSidebar";
 import { TopHeader } from "@/components/layout/TopHeader";
+import { MobileNavBar } from "@/components/layout/MobileNavBar";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function MainLayout({
@@ -31,7 +32,7 @@ export default async function MainLayout({
   }
 
   return (
-    <div className="flex justify-center w-full min-h-screen bg-white overflow-x-hidden">
+    <div className="flex justify-center w-full min-h-screen bg-white overflow-x-hidden pb-20 lg:pb-0">
       
       {/* Left Sidebar - Hidden on small screens, fixed or flex on large */}
       <div className="hidden lg:flex shrink-0">
@@ -55,6 +56,9 @@ export default async function MainLayout({
           
         </div>
       </div>
+      
+      {/* Mobile Navigation Bar */}
+      <MobileNavBar />
       
     </div>
   );
