@@ -11,12 +11,22 @@ export async function GET() {
   try {
     const apiKey = process.env.APIFOOTBALL_KEY || '14489a24c7a2602d88fcbbae12deab98ab32ef98dcd11ae567f29640de3d7eed';
     
-    // Récupérer la date du jour au format YYYY-MM-DD
-    const today = new Date().toISOString().split('T')[0];
+    // Récupérer la date de la veille, du jour et du lendemain
+    const todayObj = new Date();
+    const today = todayObj.toISOString().split('T')[0];
     
-    const url = `https://apiv3.apifootball.com/?action=get_events&from=${today}&to=${today}&APIkey=${apiKey}`;
+    const yesterdayObj = new Date(todayObj);
+    yesterdayObj.setDate(yesterdayObj.getDate() - 1);
+    const yesterday = yesterdayObj.toISOString().split('T')[0];
 
-    console.log(`Début de la synchronisation des matchs (APIFootball) pour le ${today}...`);
+    const tomorrowObj = new Date(todayObj);
+    tomorrowObj.setDate(tomorrowObj.getDate() + 1);
+    const tomorrow = tomorrowObj.toISOString().split('T')[0];
+    
+    // On synchronise depuis hier jusqu'à demain pour éviter que les matchs de minuit restent bloqués sur LIVE
+    const url = `https://apiv3.apifootball.com/?action=get_events&from=${yesterday}&to=${tomorrow}&APIkey=${apiKey}`;
+
+    console.log(`Début de la synchronisation des matchs (APIFootball) du ${yesterday} au ${tomorrow}...`);
 
     const response = await fetch(url, {
       method: 'GET'
