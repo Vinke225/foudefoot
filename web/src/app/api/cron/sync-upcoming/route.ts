@@ -46,12 +46,12 @@ export async function GET() {
 
     const fixtures = Array.isArray(data) ? data : [];
 
-    const importantLeagues = ["1", "3", "4", "17", "24", "28", "29", "61", "152", "166", "175", "207", "302", "345"];
+    const importantLeagues = ["28", "152", "302", "207", "175", "168"];
     
     for (const match of fixtures) {
       if (!match.match_id) continue;
-      // Ne garder que les grandes compétitions et les matchs internationaux
-      if (!importantLeagues.includes(match.league_id?.toString()) && match.country_name !== "World") continue;
+      // Ne garder que les 6 grandes compétitions
+      if (!importantLeagues.includes(match.league_id?.toString() || '')) continue;
 
       const apiId = match.match_id;
       const homeTeam = match.match_hometeam_name;
