@@ -8,12 +8,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Camera, Image as ImageIcon } from "lucide-react";
 
-export function ProfileForm({ profile }: { profile: any }) {
+export function ProfileForm({ profile }: { profile: Record<string, unknown> }) {
   const [isPending, setIsPending] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(profile.avatar || null);
-  const [coverPreview, setCoverPreview] = useState<string | null>(profile.cover_url || null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>((profile.avatar as string) || null);
+  const [coverPreview, setCoverPreview] = useState<string | null>((profile.cover_url as string) || null);
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

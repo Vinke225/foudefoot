@@ -37,6 +37,7 @@ export function PostInteractions({
   const [localCommentsCount, setLocalCommentsCount] = useState(commentsCount);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLocalCommentsCount(commentsCount);
   }, [commentsCount]);
 

@@ -27,8 +27,10 @@ export default async function ConversationPage(props: { params: Promise<{ id: st
     `)
     .eq('id', params.id)
     .single();
-    
-  const convo = data as any;
+  const convo = data as unknown as { 
+    user1: { id: string, username: string, avatar: string, country: string }, 
+    user2: { id: string, username: string, avatar: string, country: string } 
+  };
 
   if (!convo) {
     notFound();

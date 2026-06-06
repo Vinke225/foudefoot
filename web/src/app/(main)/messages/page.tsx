@@ -41,16 +41,15 @@ export default async function MessagesPage() {
 
       <ScrollArea className="flex-1 px-4 py-2">
         {(!conversations || conversations.length === 0) ? (
-          <div className="flex flex-col items-center justify-center h-40 text-gray-500">
-            <MessageSquarePlus className="w-12 h-12 mb-3 opacity-20" />
-            <p className="font-medium text-[15px]">Aucune conversation</p>
-            <p className="text-[13px] mt-1 text-center max-w-xs">Démarrez une discussion depuis le profil d'un membre ou la barre de suggestions.</p>
+          <div className="flex flex-col items-center justify-center py-10 text-center">
+            <p className="text-gray-500 font-medium mb-2">Aucun message pour le moment</p>
+            <p className="text-gray-400 text-[13px]">Commencez une discussion en allant sur le profil d&apos;un utilisateur.</p>
           </div>
         ) : (
           <div className="space-y-1 mt-2">
-            {conversations.map((convo: { id: string; user1: any; user2: any; private_messages: any[] }) => {
+            {conversations.map((convo: { id: string; user1: Record<string, unknown>; user2: Record<string, unknown>; private_messages: Record<string, unknown>[] }) => {
               const otherUser = convo.user1.id === user.id ? convo.user2 : convo.user1;
-              const sortedMessages = (convo.private_messages || []).sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+              const sortedMessages = (convo.private_messages || []).sort((a: Record<string, unknown>, b: Record<string, unknown>) => new Date(b.created_at as string).getTime() - new Date(a.created_at as string).getTime());
               const lastMessage = sortedMessages[0];
               const isUnread = lastMessage && !lastMessage.is_read && lastMessage.sender_id !== user.id;
 

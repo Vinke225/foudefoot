@@ -13,7 +13,6 @@ export async function GET() {
     
     // Récupérer la date de la veille, du jour et du lendemain
     const todayObj = new Date();
-    const today = todayObj.toISOString().split('T')[0];
     
     const yesterdayObj = new Date(todayObj);
     yesterdayObj.setDate(yesterdayObj.getDate() - 1);
@@ -58,6 +57,8 @@ export async function GET() {
       match_live: string;
       team_home_badge: string;
       team_away_badge: string;
+      league_id?: string | number;
+      country_name?: string;
       lineup?: Record<string, unknown>;
       statistics?: Array<Record<string, unknown>>;
     }
@@ -66,8 +67,8 @@ export async function GET() {
     
     const matchesToInsert = fixtures
       .filter((match: ApiFootballMatch) => match.match_id && match.match_hometeam_name && match.match_awayteam_name)
-      .filter((match: any) => importantLeagues.includes(match.league_id?.toString()))
-      .map((match: any) => {
+      .filter((match: ApiFootballMatch) => importantLeagues.includes(match.league_id?.toString() || ''))
+      .map((match: ApiFootballMatch) => {
         let score = null;
         if (match.match_hometeam_score !== "" && match.match_awayteam_score !== "") {
           score = `${match.match_hometeam_score} - ${match.match_awayteam_score}`;

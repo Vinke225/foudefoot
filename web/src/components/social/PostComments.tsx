@@ -31,6 +31,7 @@ export function PostComments({
   const [localComments, setLocalComments] = useState<Comment[]>(initialComments);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLocalComments(initialComments);
   }, [initialComments]);
 
