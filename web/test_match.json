@@ -1,0 +1,697 @@
+{
+  "match_id": "611441",
+  "country_id": "6",
+  "country_name": "Spain",
+  "league_id": "301",
+  "league_name": "Segunda División",
+  "match_date": "2026-05-31",
+  "match_status": "Finished",
+  "match_time": "18:30",
+  "match_hometeam_id": "7283",
+  "match_hometeam_name": "Zaragoza",
+  "match_hometeam_score": "0",
+  "match_awayteam_name": "Malaga",
+  "match_awayteam_id": "7267",
+  "match_awayteam_score": "2",
+  "match_hometeam_halftime_score": "0",
+  "match_awayteam_halftime_score": "1",
+  "match_hometeam_extra_score": "",
+  "match_awayteam_extra_score": "",
+  "match_hometeam_penalty_score": "",
+  "match_awayteam_penalty_score": "",
+  "match_hometeam_ft_score": "0",
+  "match_awayteam_ft_score": "2",
+  "match_hometeam_system": "4-4-2",
+  "match_awayteam_system": "4-2-3-1",
+  "match_live": "0",
+  "match_round": "42",
+  "match_stadium": "",
+  "match_referee": "Daniel Palencia Caballero, Spain",
+  "team_home_badge": "https://apiv3.apifootball.com/badges/7283_real-zaragoza.jpg",
+  "team_away_badge": "https://apiv3.apifootball.com/badges/7267_malaga.jpg",
+  "league_logo": "https://apiv3.apifootball.com/badges/logo_leagues/301_segunda-division.png",
+  "country_logo": "https://apiv3.apifootball.com/badges/logo_country/6_spain.png",
+  "league_year": "2025/2026",
+  "fk_stage_key": "401",
+  "stage_name": "Current",
+  "goalscorer": [
+    {
+      "time": "34",
+      "home_scorer": "",
+      "home_scorer_id": "",
+      "home_assist": "",
+      "home_assist_id": "",
+      "score": "0 - 1",
+      "away_scorer": "Chupe",
+      "away_scorer_id": "321814729",
+      "away_assist": "",
+      "away_assist_id": "",
+      "info": "",
+      "score_info_time": "1st Half"
+    },
+    {
+      "time": "76",
+      "home_scorer": "",
+      "home_scorer_id": "",
+      "home_assist": "",
+      "home_assist_id": "",
+      "score": "0 - 2",
+      "away_scorer": "Chupe",
+      "away_scorer_id": "321814729",
+      "away_assist": "",
+      "away_assist_id": "",
+      "info": "Penalty",
+      "score_info_time": "2nd Half"
+    }
+  ],
+  "substitutions": {
+    "home": [
+      {
+        "time": "38",
+        "substitution": "A. Radovanovic | C. Pomares",
+        "substitution_player_id": "582287436 | 2692573061"
+      },
+      {
+        "time": "46",
+        "substitution": "A. Rodriguez | Obon",
+        "substitution_player_id": "2332618715 | 461105573"
+      },
+      {
+        "time": "56",
+        "substitution": "J. Larios | D. Tasende",
+        "substitution_player_id": "1905724670 | 1882575973"
+      },
+      {
+        "time": "56",
+        "substitution": "N. Cumic | H. Pinilla",
+        "substitution_player_id": "232977418 | 3540394546"
+      },
+      {
+        "time": "67",
+        "substitution": "D. Gomez | L. Terrer",
+        "substitution_player_id": "314810734 | 2123470807"
+      }
+    ],
+    "away": [
+      {
+        "time": "61",
+        "substitution": "J. Munoz | A. Ochoa",
+        "substitution_player_id": "374718575 | 3016603477"
+      },
+      {
+        "time": "70",
+        "substitution": "D. Lorenzo | A. Nino",
+        "substitution_player_id": "670043998 | 3936310236"
+      },
+      {
+        "time": "70",
+        "substitution": "I. Merino | R. Rodriguez",
+        "substitution_player_id": "2168076617 | 3703275944"
+      },
+      {
+        "time": "83",
+        "substitution": "D. Larrubia | V. Garcia",
+        "substitution_player_id": "1081419278 | 2681852795"
+      },
+      {
+        "time": "83",
+        "substitution": "C. Puga | R. Enriquez",
+        "substitution_player_id": "2652020912 | 660216058"
+      }
+    ]
+  },
+  "cards": [
+    {
+      "time": "54",
+      "home_fault": "M. A. Cuenca",
+      "card": "yellow card",
+      "away_fault": "",
+      "info": "",
+      "home_player_id": "1794338483",
+      "away_player_id": "",
+      "score_info_time": "2nd Half"
+    },
+    {
+      "time": "66",
+      "home_fault": "",
+      "card": "yellow card",
+      "away_fault": "Rafita",
+      "info": "",
+      "home_player_id": "",
+      "away_player_id": "298946718",
+      "score_info_time": "2nd Half"
+    }
+  ],
+  "lineup": {
+    "home": {
+      "starting_lineups": [
+        {
+          "lineup_player": "Adrián Rodríguez",
+          "lineup_number": "13",
+          "lineup_position": "1",
+          "player_key": "2332618715"
+        },
+        {
+          "lineup_player": "Juan Sebastian Serrano",
+          "lineup_number": "2",
+          "lineup_position": "2",
+          "player_key": "954077633"
+        },
+        {
+          "lineup_player": "Yussif Saidu",
+          "lineup_number": "33",
+          "lineup_position": "3",
+          "player_key": "1098616347"
+        },
+        {
+          "lineup_player": "Aleksandar Radovanović",
+          "lineup_number": "16",
+          "lineup_position": "4",
+          "player_key": "582287436"
+        },
+        {
+          "lineup_player": "Juan Larios",
+          "lineup_number": "27",
+          "lineup_position": "5",
+          "player_key": "1905724670"
+        },
+        {
+          "lineup_player": "Marcos Cuenca",
+          "lineup_number": "23",
+          "lineup_position": "6",
+          "player_key": "1794338483"
+        },
+        {
+          "lineup_player": "Toni Moya",
+          "lineup_number": "8",
+          "lineup_position": "7",
+          "player_key": "4275770614"
+        },
+        {
+          "lineup_player": "Keidi Bare",
+          "lineup_number": "6",
+          "lineup_position": "8",
+          "player_key": "1750005929"
+        },
+        {
+          "lineup_player": "Nikola Čumić",
+          "lineup_number": "25",
+          "lineup_position": "9",
+          "player_key": "232977418"
+        },
+        {
+          "lineup_player": "Kenan Kodro",
+          "lineup_number": "19",
+          "lineup_position": "10",
+          "player_key": "3676363564"
+        },
+        {
+          "lineup_player": "Dani Gómez",
+          "lineup_number": "9",
+          "lineup_position": "11",
+          "player_key": "314810734"
+        }
+      ],
+      "substitutes": [
+        {
+          "lineup_player": "Carlos Pomares",
+          "lineup_number": "15",
+          "lineup_position": "0",
+          "player_key": "2692573061"
+        },
+        {
+          "lineup_player": "Manuel Obón",
+          "lineup_number": "35",
+          "lineup_position": "0",
+          "player_key": "461105573"
+        },
+        {
+          "lineup_player": "Dani Tasende",
+          "lineup_number": "3",
+          "lineup_position": "0",
+          "player_key": "1882575973"
+        },
+        {
+          "lineup_player": "Hugo Pinilla",
+          "lineup_number": "31",
+          "lineup_position": "0",
+          "player_key": "3540394546"
+        },
+        {
+          "lineup_player": "Terrer Lucas",
+          "lineup_number": "34",
+          "lineup_position": "0",
+          "player_key": "2123470807"
+        },
+        {
+          "lineup_player": "Ale Gomes",
+          "lineup_number": "36",
+          "lineup_position": "0",
+          "player_key": "176734703"
+        },
+        {
+          "lineup_player": "Martín Aguirregabiria",
+          "lineup_number": "20",
+          "lineup_position": "0",
+          "player_key": "4131066306"
+        },
+        {
+          "lineup_player": "Sebas Moyano",
+          "lineup_number": "17",
+          "lineup_position": "0",
+          "player_key": "612781985"
+        },
+        {
+          "lineup_player": "Jaime Tobajas",
+          "lineup_number": "29",
+          "lineup_position": "0",
+          "player_key": "1994557222"
+        },
+        {
+          "lineup_player": "Paul Akouokou",
+          "lineup_number": "24",
+          "lineup_position": "0",
+          "player_key": "4026627559"
+        },
+        {
+          "lineup_player": "Mawuli Mensah",
+          "lineup_number": "26",
+          "lineup_position": "0",
+          "player_key": "2110962322"
+        },
+        {
+          "lineup_player": "William Agada",
+          "lineup_number": "22",
+          "lineup_position": "0",
+          "player_key": "1471442777"
+        }
+      ],
+      "coach": [
+        {
+          "lineup_player": "David Navarro",
+          "lineup_number": "",
+          "lineup_position": "",
+          "player_key": "1823843679"
+        }
+      ],
+      "missing_players": []
+    },
+    "away": {
+      "starting_lineups": [
+        {
+          "lineup_player": "Alfonso Herrero",
+          "lineup_number": "1",
+          "lineup_position": "1",
+          "player_key": "3438999028"
+        },
+        {
+          "lineup_player": "Carlos Puga",
+          "lineup_number": "3",
+          "lineup_position": "2",
+          "player_key": "2652020912"
+        },
+        {
+          "lineup_player": "Diego Murillo",
+          "lineup_number": "16",
+          "lineup_position": "3",
+          "player_key": "366126655"
+        },
+        {
+          "lineup_player": "Einar Galilea",
+          "lineup_number": "4",
+          "lineup_position": "4",
+          "player_key": "4026224833"
+        },
+        {
+          "lineup_player": "Rafa Garrido",
+          "lineup_number": "31",
+          "lineup_position": "5",
+          "player_key": "298946718"
+        },
+        {
+          "lineup_player": "Izan Merino",
+          "lineup_number": "23",
+          "lineup_position": "6",
+          "player_key": "2168076617"
+        },
+        {
+          "lineup_player": "Dani Lorenzo",
+          "lineup_number": "22",
+          "lineup_position": "7",
+          "player_key": "670043998"
+        },
+        {
+          "lineup_player": "David Larrubia",
+          "lineup_number": "10",
+          "lineup_position": "8",
+          "player_key": "1081419278"
+        },
+        {
+          "lineup_player": "Carlos Dotor",
+          "lineup_number": "12",
+          "lineup_position": "9",
+          "player_key": "3558224402"
+        },
+        {
+          "lineup_player": "Joaquín Muñoz",
+          "lineup_number": "11",
+          "lineup_position": "10",
+          "player_key": "374718575"
+        },
+        {
+          "lineup_player": "Chupete",
+          "lineup_number": "9",
+          "lineup_position": "11",
+          "player_key": "321814729"
+        }
+      ],
+      "substitutes": [
+        {
+          "lineup_player": "Aarón Ochoa",
+          "lineup_number": "35",
+          "lineup_position": "0",
+          "player_key": "3016603477"
+        },
+        {
+          "lineup_player": "Rafa Rodriguez",
+          "lineup_number": "37",
+          "lineup_position": "0",
+          "player_key": "3703275944"
+        },
+        {
+          "lineup_player": "Adrián Niño",
+          "lineup_number": "21",
+          "lineup_position": "0",
+          "player_key": "3936310236"
+        },
+        {
+          "lineup_player": "Victor Garcia",
+          "lineup_number": "14",
+          "lineup_position": "0",
+          "player_key": "2681852795"
+        },
+        {
+          "lineup_player": "Ramón Enríquez",
+          "lineup_number": "6",
+          "lineup_position": "0",
+          "player_key": "660216058"
+        },
+        {
+          "lineup_player": "Carlos Lopez",
+          "lineup_number": "13",
+          "lineup_position": "0",
+          "player_key": "374903604"
+        },
+        {
+          "lineup_player": "Javi Montero",
+          "lineup_number": "20",
+          "lineup_position": "0",
+          "player_key": "530698450"
+        },
+        {
+          "lineup_player": "Ángel Recio",
+          "lineup_number": "36",
+          "lineup_position": "0",
+          "player_key": "3707027333"
+        },
+        {
+          "lineup_player": "Darko Brašanac",
+          "lineup_number": "5",
+          "lineup_position": "0",
+          "player_key": "115866734"
+        },
+        {
+          "lineup_player": "Haitam Abaida",
+          "lineup_number": "7",
+          "lineup_position": "0",
+          "player_key": "3041260347"
+        },
+        {
+          "lineup_player": "Eneko Jauregi",
+          "lineup_number": "17",
+          "lineup_position": "0",
+          "player_key": "569232103"
+        },
+        {
+          "lineup_player": "Julen Lobete",
+          "lineup_number": "24",
+          "lineup_position": "0",
+          "player_key": "3776689314"
+        }
+      ],
+      "coach": [
+        {
+          "lineup_player": "Juan Funes",
+          "lineup_number": "",
+          "lineup_position": "",
+          "player_key": "3312843982"
+        }
+      ],
+      "missing_players": []
+    }
+  },
+  "statistics": [
+    {
+      "type": "Corners",
+      "home": "3",
+      "away": "6"
+    },
+    {
+      "type": "Throw In",
+      "home": "0",
+      "away": "0"
+    },
+    {
+      "type": "Free Kick",
+      "home": "0",
+      "away": "0"
+    },
+    {
+      "type": "Goal Kick",
+      "home": "0",
+      "away": "0"
+    },
+    {
+      "type": "Penalty",
+      "home": "0",
+      "away": "1"
+    },
+    {
+      "type": "Substitution",
+      "home": "5",
+      "away": "5"
+    },
+    {
+      "type": "Attacks",
+      "home": "91",
+      "away": "114"
+    },
+    {
+      "type": "Dangerous Attacks",
+      "home": "26",
+      "away": "50"
+    },
+    {
+      "type": "On Target",
+      "home": "0",
+      "away": "6"
+    },
+    {
+      "type": "Off Target",
+      "home": "4",
+      "away": "10"
+    },
+    {
+      "type": "Shots Total",
+      "home": "5",
+      "away": "17"
+    },
+    {
+      "type": "Shots On Goal",
+      "home": "2",
+      "away": "7"
+    },
+    {
+      "type": "Shots Off Goal",
+      "home": "2",
+      "away": "6"
+    },
+    {
+      "type": "Shots Blocked",
+      "home": "1",
+      "away": "4"
+    },
+    {
+      "type": "Shots Inside Box",
+      "home": "1",
+      "away": "14"
+    },
+    {
+      "type": "Shots Outside Box",
+      "home": "4",
+      "away": "3"
+    },
+    {
+      "type": "Fouls",
+      "home": "11",
+      "away": "13"
+    },
+    {
+      "type": "Corners",
+      "home": "3",
+      "away": "6"
+    },
+    {
+      "type": "Offsides",
+      "home": "0",
+      "away": "1"
+    },
+    {
+      "type": "Ball Possession",
+      "home": "43%",
+      "away": "57%"
+    },
+    {
+      "type": "Yellow Cards",
+      "home": "1",
+      "away": "1"
+    },
+    {
+      "type": "Saves",
+      "home": "5",
+      "away": "2"
+    },
+    {
+      "type": "Passes Total",
+      "home": "366",
+      "away": "488"
+    },
+    {
+      "type": "Passes Accurate",
+      "home": "301",
+      "away": "428"
+    }
+  ],
+  "statistics_1half": [
+    {
+      "type": "Corners",
+      "home": "2",
+      "away": "3"
+    },
+    {
+      "type": "Throw In",
+      "home": "0",
+      "away": "0"
+    },
+    {
+      "type": "Free Kick",
+      "home": "0",
+      "away": "0"
+    },
+    {
+      "type": "Goal Kick",
+      "home": "0",
+      "away": "0"
+    },
+    {
+      "type": "Penalty",
+      "home": "0",
+      "away": "0"
+    },
+    {
+      "type": "Substitution",
+      "home": "2",
+      "away": "0"
+    },
+    {
+      "type": "Attacks",
+      "home": "40",
+      "away": "70"
+    },
+    {
+      "type": "Dangerous Attacks",
+      "home": "14",
+      "away": "30"
+    },
+    {
+      "type": "On Target",
+      "home": "0",
+      "away": "3"
+    },
+    {
+      "type": "Off Target",
+      "home": "1",
+      "away": "6"
+    },
+    {
+      "type": "Ball Possession",
+      "home": "44%",
+      "away": "56%"
+    },
+    {
+      "type": "Shots Total",
+      "home": "1",
+      "away": "10"
+    },
+    {
+      "type": "Shots On Goal",
+      "home": "0",
+      "away": "4"
+    },
+    {
+      "type": "Shots Off Goal",
+      "home": "0",
+      "away": "3"
+    },
+    {
+      "type": "Shots Blocked",
+      "home": "1",
+      "away": "3"
+    },
+    {
+      "type": "Shots Inside Box",
+      "home": "0",
+      "away": "9"
+    },
+    {
+      "type": "Shots Outside Box",
+      "home": "1",
+      "away": "1"
+    },
+    {
+      "type": "Fouls",
+      "home": "3",
+      "away": "4"
+    },
+    {
+      "type": "Corners",
+      "home": "2",
+      "away": "3"
+    },
+    {
+      "type": "Offsides",
+      "home": "0",
+      "away": "1"
+    },
+    {
+      "type": "Ball Possession",
+      "home": "43%",
+      "away": "57%"
+    },
+    {
+      "type": "Saves",
+      "home": "3",
+      "away": "0"
+    },
+    {
+      "type": "Passes Total",
+      "home": "192",
+      "away": "258"
+    },
+    {
+      "type": "Passes Accurate",
+      "home": "159",
+      "away": "227"
+    }
+  ]
+}
