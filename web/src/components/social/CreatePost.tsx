@@ -40,7 +40,10 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!caption.trim() && !mediaFile) return;
+    if (!caption.trim() && !mediaFile) {
+      alert("Veuillez écrire un message ou ajouter une image avant de publier !");
+      return;
+    }
 
     setIsLoading(true);
     const formData = new FormData();
