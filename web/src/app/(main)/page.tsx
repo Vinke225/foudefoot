@@ -33,7 +33,7 @@ export default async function Home() {
       .select(`
         *,
         users (username, avatar, country),
-        likes (user_id, reaction_type),
+        likes (user_id, reaction_type, users (id, username, avatar)),
         comments (
           id,
           content,
@@ -181,6 +181,7 @@ export default async function Home() {
                   <PostInteractions 
                     postId={post.id} 
                     initialLikes={post.likes?.length || 0} 
+                    likesData={post.likes || []}
                     hasLiked={!!userLike}
                     initialReactionType={userLike?.reaction_type}
                     commentsCount={post.comments?.length || 0}

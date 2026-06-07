@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { MessageCircle, Share2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toggleLikePost } from "@/actions/social";
 
 const REACTIONS = [
@@ -30,6 +31,7 @@ export function PostInteractions({
   initialLikes: number, 
   hasLiked: boolean, 
   initialReactionType?: string,
+  likesData?: { user_id: string; reaction_type: string; users?: { id: string; username: string; avatar: string } }[],
   commentsCount: number,
   commentsData?: { id: string; content: string; created_at: string; users: { username: string; avatar: string } }[]
 }) {
@@ -110,8 +112,89 @@ export function PostInteractions({
 
   const currentReaction = REACTIONS.find(r => r.type === reactionType) || REACTIONS[0];
 
+  const reactionCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    (likesData || []).forEach(l => {
+      const type = l.reaction_type || 'like';
+      counts[type] = (counts[type] || 0) + 1;
+    });
+    // Adjust for current user's local change
+    if (hasLiked) {
+      const initType = initialReactionType || 'like';
+      counts[initType] = Math.max(0, (counts[initType] || 0) - 1);
+    }
+    if (liked) {
+      const currentType = reactionType || 'like';
+      counts[currentType] = (counts[currentType] || 0) + 1;
+    }
+    return counts;
+  }, [likesData, initialReactionType, hasLiked, liked, reactionType]);
+
+  const topReactions = useMemo(() => {
+    return Object.entries(reactionCounts)
+      .filter(([_, count]) => count > 0)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([type]) => REACTIONS.find(r => r.type === type))
+      .filter(Boolean) as typeof REACTIONS;
+  }, [reactionCounts]);
+
   return (
     <div className="flex flex-col w-full">
+      {/* Résumé des réactions (Style Facebook) */}
+      {(likes > 0 || localCommentsCount > 0) && (
+        <div className="flex items-center justify-between py-2 mb-2 border-b border-gray-50">
+          {likes > 0 ? (
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="flex items-center gap-1.5 hover:bg-gray-50 p-1 rounded-lg transition-colors">
+                  <div className="flex -space-x-1.5">
+                    {topReactions.map((r, i) => (
+                      <div key={r.type} className="w-5 h-5 flex items-center justify-center bg-white rounded-full shadow-[0_0_0_1px_#fff] relative" style={{ zIndex: 10 - i }}>
+                        <span className="text-[12px] leading-none">{r.icon}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <span className="text-[13px] text-gray-500 hover:underline">{likes}</span>
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md max-h-[80vh] overflow-hidden flex flex-col p-0 border-0 sm:border">
+                <DialogHeader className="p-4 border-b">
+                  <DialogTitle>Réactions</DialogTitle>
+                </DialogHeader>
+                <div className="flex-1 overflow-y-auto p-2">
+                  {(!likesData || likesData.length === 0) && (
+                    <div className="text-center p-4 text-gray-500">Actualisez pour voir les réactions récentes</div>
+                  )}
+                  {(likesData || []).map((l, i) => {
+                    const r = REACTIONS.find(x => x.type === l.reaction_type) || REACTIONS[0];
+                    return (
+                      <div key={`${l.user_id}-${i}`} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-xl transition-colors">
+                        <div className="flex items-center gap-3">
+                          <div className="relative">
+                            <img src={l.users?.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${l.users?.username}`} alt="avatar" className="w-10 h-10 rounded-full object-cover border border-gray-100" />
+                            <div className="absolute -bottom-1 -right-1 bg-white rounded-full shadow-sm w-4 h-4 flex items-center justify-center text-[10px]">
+                              {r.icon}
+                            </div>
+                          </div>
+                          <span className="font-bold text-[14px] text-black">{l.users?.username || 'Utilisateur'}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </DialogContent>
+            </Dialog>
+          ) : <div />}
+          
+          {localCommentsCount > 0 && (
+            <div className="text-[13px] text-gray-500">
+              {localCommentsCount} commentaire{localCommentsCount > 1 ? 's' : ''}
+            </div>
+          )}
+        </div>
+      )}
+
       {showReactions && (
         <div 
           className="fixed inset-0 z-40" 
