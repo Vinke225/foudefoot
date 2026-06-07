@@ -42,6 +42,7 @@ export default async function ConversationPage(props: { params: Promise<{ id: st
   }
 
   const otherUser = convo.user1.id === user.id ? convo.user2 : convo.user1;
+  const me = convo.user1.id === user.id ? convo.user1 : convo.user2;
 
   // Mark all unread messages from the other user as read
   await supabase
