@@ -14,14 +14,23 @@ export default async function PublicProfilePage({ params }: { params: { id: stri
   const { data: { user } } = await supabase.auth.getUser();
 
   // Fetch the target user profile
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from('users')
     .select('*')
     .eq('id', params.id)
     .single();
 
   if (!profile) {
-    notFound();
+    return (
+      <div className="p-8 text-center bg-white rounded-3xl border border-red-100">
+        <h1 className="text-2xl font-bold text-red-500 mb-4">Profil introuvable</h1>
+        <p className="text-gray-500 mb-2">ID: {params.id}</p>
+        <p className="text-gray-500 mb-2">User: {user ? user.id : 'Non connecté'}</p>
+        <pre className="text-left bg-gray-50 p-4 rounded-xl text-xs overflow-auto max-w-full">
+          {JSON.stringify(profileError, null, 2)}
+        </pre>
+      </div>
+    );
   }
 
   // Check if I am following this user
