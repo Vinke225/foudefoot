@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 
 export const revalidate = 0;
 
-export default async function PublicProfilePage({ params }: { params: { id: string } }) {
+export default async function PublicProfilePage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
