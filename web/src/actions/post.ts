@@ -14,8 +14,9 @@ export async function createPost(formData: FormData) {
 
     const caption = formData.get("caption") as string;
     const mediaFile = formData.get("mediaFile") as File;
+    const gifUrl = formData.get("gifUrl") as string;
 
-    let mediaUrl = null;
+    let mediaUrl = gifUrl || null;
 
     if (mediaFile && mediaFile.size > 0) {
       const fileExt = mediaFile.name.split('.').pop();

@@ -113,9 +113,28 @@ export function PostInteractions({
           <span className="text-[13px] font-medium text-gray-700 group-hover:text-black">{localCommentsCount}</span>
         </button>
         
-        <button className="flex items-center gap-2.5 hover:text-blue-500 group transition-colors p-1 rounded-lg hover:bg-gray-50">
+        <button 
+          onClick={async () => {
+            try {
+              const url = `${window.location.origin}/profil/${postId}`; // Actually we don't have a post page yet, just share the app or a dummy post link
+              if (navigator.share) {
+                await navigator.share({
+                  title: 'Fou de Foot',
+                  text: 'Regarde ce post sur Fou de Foot !',
+                  url: window.location.href, // sharing the current page since we don't have individual post pages yet
+                });
+              } else {
+                await navigator.clipboard.writeText(window.location.href);
+                alert("Lien copié dans le presse-papier !");
+              }
+            } catch (err) {
+              console.error("Share failed", err);
+            }
+          }}
+          className="flex items-center gap-2.5 hover:text-blue-500 group transition-colors p-1 rounded-lg hover:bg-gray-50"
+        >
           <Share2 className="w-5 h-5" />
-          <span className="text-[13px] font-medium text-gray-700 group-hover:text-blue-500">0</span>
+          <span className="text-[13px] font-medium text-gray-700 group-hover:text-blue-500">Partager</span>
         </button>
       </div>
 

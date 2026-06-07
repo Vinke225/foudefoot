@@ -169,3 +169,63 @@ export async function addComment(postId: string, content: string) {
     return { error: "Erreur inattendue" };
   }
 }
+
+export async function toggleFollow(targetUserId: string) {
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return { error: "Non autorisé" };
+    }
+
+    // Check if already following
+    const { data: existingFollow } = await supabase
+      .from('follows')
+      .select('id')
+      .eq('follower_id', user.id)
+      .eq('following_id', targetUserId)
+      .single();
+
+    if (existingFollow) {
+      // Unfollow
+      const { error } = await supabase
+        .from('follows')
+        .delete()
+        .eq('follower_id', user.id)
+        .eq('following_id', targetUserId);
+
+      if (error) {
+        console.error("Error unfollowing:", error);
+        return { error: "Erreur lors du désabonnement" };
+      }
+    } else {
+      // Follow
+      const { error } = await supabase
+        .from('follows')
+        .insert({
+          follower_id: user.id,
+          following_id: targetUserId
+        });
+
+      if (error) {
+        console.error("Error following:", error);
+        return { error: "Erreur lors de l'abonnement" };
+      }
+      
+      // Create notification
+      const { data: me } = await supabase.from('users').select('username').eq('id', user.id).single();
+      await supabase.from('notifications').insert({
+        user_id: targetUserId,
+        type: 'follow',
+        content: `${me?.username || "Quelqu'un"} a commencé à vous suivre`
+      });
+    }
+
+    revalidatePath(`/profil/${targetUserId}`);
+    return { success: true, isFollowing: !existingFollow };
+  } catch (error) {
+    console.error(error);
+    return { error: "Erreur inattendue" };
+  }
+}

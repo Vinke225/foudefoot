@@ -8,11 +8,15 @@ import { Image as ImageIcon, Smile, X, Loader2 } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import { createPost } from "@/actions/post";
 
+import { GifPicker } from "@/components/social/GifPicker";
+
 export function CreatePost({ user }: { user: { id: string, username?: string, avatar?: string } | null }) {
   const [caption, setCaption] = useState("");
   const [mediaPreview, setMediaPreview] = useState<string | null>(null);
   const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [gifUrl, setGifUrl] = useState<string | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showGifPicker, setShowGifPicker] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -22,16 +26,24 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
     setCaption(prev => prev + emojiObject.emoji);
   };
 
+  const onGifClick = (url: string) => {
+    setGifUrl(url);
+    setMediaPreview(url);
+    setShowGifPicker(false);
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setMediaFile(file);
+      setGifUrl(null);
       setMediaPreview(URL.createObjectURL(file));
     }
   };
 
   const removeMedia = () => {
     setMediaFile(null);
+    setGifUrl(null);
     setMediaPreview(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -40,7 +52,7 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!caption.trim() && !mediaFile) {
+    if (!caption.trim() && !mediaFile && !gifUrl) {
       alert("Veuillez écrire un message ou ajouter une image avant de publier !");
       return;
     }
@@ -49,6 +61,7 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
     const formData = new FormData();
     if (caption.trim()) formData.append("caption", caption);
     if (mediaFile) formData.append("mediaFile", mediaFile);
+    if (gifUrl) formData.append("gifUrl", gifUrl);
 
     try {
       const res = await createPost(formData);
@@ -56,6 +69,7 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
         setCaption("");
         removeMedia();
         setShowEmojiPicker(false);
+        setShowGifPicker(false);
       } else {
         alert(res.error || "Erreur lors de la création du post");
       }
@@ -119,13 +133,35 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
                     variant="ghost" 
                     size="icon" 
                     className="text-primary hover:bg-primary/10 rounded-full w-10 h-10"
-                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                    onClick={() => {
+                      setShowEmojiPicker(!showEmojiPicker);
+                      setShowGifPicker(false);
+                    }}
                   >
                     <Smile className="w-5 h-5" />
                   </Button>
                   {showEmojiPicker && (
                     <div className="absolute top-12 left-0 z-50 shadow-xl rounded-xl">
                       <EmojiPicker onEmojiClick={onEmojiClick} />
+                    </div>
+                  )}
+                </div>
+                <div className="relative">
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-primary hover:bg-primary/10 rounded-xl px-3 h-10 font-bold text-xs"
+                    onClick={() => {
+                      setShowGifPicker(!showGifPicker);
+                      setShowEmojiPicker(false);
+                    }}
+                  >
+                    GIF
+                  </Button>
+                  {showGifPicker && (
+                    <div className="absolute top-12 left-0 z-50 shadow-xl rounded-xl bg-white">
+                      <GifPicker onGifClick={onGifClick} />
                     </div>
                   )}
                 </div>

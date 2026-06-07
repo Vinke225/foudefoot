@@ -153,7 +153,9 @@ export default async function Home() {
                     </Avatar>
                     <div>
                       <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-[15px] text-black hover:underline cursor-pointer">{post.users?.username}</span>
+                        <Link href={`/profil/${post.user_id}`}>
+                          <span className="font-bold text-[15px] text-black hover:underline cursor-pointer">{post.users?.username}</span>
+                        </Link>
                         {post.users?.country && (
                           <span className="text-[10px] bg-gray-100 px-1.5 py-0.5 rounded-sm">{post.users.country}</span>
                         )}
