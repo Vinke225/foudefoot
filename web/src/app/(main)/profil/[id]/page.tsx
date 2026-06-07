@@ -1,5 +1,4 @@
 import { createClient } from "@/utils/supabase/server";
-import { notFound } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FollowButton } from "@/components/profile/FollowButton";
 import { PostInteractions } from "@/components/social/PostInteractions";
@@ -109,7 +108,7 @@ export default async function PublicProfilePage(props: { params: Promise<{ id: s
                   redirect(`/messages/${res.conversationId}`);
                 }
               }}>
-                <Button variant="outline" className="rounded-xl px-6 h-11 font-bold shadow-sm">
+                <Button type="submit" variant="outline" className="rounded-xl px-6 h-11 font-bold shadow-sm">
                   Message
                 </Button>
               </form>
@@ -124,11 +123,11 @@ export default async function PublicProfilePage(props: { params: Promise<{ id: s
         {(!posts || posts.length === 0) ? (
           <div className="bg-white p-8 rounded-3xl border border-gray-100 text-center">
             <h3 className="font-bold text-lg mb-2">Aucune publication</h3>
-            <p className="text-gray-500 mb-4">Cet utilisateur n'a pas encore publié.</p>
+            <p className="text-gray-500 mb-4">Cet utilisateur n&apos;a pas encore publié.</p>
           </div>
         ) : (
           posts.map((post) => {
-            const userLike = user ? post.likes?.find((l: any) => l.user_id === user.id) : null;
+            const userLike = user ? post.likes?.find((l: { user_id: string, reaction_type?: string }) => l.user_id === user.id) : null;
             return (
               <article key={post.id} className="bg-white p-6 rounded-3xl shadow-[0_2px_12px_rgba(0,0,0,0.02)] border border-gray-100">
                 <div className="flex justify-between items-start mb-3">

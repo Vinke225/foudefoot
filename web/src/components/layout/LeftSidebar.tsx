@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Home, Trophy, Bell, MessageSquare, User, Settings, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -9,15 +10,16 @@ import { useRealtime } from "@/components/providers/RealtimeProvider";
 
 export function LeftSidebar({ profile }: { profile: { avatar?: string | null, username?: string, country?: string | null } | null }) {
   const { unreadCount } = useRealtime();
+  const pathname = usePathname();
   
   const navItems = [
-    { icon: Home, label: "Accueil", href: "/", active: true },
-    { icon: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 3v18"/><path d="M8 8h8v8H8z"/></svg>, label: "Matchs", href: "/matchs", active: false },
-    { icon: Trophy, label: "Compétitions", href: "/competitions", active: false },
-    { icon: Bell, label: "Notifications", href: "/notifications", active: false, badge: unreadCount && unreadCount > 0 ? unreadCount : undefined },
-    { icon: MessageSquare, label: "Messages", href: "/messages", active: false },
-    { icon: User, label: "Profil", href: "/profil", active: false },
-    { icon: Settings, label: "Paramètres", href: "/parametres", active: false },
+    { icon: Home, label: "Accueil", href: "/" },
+    { icon: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 3v18"/><path d="M8 8h8v8H8z"/></svg>, label: "Matchs", href: "/matchs" },
+    { icon: Trophy, label: "Compétitions", href: "/competitions" },
+    { icon: Bell, label: "Notifications", href: "/notifications", badge: unreadCount && unreadCount > 0 ? unreadCount : undefined },
+    { icon: MessageSquare, label: "Messages", href: "/messages" },
+    { icon: User, label: "Profil", href: "/profil" },
+    { icon: Settings, label: "Paramètres", href: "/parametres" },
   ];
   return (
     <div className="w-65 h-screen sticky top-0 bg-white pt-8 px-6 pb-6 flex flex-col hide-scrollbar overflow-y-auto shrink-0 border-r border-gray-100">
@@ -37,12 +39,14 @@ export function LeftSidebar({ profile }: { profile: { avatar?: string | null, us
 
       {/* Navigation */}
       <nav className="flex-1 space-y-1.5">
-        {navItems.map((item) => (
+        {navItems.map((item) => {
+          const isActive = pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href));
+          return (
           <Link key={item.label} href={item.href}>
             <Button
               variant="ghost"
               className={`w-full justify-start gap-4 text-[15px] font-semibold h-12 rounded-xl transition-all ${
-                item.active 
+                isActive 
                   ? "bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary" 
                   : "text-gray-500 hover:bg-gray-50 hover:text-black"
               }`}
@@ -56,7 +60,8 @@ export function LeftSidebar({ profile }: { profile: { avatar?: string | null, us
               )}
             </Button>
           </Link>
-        ))}
+          );
+        })}
 
         <div className="pt-8">
           <CreatePostModal />

@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Bell, SlidersHorizontal } from "lucide-react";
+import { Search, Bell, SlidersHorizontal, Settings } from "lucide-react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -40,6 +40,9 @@ export function TopHeader({ profile }: { profile: { avatar?: string | null, user
               {unreadCount > 9 ? '9+' : unreadCount}
             </span>
           )}
+        </Link>
+        <Link href="/parametres" className="lg:hidden cursor-pointer">
+          <Settings className="w-6 h-6 text-black hover:text-primary transition-colors" />
         </Link>
         <Link href="/profil">
           <Avatar className="w-9 h-9 cursor-pointer ring-2 ring-transparent hover:ring-primary transition-all">
