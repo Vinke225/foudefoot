@@ -127,20 +127,24 @@ export function PostInteractions({
         
         <button 
           onClick={async () => {
+            const urlToShare = window.location.href;
             try {
-              const url = `${window.location.origin}/profil/${postId}`; // Actually we don't have a post page yet, just share the app or a dummy post link
               if (navigator.share) {
                 await navigator.share({
                   title: 'Fou de Foot',
-                  text: 'Regarde ce post sur Fou de Foot !',
-                  url: window.location.href, // sharing the current page since we don't have individual post pages yet
+                  text: 'Rejoins Fou de Foot pour voir ça !',
+                  url: urlToShare,
                 });
               } else {
-                await navigator.clipboard.writeText(window.location.href);
-                alert("Lien copié dans le presse-papier !");
+                throw new Error("Share not supported");
               }
             } catch (err) {
-              console.error("Share failed", err);
+              try {
+                await navigator.clipboard.writeText(urlToShare);
+                alert("Lien copié dans le presse-papier !");
+              } catch (clipErr) {
+                alert("Impossible de copier le lien.");
+              }
             }
           }}
           className="flex items-center gap-2.5 hover:text-blue-500 group transition-colors p-1 rounded-lg hover:bg-gray-50"
