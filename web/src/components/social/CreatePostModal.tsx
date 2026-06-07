@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus, Loader2 } from "lucide-react";
 import { createPost } from "@/actions/social";
 
-export function CreatePostModal() {
+export function CreatePostModal({ trigger }: { trigger?: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const [content, setContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -31,14 +31,14 @@ export function CreatePostModal() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger 
-        render={
+      <DialogTrigger asChild>
+        {trigger ? trigger : (
           <Button className="w-full rounded-2xl h-13 bg-primary hover:bg-primary/90 text-white font-bold text-[15px] shadow-[0_4px_14px_rgba(30,143,69,0.3)] flex gap-2">
             <Plus className="w-5 h-5" />
             Créer un post
           </Button>
-        }
-      />
+        )}
+      </DialogTrigger>
       
       <DialogContent className="sm:max-w-125 p-0 overflow-hidden bg-white rounded-3xl border-0 shadow-2xl">
         <DialogHeader className="px-6 py-4 border-b border-gray-100">

@@ -3,8 +3,11 @@ import { Home, Trophy, Bell, MessageSquare, User, Settings, ChevronRight } from 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CreatePostModal } from "@/components/social/CreatePostModal";
+import { useRealtime } from "@/components/providers/RealtimeProvider";
 
-export function LeftSidebar({ profile, unreadCount }: { profile: { avatar?: string | null, username?: string, country?: string | null } | null, unreadCount?: number }) {
+export function LeftSidebar({ profile }: { profile: { avatar?: string | null, username?: string, country?: string | null } | null }) {
+  const { unreadCount } = useRealtime();
+  
   const navItems = [
     { icon: Home, label: "Accueil", href: "/", active: true },
     { icon: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 3v18"/><path d="M8 8h8v8H8z"/></svg>, label: "Matchs", href: "/matchs", active: false },

@@ -3,15 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Trophy, PlusSquare, Bell, User } from "lucide-react";
+import { useRealtime } from "@/components/providers/RealtimeProvider";
+import { CreatePostModal } from "@/components/social/CreatePostModal";
 import { cn } from "@/lib/utils";
 
 export function MobileNavBar() {
   const pathname = usePathname();
+  const { unreadCount } = useRealtime();
 
   const navItems = [
     { icon: Home, label: "Accueil", href: "/" },
     { icon: Trophy, label: "Matchs", href: "/matchs" },
-    { icon: PlusSquare, label: "Créer", href: "/", isAction: true }, // Will just act as a link to home or trigger a modal
+    { icon: PlusSquare, label: "Créer", href: "#", isAction: true },
     { icon: Bell, label: "Notifs", href: "/notifications" },
     { icon: User, label: "Profil", href: "/profil" },
   ];
@@ -22,15 +25,11 @@ export function MobileNavBar() {
         const isActive = pathname === item.href && !item.isAction;
         const Icon = item.icon;
 
-        return (
-          <Link
-            key={item.label}
-            href={item.href}
-            className="relative flex flex-col items-center justify-center p-2 group"
-          >
+        const content = (
+          <div className="relative flex flex-col items-center justify-center p-2 group">
             <div
               className={cn(
-                "flex items-center justify-center transition-all duration-300 ease-spring",
+                "flex items-center justify-center transition-all duration-300 ease-spring cursor-pointer",
                 item.isAction 
                   ? "w-12 h-12 bg-primary text-white rounded-xl shadow-lg shadow-primary/30 transform active:scale-95 -mt-6" 
                   : "w-10 h-10 rounded-full active:scale-90",
@@ -45,6 +44,11 @@ export function MobileNavBar() {
                   isActive && !item.isAction ? "scale-110" : ""
                 )} 
               />
+              {item.label === "Notifs" && unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full border-2 border-white text-[9px] font-bold text-white flex items-center justify-center">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
             </div>
             
             {!item.isAction && (
@@ -58,10 +62,21 @@ export function MobileNavBar() {
               </span>
             )}
 
-            {/* Active Dot indicator */}
             {!item.isAction && isActive && (
               <span className="absolute -top-1 w-1 h-1 bg-primary rounded-full animate-in fade-in zoom-in duration-300" />
             )}
+          </div>
+        );
+
+        if (item.isAction) {
+          return (
+            <CreatePostModal key={item.label} trigger={content} />
+          );
+        }
+
+        return (
+          <Link key={item.label} href={item.href}>
+            {content}
           </Link>
         );
       })}

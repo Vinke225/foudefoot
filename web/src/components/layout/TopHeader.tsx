@@ -1,10 +1,14 @@
+"use client";
+
 import { Search, Bell, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { useRealtime } from "@/components/providers/RealtimeProvider";
 
-export function TopHeader({ profile, unreadCount = 0 }: { profile: { avatar?: string | null, username?: string } | null, unreadCount?: number }) {
+export function TopHeader({ profile }: { profile: { avatar?: string | null, username?: string } | null }) {
+  const { unreadCount } = useRealtime();
   return (
     <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-md border-b border-border/40 px-8 py-3 flex items-center justify-between">
       {/* Tabs - Aligned with Center Column */}

@@ -2,6 +2,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Heart, MessageCircle, UserPlus, Bell } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import { ResetUnreadCount } from "@/components/notifications/ResetUnreadCount";
 
 export const revalidate = 0;
 
@@ -28,6 +29,7 @@ export default async function NotificationsPage() {
 
   return (
     <div className="flex flex-col h-full pb-10">
+      <ResetUnreadCount />
       {/* Header Tabs inside Center Column */}
       <div className="flex items-center gap-8 border-b border-border/40 px-6 pt-2 mb-6">
         <button className="pb-3 border-b-[3px] border-primary font-bold text-[15px] text-black">Toutes</button>
