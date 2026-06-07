@@ -31,14 +31,16 @@ export function CreatePostModal({ trigger }: { trigger?: React.ReactNode }) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {trigger ? trigger : (
-          <Button className="w-full rounded-2xl h-13 bg-primary hover:bg-primary/90 text-white font-bold text-[15px] shadow-[0_4px_14px_rgba(30,143,69,0.3)] flex gap-2">
-            <Plus className="w-5 h-5" />
-            Créer un post
-          </Button>
-        )}
-      </DialogTrigger>
+      <DialogTrigger 
+        render={
+          trigger ? (trigger as React.ReactElement) : (
+            <Button className="w-full rounded-2xl h-13 bg-primary hover:bg-primary/90 text-white font-bold text-[15px] shadow-[0_4px_14px_rgba(30,143,69,0.3)] flex gap-2">
+              <Plus className="w-5 h-5" />
+              Créer un post
+            </Button>
+          )
+        }
+      />
       
       <DialogContent className="sm:max-w-125 p-0 overflow-hidden bg-white rounded-3xl border-0 shadow-2xl">
         <DialogHeader className="px-6 py-4 border-b border-gray-100">
