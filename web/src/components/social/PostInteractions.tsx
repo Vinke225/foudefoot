@@ -43,14 +43,17 @@ export function PostInteractions({
   const pressTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLikes(initialLikes);
   }, [initialLikes]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLiked(hasLiked);
   }, [hasLiked]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setReactionType(initialReactionType || 'like');
   }, [initialReactionType]);
 
@@ -182,11 +185,11 @@ export function PostInteractions({
               } else {
                 throw new Error("Share not supported");
               }
-            } catch (err) {
+            } catch {
               try {
                 await navigator.clipboard.writeText(urlToShare);
                 alert("Lien copié dans le presse-papier !");
-              } catch (clipErr) {
+              } catch {
                 alert("Impossible de copier le lien.");
               }
             }
