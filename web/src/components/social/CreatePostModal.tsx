@@ -123,7 +123,7 @@ export function CreatePostModal({ trigger }: { trigger?: React.ReactNode }) {
           {error && <p className="text-red-500 text-sm mt-2 font-semibold">{error}</p>}
         </div>
         
-        <DialogFooter className="px-6 py-4 border-t border-gray-50 bg-gray-50/50 flex justify-between items-center sm:justify-between">
+        <DialogFooter className="relative px-6 py-4 border-t border-gray-50 bg-gray-50/50 flex justify-between items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <input 
               type="file" 
@@ -141,7 +141,7 @@ export function CreatePostModal({ trigger }: { trigger?: React.ReactNode }) {
             >
               <ImageIcon className="w-5 h-5" />
             </Button>
-            <div className="relative">
+            <div>
               <Button 
                 type="button" 
                 variant="ghost" 
@@ -155,12 +155,12 @@ export function CreatePostModal({ trigger }: { trigger?: React.ReactNode }) {
                 <Smile className="w-5 h-5" />
               </Button>
               {showEmojiPicker && (
-                <div className="absolute bottom-full left-0 mb-2 z-50 shadow-xl rounded-xl">
-                  <EmojiPicker onEmojiClick={onEmojiClick} />
+                <div className="absolute bottom-full left-6 sm:left-16 mb-2 z-50 shadow-xl rounded-xl overflow-hidden w-[300px] sm:w-[320px] max-w-[calc(100vw-3rem)]">
+                  <EmojiPicker onEmojiClick={onEmojiClick} width="100%" height={400} />
                 </div>
               )}
             </div>
-            <div className="relative">
+            <div>
               <Button 
                 type="button" 
                 variant="ghost" 
@@ -174,7 +174,7 @@ export function CreatePostModal({ trigger }: { trigger?: React.ReactNode }) {
                 GIF
               </Button>
               {showGifPicker && (
-                <div className="absolute bottom-full left-0 mb-2 z-50 shadow-xl rounded-xl bg-white">
+                <div className="absolute bottom-full left-6 sm:left-24 mb-2 z-50 shadow-xl rounded-xl bg-white">
                   <GifPicker onGifClick={onGifClick} />
                 </div>
               )}

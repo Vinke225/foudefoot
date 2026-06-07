@@ -109,7 +109,7 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
               </div>
             )}
 
-            <div className="flex items-center justify-between pt-2 border-t border-gray-50">
+            <div className="flex items-center justify-between pt-2 border-t border-gray-50 relative">
               <div className="flex items-center gap-2">
                 <input 
                   type="file" 
@@ -127,7 +127,7 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
                 >
                   <ImageIcon className="w-5 h-5" />
                 </Button>
-                <div className="relative">
+                <div>
                   <Button 
                     type="button" 
                     variant="ghost" 
@@ -141,12 +141,12 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
                     <Smile className="w-5 h-5" />
                   </Button>
                   {showEmojiPicker && (
-                    <div className="absolute top-12 left-0 z-50 shadow-xl rounded-xl">
-                      <EmojiPicker onEmojiClick={onEmojiClick} />
+                    <div className="absolute top-full left-0 sm:left-10 mt-2 z-50 shadow-xl rounded-xl overflow-hidden w-[300px] sm:w-[320px] max-w-[calc(100vw-3rem)]">
+                      <EmojiPicker onEmojiClick={onEmojiClick} width="100%" height={400} />
                     </div>
                   )}
                 </div>
-                <div className="relative">
+                <div>
                   <Button 
                     type="button" 
                     variant="ghost" 
@@ -160,7 +160,7 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
                     GIF
                   </Button>
                   {showGifPicker && (
-                    <div className="absolute top-12 left-0 z-50 shadow-xl rounded-xl bg-white">
+                    <div className="absolute top-full left-0 sm:left-20 mt-2 z-50 shadow-xl rounded-xl bg-white">
                       <GifPicker onGifClick={onGifClick} />
                     </div>
                   )}
