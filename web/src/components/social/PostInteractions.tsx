@@ -133,7 +133,7 @@ export function PostInteractions({
 
   const topReactions = useMemo(() => {
     return Object.entries(reactionCounts)
-      .filter(([_, count]) => count > 0)
+      .filter(([, count]) => count > 0)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 3)
       .map(([type]) => REACTIONS.find(r => r.type === type))
