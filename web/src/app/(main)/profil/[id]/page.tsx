@@ -47,25 +47,27 @@ export default async function PublicProfilePage(props: { params: Promise<{ id: s
     }
   }
 
-  // Fetch user's posts
-  const { data: posts } = await supabase
-    .from('posts')
-    .select(`
-      *,
-      users (username, avatar, country),
-      likes (user_id, reaction_type),
-      comments (
-        id,
-        content,
-        created_at,
-        users (username, avatar)
-      )
-    `)
-    .eq('user_id', profile.id)
-    .order('created_at', { ascending: false });
-
-  // Get follower/following counts
-  const [{ count: followersCount }, { count: followingCount }] = await Promise.all([
+  // Fetch user's posts and follower/following counts in parallel
+  const [
+    { data: posts },
+    { count: followersCount },
+    { count: followingCount }
+  ] = await Promise.all([
+    supabase
+      .from('posts')
+      .select(`
+        *,
+        users (username, avatar, country),
+        likes (user_id, reaction_type),
+        comments (
+          id,
+          content,
+          created_at,
+          users (username, avatar)
+        )
+      `)
+      .eq('user_id', profile.id)
+      .order('created_at', { ascending: false }),
     supabase.from('follows').select('*', { count: 'exact', head: true }).eq('following_id', profile.id),
     supabase.from('follows').select('*', { count: 'exact', head: true }).eq('follower_id', profile.id)
   ]);

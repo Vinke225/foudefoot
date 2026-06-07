@@ -22,10 +22,26 @@ export default async function Home() {
     userProfile = data;
   }
   
-  // Fetch Matches
-  const { data: rawMatches } = await supabase
-    .from('matches')
-    .select('*');
+  // Fetch Matches and Posts in parallel
+  const [
+    { data: rawMatches },
+    { data: posts }
+  ] = await Promise.all([
+    supabase.from('matches').select('*'),
+    supabase.from('posts')
+      .select(`
+        *,
+        users (username, avatar, country),
+        likes (user_id, reaction_type),
+        comments (
+          id,
+          content,
+          created_at,
+          users (username, avatar)
+        )
+      `)
+      .order('created_at', { ascending: false })
+  ]);
 
   // Trier: LIVE en premier, puis NS (à venir), puis FT (terminé)
   const matches = (rawMatches || []).sort((a, b) => {
@@ -34,22 +50,6 @@ export default async function Home() {
     const pB = priority[b.status as keyof typeof priority] ?? 3;
     return pA - pB;
   }).slice(0, 15); // Limiter à 15 sur la page d'accueil
-
-  // Fetch Posts
-  const { data: posts } = await supabase
-    .from('posts')
-    .select(`
-      *,
-      users (username, avatar, country),
-      likes (user_id, reaction_type),
-      comments (
-        id,
-        content,
-        created_at,
-        users (username, avatar)
-      )
-    `)
-    .order('created_at', { ascending: false });
 
   // ... (keeping the rest the same up to PostInteractions)
   
