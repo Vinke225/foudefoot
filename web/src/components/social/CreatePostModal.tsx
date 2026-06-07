@@ -155,7 +155,7 @@ export function CreatePostModal({ trigger }: { trigger?: React.ReactNode }) {
                 <Smile className="w-5 h-5" />
               </Button>
               {showEmojiPicker && (
-                <div className="absolute bottom-full left-6 sm:left-16 mb-2 z-50 shadow-xl rounded-xl overflow-hidden w-[300px] sm:w-[320px] max-w-[calc(100vw-3rem)]">
+                <div className="absolute bottom-full left-6 sm:left-16 mb-2 z-50 shadow-xl rounded-xl overflow-hidden w-75 sm:w-80 max-w-[calc(100vw-3rem)]">
                   <EmojiPicker onEmojiClick={onEmojiClick} width="100%" height={400} />
                 </div>
               )}

@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { Loader2, Search } from "lucide-react";
-import Image from "next/image";
 import { Input } from "@/components/ui/input";
 
 export function GifPicker({ onGifClick }: { onGifClick: (gifUrl: string) => void }) {
@@ -27,7 +26,7 @@ export function GifPicker({ onGifClick }: { onGifClick: (gifUrl: string) => void
         const data = await res.json();
         
         if (data.results && data.results.length > 0) {
-          setGifs(data.results.map((r: any) => r.media[0].tinygif.url));
+          setGifs(data.results.map((r: { media: { tinygif: { url: string } }[] }) => r.media[0].tinygif.url));
         } else {
           setGifs([
             "https://media.tenor.com/6X24VntvRiwAAAAC/african-kid-crying.gif",
@@ -56,7 +55,7 @@ export function GifPicker({ onGifClick }: { onGifClick: (gifUrl: string) => void
   }, [debouncedSearch]);
 
   return (
-    <div className="w-[300px] sm:w-[320px] max-w-[calc(100vw-2rem)] h-[350px] sm:h-[400px] bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 flex flex-col overflow-hidden">
+    <div className="w-75 sm:w-80 max-w-[calc(100vw-2rem)] h-87.5 sm:h-100 bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 flex flex-col overflow-hidden">
       <div className="p-3 border-b border-gray-100">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
