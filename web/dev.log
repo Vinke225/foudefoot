@@ -1,0 +1,19 @@
+
+> web@0.1.0 dev
+> next dev
+
+⚠ Port 3000 is in use by process 3950, using available port 3001 instead.
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://192.168.1.67:3001
+- Environments: .env.local
+✓ Ready in 359ms
+⨯ Another next dev server is already running.
+
+- Local:        http://localhost:3000
+- PID:          3950
+- Dir:          /Users/macbook/Desktop/APPS TEST KEVIN/App coupe du monde/web
+- Log:          .next/dev/logs/next-development.log
+
+Run kill 3950 to stop it.
+[?25h

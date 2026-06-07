@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { Home, Trophy, Bell, MessageSquare, User, Settings, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
