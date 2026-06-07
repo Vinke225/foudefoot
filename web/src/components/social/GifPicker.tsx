@@ -56,7 +56,7 @@ export function GifPicker({ onGifClick }: { onGifClick: (gifUrl: string) => void
   }, [debouncedSearch]);
 
   return (
-    <div className="w-[300px] h-[400px] bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 flex flex-col overflow-hidden">
+    <div className="w-75 h-100 bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 flex flex-col overflow-hidden">
       <div className="p-3 border-b border-gray-100">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
