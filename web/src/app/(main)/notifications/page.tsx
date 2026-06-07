@@ -65,7 +65,7 @@ export default async function NotificationsPage() {
                   iconColor = "text-blue-500 fill-blue-500";
                 }
 
-                return (
+                const contentBlock = (
                   <div key={notification.id} className={`p-6 flex gap-4 transition-colors cursor-pointer ${bgColor}`}>
                     <div className="pt-1">
                       <Icon className={`w-8 h-8 ${iconColor}`} />
@@ -80,6 +80,15 @@ export default async function NotificationsPage() {
                     </div>
                   </div>
                 );
+
+                if (notification.link) {
+                  return (
+                    <a href={notification.link} key={notification.id} className="block">
+                      {contentBlock}
+                    </a>
+                  );
+                }
+                return contentBlock;
               })
             )}
           </div>

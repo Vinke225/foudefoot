@@ -77,7 +77,7 @@ export default async function ConversationPage(props: { params: Promise<{ id: st
       </div>
 
       <div className="flex-1 flex flex-col relative overflow-hidden">
-        <PrivateChat conversationId={params.id} otherUser={otherUser} currentUser={{ id: user.id }} />
+        <PrivateChat conversationId={params.id} otherUser={otherUser} currentUser={{ id: user.id, username: me?.username }} />
       </div>
     </div>
   );

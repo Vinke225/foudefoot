@@ -22,7 +22,7 @@ interface Message {
   is_read: boolean;
 }
 
-export function PrivateChat({ conversationId, otherUser, currentUser }: { conversationId: string, otherUser: { id: string; username: string | null; avatar: string | null }, currentUser: { id: string } }) {
+export function PrivateChat({ conversationId, otherUser, currentUser }: { conversationId: string, otherUser: { id: string; username: string | null; avatar: string | null }, currentUser: { id: string, username?: string | null } }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -178,6 +178,13 @@ export function PrivateChat({ conversationId, otherUser, currentUser }: { conver
     }
 
     if (insertedMsg) {
+      supabase.from('notifications').insert({
+        user_id: otherUser.id,
+        type: 'message',
+        content: `Nouveau message de ${currentUser.username || "Quelqu'un"}`,
+        link: `/messages/${conversationId}`
+      }).then();
+
       setMessages((prev) => {
         if (prev.some(m => m.id === insertedMsg.id)) return prev;
         return [...prev, insertedMsg];

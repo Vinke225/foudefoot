@@ -218,7 +218,8 @@ export async function toggleFollow(targetUserId: string) {
       await supabase.from('notifications').insert({
         user_id: targetUserId,
         type: 'follow',
-        content: `${me?.username || "Quelqu'un"} a commencé à vous suivre`
+        content: `${me?.username || "Quelqu'un"} a commencé à vous suivre`,
+        link: `/profil/${user.id}`
       });
     }
 

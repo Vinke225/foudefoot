@@ -109,7 +109,7 @@ export default async function PublicProfilePage(props: { params: Promise<{ id: s
                   redirect(`/messages/${res.conversationId}`);
                 }
               }}>
-                <Button variant="secondary" className="rounded-xl px-6 h-11 font-bold shadow-sm">
+                <Button variant="outline" className="rounded-xl px-6 h-11 font-bold shadow-sm">
                   Message
                 </Button>
               </form>
