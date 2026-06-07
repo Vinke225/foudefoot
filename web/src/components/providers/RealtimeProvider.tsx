@@ -71,7 +71,7 @@ export function RealtimeProvider({
       )
       .on(
         'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'messages' },
+        { event: 'INSERT', schema: 'public', table: 'private_messages' },
         () => router.refresh()
       )
       .subscribe();
