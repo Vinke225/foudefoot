@@ -24,6 +24,7 @@ export function PostInteractions({
   initialLikes, 
   hasLiked, 
   initialReactionType,
+  likesData = [],
   commentsCount,
   commentsData
 }: { 
@@ -146,8 +147,7 @@ export function PostInteractions({
         <div className="flex items-center justify-between py-2 mb-2 border-b border-gray-50">
           {likes > 0 ? (
             <Dialog>
-              <DialogTrigger asChild>
-                <button className="flex items-center gap-1.5 hover:bg-gray-50 p-1 rounded-lg transition-colors">
+              <DialogTrigger render={<button className="flex items-center gap-1.5 hover:bg-gray-50 p-1 rounded-lg transition-colors" />}>
                   <div className="flex -space-x-1.5">
                     {topReactions.map((r, i) => (
                       <div key={r.type} className="w-5 h-5 flex items-center justify-center bg-white rounded-full shadow-[0_0_0_1px_#fff] relative" style={{ zIndex: 10 - i }}>
@@ -156,7 +156,6 @@ export function PostInteractions({
                     ))}
                   </div>
                   <span className="text-[13px] text-gray-500 hover:underline">{likes}</span>
-                </button>
               </DialogTrigger>
               <DialogContent className="max-w-md max-h-[80vh] overflow-hidden flex flex-col p-0 border-0 sm:border">
                 <DialogHeader className="p-4 border-b">
