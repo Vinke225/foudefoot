@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { MessageCircle, Share2 } from "lucide-react";
 import { toggleLikePost } from "@/actions/social";
 
@@ -9,6 +9,10 @@ const REACTIONS = [
   { type: 'football', icon: '⚽️', label: 'Top' },
   { type: 'fire', icon: '🔥', label: 'Feu' },
   { type: 'shock', icon: '🤯', label: 'Wow' },
+  { type: 'laugh', icon: '😂', label: 'Haha' },
+  { type: 'sad', icon: '😢', label: 'Triste' },
+  { type: 'angry', icon: '😡', label: 'Grrr' },
+  { type: 'goat', icon: '🐐', label: 'GOAT' },
   { type: 'card', icon: '🟥', label: 'Faute' },
 ];
 
@@ -35,6 +39,8 @@ export function PostInteractions({
   const [isPending, setIsPending] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [localCommentsCount, setLocalCommentsCount] = useState(commentsCount);
+  const [showReactions, setShowReactions] = useState(false);
+  const pressTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setLikes(initialLikes);
@@ -79,17 +85,48 @@ export function PostInteractions({
     setIsPending(false);
   };
 
+  const startPress = () => {
+    pressTimer.current = setTimeout(() => {
+      setShowReactions(true);
+    }, 400);
+  };
+
+  const cancelPress = () => {
+    if (pressTimer.current) clearTimeout(pressTimer.current);
+  };
+
+  const handleLikeClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    cancelPress();
+    if (showReactions) {
+      setShowReactions(false);
+      return;
+    }
+    handleReaction(liked ? reactionType : 'like');
+  };
+
   const currentReaction = REACTIONS.find(r => r.type === reactionType) || REACTIONS[0];
 
   return (
     <div className="flex flex-col w-full">
+      {showReactions && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setShowReactions(false)} 
+          onTouchStart={() => setShowReactions(false)}
+        />
+      )}
       <div className="flex items-center gap-10 text-gray-500 pt-1 relative">
         <div className="group relative">
-          <div className="absolute bottom-full left-0 mb-2 hidden group-hover:flex bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-[30px] px-3 py-2 gap-2 border border-gray-100 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <div className={`absolute bottom-full left-0 mb-2 ${showReactions ? 'flex' : 'hidden md:group-hover:flex'} bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-[30px] px-3 py-2 gap-2 border border-gray-100 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200`}>
             {REACTIONS.map((reaction) => (
               <button
                 key={reaction.type}
-                onClick={() => handleReaction(reaction.type)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleReaction(reaction.type);
+                  setShowReactions(false);
+                }}
                 className="text-2xl hover:scale-150 hover:-translate-y-2 transition-all duration-300 origin-bottom flex flex-col items-center group/emoji"
               >
                 <span className="relative">
@@ -103,8 +140,15 @@ export function PostInteractions({
           </div>
 
           <button 
-            onClick={() => handleReaction('like')} 
-            className={`flex items-center gap-2.5 transition-colors p-1 -ml-1 rounded-lg ${liked ? 'text-primary' : 'hover:bg-gray-50 hover:text-primary'}`}
+            onPointerDown={startPress}
+            onPointerUp={cancelPress}
+            onPointerLeave={cancelPress}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              setShowReactions(true);
+            }}
+            onClick={handleLikeClick} 
+            className={`flex items-center gap-2.5 transition-colors p-1 -ml-1 rounded-lg select-none touch-none ${liked ? 'text-primary' : 'hover:bg-gray-50 hover:text-primary'}`}
           >
             {liked ? (
               <span className="text-xl animate-in zoom-in duration-300">{currentReaction.icon}</span>
