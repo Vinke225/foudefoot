@@ -37,6 +37,18 @@ export function PostInteractions({
   const [localCommentsCount, setLocalCommentsCount] = useState(commentsCount);
 
   useEffect(() => {
+    setLikes(initialLikes);
+  }, [initialLikes]);
+
+  useEffect(() => {
+    setLiked(hasLiked);
+  }, [hasLiked]);
+
+  useEffect(() => {
+    setReactionType(initialReactionType || 'like');
+  }, [initialReactionType]);
+
+  useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLocalCommentsCount(commentsCount);
   }, [commentsCount]);
