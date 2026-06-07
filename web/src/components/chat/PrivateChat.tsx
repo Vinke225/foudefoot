@@ -64,7 +64,8 @@ export function PrivateChat({ conversationId, otherUser, currentUser }: { conver
       .on('postgres_changes', {
         event: 'INSERT',
         schema: 'public',
-        table: 'private_messages'
+        table: 'private_messages',
+        filter: `conversation_id=eq.${conversationId}`
       }, (payload) => {
         if (payload.new.conversation_id !== conversationId) return;
 
@@ -87,7 +88,8 @@ export function PrivateChat({ conversationId, otherUser, currentUser }: { conver
       .on('postgres_changes', {
         event: 'UPDATE',
         schema: 'public',
-        table: 'private_messages'
+        table: 'private_messages',
+        filter: `conversation_id=eq.${conversationId}`
       }, (payload) => {
         if (payload.new.conversation_id !== conversationId) return;
         setMessages((prev) => prev.map(m => m.id === payload.new.id ? payload.new as Message : m));
