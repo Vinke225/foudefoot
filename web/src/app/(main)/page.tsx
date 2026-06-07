@@ -7,6 +7,7 @@ import Image from "next/image";
 import { createClient } from "@/utils/supabase/server";
 import { PostInteractions } from "@/components/social/PostInteractions";
 import { CreatePost } from "@/components/social/CreatePost";
+import { PostImage } from "@/components/social/PostImage";
 import { getMatchSlug } from "@/utils/match";
 
 export const revalidate = 0; // Disable caching for realtime feel
@@ -174,15 +175,7 @@ export default async function Home() {
                   <p className="text-[15px] mb-3 leading-relaxed text-gray-800">{post.caption}</p>
                   
                   {post.media_url && (
-                    <div className="relative rounded-[20px] overflow-hidden mb-4 aspect-video w-full border border-gray-100 bg-gray-50">
-                      <Image 
-                        src={post.media_url}
-                        alt="Post media"
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
-                    </div>
+                    <PostImage mediaUrl={post.media_url} />
                   )}
 
                   <PostInteractions 

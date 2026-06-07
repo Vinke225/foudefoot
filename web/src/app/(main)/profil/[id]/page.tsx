@@ -2,7 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FollowButton } from "@/components/profile/FollowButton";
 import { PostInteractions } from "@/components/social/PostInteractions";
-import Image from "next/image";
+import { PostImage } from "@/components/social/PostImage";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -159,15 +159,7 @@ export default async function PublicProfilePage(props: { params: Promise<{ id: s
                   <p className="text-[15px] mb-3 leading-relaxed text-gray-800">{post.caption}</p>
                   
                   {post.media_url && (
-                    <div className="relative rounded-[20px] overflow-hidden mb-4 aspect-video w-full border border-gray-100 bg-gray-50">
-                      <Image 
-                        src={post.media_url}
-                        alt="Post media"
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
-                    </div>
+                    <PostImage mediaUrl={post.media_url} />
                   )}
 
                   <PostInteractions 
