@@ -1,3 +1,4 @@
+// cspell:disable
 "use client";
 
 import { useEffect, useState, useRef } from "react";
@@ -284,7 +285,6 @@ export function PrivateChat({ conversationId, otherUser, currentUser }: { conver
                     {isMe && (
                       <div className="relative opacity-0 group-hover/msg:opacity-100 transition-opacity">
                         <MessageOptions 
-                          msg={msg} 
                           onEdit={() => {
                             setEditingMessageId(msg.id);
                             setEditMessageContent(msg.message || "");
@@ -429,7 +429,7 @@ export function PrivateChat({ conversationId, otherUser, currentUser }: { conver
   );
 }
 
-function MessageOptions({ msg, onEdit, onDelete }: { msg: Message, onEdit: () => void, onDelete: () => void }) {
+function MessageOptions({ onEdit, onDelete }: { onEdit: () => void, onDelete: () => void }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="relative">
