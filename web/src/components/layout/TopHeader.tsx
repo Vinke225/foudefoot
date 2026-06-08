@@ -2,6 +2,7 @@
 
 import { Search, Bell, SlidersHorizontal, Settings } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,11 @@ export function TopHeader({ profile }: { profile: { avatar?: string | null, user
     <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-md border-b border-border/40 px-8 py-3 flex items-center justify-between">
       {/* Tabs - Aligned with Center Column */}
       <div className="flex items-center justify-between lg:w-175 pr-8">
+        {/* Mobile Logo */}
+        <Link href="/" className="lg:hidden relative w-24 h-8 shrink-0">
+          <Image src="/logo.png" alt="Fou de Foot" fill className="object-contain object-left" priority />
+        </Link>
+
         {/* Onglets du feed social masqués temporairement */}
         <div className="hidden items-center gap-4 lg:gap-8 overflow-x-auto hide-scrollbar">
           <button className="pb-3 border-b-[3px] border-primary font-bold text-[15px] text-black pt-3 shrink-0">Pour toi</button>

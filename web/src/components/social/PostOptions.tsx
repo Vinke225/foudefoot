@@ -24,7 +24,10 @@ export function PostOptions({ post, currentUserId }: { post: { id: string, capti
 
   const handleDelete = async () => {
     if (confirm("Êtes-vous sûr de vouloir supprimer ce post ?")) {
-      await deletePost(post.id);
+      const res = await deletePost(post.id);
+      if (res && res.error) {
+        alert(res.error);
+      }
     }
     setShowMenu(false);
   };

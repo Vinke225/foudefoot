@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Home, Trophy, Bell, MessageSquare, User, Settings, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,15 +27,9 @@ export function LeftSidebar({ profile }: { profile: { avatar?: string | null, us
       
       {/* Logo */}
       <div className="flex items-end gap-1 mb-12 pl-2">
-        <div className="flex flex-col">
-          <span className="font-black text-[28px] tracking-tighter italic leading-[0.9] text-black">
-            FOU DE
-          </span>
-          <span className="font-black text-[28px] tracking-tighter italic leading-[0.9] text-primary flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-black"><circle cx="12" cy="12" r="10"/><path d="M12 12l3.5-2m-3.5 2l-3.5-2m3.5 2v4m-5.5-1l2 2m7 0l-2-2m-1-6l2-2m-7 0l-2 2"/></svg>
-            FOOT
-          </span>
-        </div>
+        <Link href="/" className="relative w-36 h-12 block">
+          <Image src="/logo.png" alt="Fou de Foot" fill className="object-contain object-left" priority />
+        </Link>
       </div>
 
       {/* Navigation */}
