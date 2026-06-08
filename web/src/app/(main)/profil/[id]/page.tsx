@@ -4,7 +4,6 @@ import { FollowButton } from "@/components/profile/FollowButton";
 import { PostInteractions } from "@/components/social/PostInteractions";
 import { PostImage } from "@/components/social/PostImage";
 import { PostOptions } from "@/components/social/PostOptions";
-import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const revalidate = 0;

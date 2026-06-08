@@ -312,8 +312,9 @@ export function PrivateChat({ conversationId, otherUser, currentUser }: { conver
                       <p className="text-[15px] leading-snug whitespace-pre-wrap">{msg.message}</p>
                     )}
                   </div>
+                </div>
                   
-                  <div className="flex items-center gap-1 mt-1 text-[11px] text-gray-400 font-medium px-1">
+                <div className="flex items-center gap-1 mt-1 text-[11px] text-gray-400 font-medium px-1">
                     <span>{formatDistanceToNow(new Date(msg.created_at), { addSuffix: false, locale: fr })}</span>
                     {isMe && (
                       <span className={msg.is_read ? 'text-blue-500' : 'text-gray-300'}>
@@ -415,7 +416,7 @@ export function PrivateChat({ conversationId, otherUser, currentUser }: { conver
             <Textarea
               value={editMessageContent}
               onChange={(e) => setEditMessageContent(e.target.value)}
-              className="min-h-[100px] resize-none"
+              className="min-h-25 resize-none"
             />
             <div className="flex justify-end gap-3">
               <Button variant="outline" onClick={() => setShowEditMessageModal(false)}>Annuler</Button>

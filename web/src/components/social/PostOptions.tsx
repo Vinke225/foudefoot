@@ -88,7 +88,7 @@ export function PostOptions({ post, currentUserId }: { post: { id: string, capti
               value={editContent}
               onChange={(e) => setEditContent(e.target.value)}
               placeholder="Que voulez-vous dire ?"
-              className="min-h-[120px] resize-none text-[15px] focus-visible:ring-primary/20"
+              className="min-h-30 resize-none text-[15px] focus-visible:ring-primary/20"
               disabled={isPending}
             />
             <div className="flex justify-end gap-3">
