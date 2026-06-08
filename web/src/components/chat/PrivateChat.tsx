@@ -4,7 +4,9 @@ import { useEffect, useState, useRef } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Smile, Image as ImageIcon, X } from "lucide-react";
+import { Send, Smile, Image as ImageIcon, X, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 import { createClient } from "@/utils/supabase/client";
 import dynamic from "next/dynamic";
 import { formatDistanceToNow } from "date-fns";
@@ -30,6 +32,10 @@ export function PrivateChat({ conversationId, otherUser, currentUser }: { conver
   const [mediaPreview, setMediaPreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  
+  const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
+  const [editMessageContent, setEditMessageContent] = useState("");
+  const [showEditMessageModal, setShowEditMessageModal] = useState(false);
   
   const supabase = createClient();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -93,6 +99,14 @@ export function PrivateChat({ conversationId, otherUser, currentUser }: { conver
       }, (payload) => {
         if (payload.new.conversation_id !== conversationId) return;
         setMessages((prev) => prev.map(m => m.id === payload.new.id ? payload.new as Message : m));
+      })
+      .on('postgres_changes', {
+        event: 'DELETE',
+        schema: 'public',
+        table: 'private_messages',
+        filter: `conversation_id=eq.${conversationId}`
+      }, (payload) => {
+        setMessages((prev) => prev.filter(m => m.id !== payload.old.id));
       })
       .subscribe();
 
@@ -194,6 +208,21 @@ export function PrivateChat({ conversationId, otherUser, currentUser }: { conver
     setIsUploading(false);
   };
 
+  const handleDeleteMessage = async (msgId: string) => {
+    if (confirm("Voulez-vous vraiment supprimer ce message ?")) {
+      await supabase.from('private_messages').delete().eq('id', msgId).eq('sender_id', currentUser.id);
+      // Local state is updated via postgres_changes
+    }
+  };
+
+  const handleEditMessageSubmit = async () => {
+    if (!editingMessageId || !editMessageContent.trim()) return;
+    await supabase.from('private_messages').update({ message: editMessageContent.trim() }).eq('id', editingMessageId).eq('sender_id', currentUser.id);
+    setShowEditMessageModal(false);
+    setEditingMessageId(null);
+    setEditMessageContent("");
+  };
+
   return (
     <>
       {selectedImage && (
@@ -250,12 +279,26 @@ export function PrivateChat({ conversationId, otherUser, currentUser }: { conver
                   </div>
                 )}
 
-                <div className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} max-w-[75%]`}>
-                  <div className={`p-3 relative ${
-                    isMe 
-                      ? 'bg-primary text-white rounded-2xl rounded-tr-sm shadow-[0_4px_12px_rgba(30,143,69,0.2)]' 
-                      : 'bg-gray-100 text-gray-900 rounded-2xl rounded-tl-sm border border-gray-200/50'
-                  }`}>
+                <div className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} max-w-[75%] group/msg`}>
+                  <div className="flex items-center gap-2 w-full justify-end">
+                    {isMe && (
+                      <div className="relative opacity-0 group-hover/msg:opacity-100 transition-opacity">
+                        <MessageOptions 
+                          msg={msg} 
+                          onEdit={() => {
+                            setEditingMessageId(msg.id);
+                            setEditMessageContent(msg.message || "");
+                            setShowEditMessageModal(true);
+                          }} 
+                          onDelete={() => handleDeleteMessage(msg.id)} 
+                        />
+                      </div>
+                    )}
+                    <div className={`p-3 relative ${
+                      isMe 
+                        ? 'bg-primary text-white rounded-2xl rounded-tr-sm shadow-[0_4px_12px_rgba(30,143,69,0.2)]' 
+                        : 'bg-gray-100 text-gray-900 rounded-2xl rounded-tl-sm border border-gray-200/50'
+                    }`}>
                     {msg.media_url && (
                       <div 
                         className="mb-2 rounded-xl overflow-hidden cursor-pointer hover:opacity-95 transition-opacity"
@@ -362,6 +405,49 @@ export function PrivateChat({ conversationId, otherUser, currentUser }: { conver
           </Button>
         </form>
       </div>
+
+      <Dialog open={showEditMessageModal} onOpenChange={setShowEditMessageModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Modifier le message</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 pt-4">
+            <Textarea
+              value={editMessageContent}
+              onChange={(e) => setEditMessageContent(e.target.value)}
+              className="min-h-[100px] resize-none"
+            />
+            <div className="flex justify-end gap-3">
+              <Button variant="outline" onClick={() => setShowEditMessageModal(false)}>Annuler</Button>
+              <Button onClick={handleEditMessageSubmit} disabled={!editMessageContent.trim()} className="bg-primary text-white">Enregistrer</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
+  );
+}
+
+function MessageOptions({ msg, onEdit, onDelete }: { msg: Message, onEdit: () => void, onDelete: () => void }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative">
+      <button onClick={() => setOpen(!open)} className="p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors">
+        <MoreHorizontal className="w-4 h-4" />
+      </button>
+      {open && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
+          <div className="absolute right-0 bottom-full mb-1 w-36 bg-white rounded-xl shadow-lg border p-1 z-50 animate-in fade-in zoom-in duration-200">
+             <button onClick={() => { setOpen(false); onEdit(); }} className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 rounded-lg flex items-center gap-2">
+               <Pencil className="w-4 h-4" /> Modifier
+             </button>
+             <button onClick={() => { setOpen(false); onDelete(); }} className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-2">
+               <Trash2 className="w-4 h-4" /> Supprimer
+             </button>
+          </div>
+        </>
+      )}
+    </div>
   );
 }

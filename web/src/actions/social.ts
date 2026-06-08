@@ -230,3 +230,58 @@ export async function toggleFollow(targetUserId: string) {
     return { error: "Erreur inattendue" };
   }
 }
+
+export async function deletePost(postId: string) {
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) return { error: "Non connecté" };
+
+    const { error } = await supabase
+      .from('posts')
+      .delete()
+      .eq('id', postId)
+      .eq('user_id', user.id);
+
+    if (error) {
+      console.error("Error deleting post:", error);
+      return { error: "Erreur lors de la suppression" };
+    }
+
+    revalidatePath("/");
+    revalidatePath(`/profil/${user.id}`);
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { error: "Erreur inattendue" };
+  }
+}
+
+export async function editPost(postId: string, content: string) {
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) return { error: "Non connecté" };
+    if (!content || content.trim() === "") return { error: "Contenu vide" };
+
+    const { error } = await supabase
+      .from('posts')
+      .update({ caption: content.trim() })
+      .eq('id', postId)
+      .eq('user_id', user.id);
+
+    if (error) {
+      console.error("Error editing post:", error);
+      return { error: "Erreur lors de la modification" };
+    }
+
+    revalidatePath("/");
+    revalidatePath(`/profil/${user.id}`);
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { error: "Erreur inattendue" };
+  }
+}

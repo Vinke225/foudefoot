@@ -58,9 +58,7 @@ export default function CompetitionsPage() {
   return (
     <div className="flex flex-col h-full pb-10">
       <div className="flex items-center gap-8 border-b border-border/40 px-6 pt-2 mb-6">
-        <button className="pb-3 border-b-[3px] border-transparent text-muted-foreground font-semibold text-[15px] hover:text-black transition-colors">International</button>
-        <button className="pb-3 border-b-[3px] border-primary font-bold text-[15px] text-black">Clubs</button>
-        <button className="pb-3 border-b-[3px] border-transparent text-muted-foreground font-semibold text-[15px] hover:text-black transition-colors">Favoris</button>
+        <button className="pb-3 border-b-[3px] border-primary font-bold text-[15px] text-black cursor-default">Clubs/Pays</button>
       </div>
 
       <ScrollArea className="flex-1">

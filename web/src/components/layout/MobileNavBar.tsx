@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Trophy, PlusSquare, Bell, User } from "lucide-react";
+import { Home, Trophy, PlusSquare, Bell, User, MessageSquare } from "lucide-react";
 import { useRealtime } from "@/components/providers/RealtimeProvider";
 import { CreatePostModal } from "@/components/social/CreatePostModal";
 import { cn } from "@/lib/utils";
@@ -13,14 +13,16 @@ export function MobileNavBar() {
 
   const navItems = [
     { icon: Home, label: "Accueil", href: "/" },
-    { icon: Trophy, label: "Matchs", href: "/matchs" },
+    { icon: Trophy, label: "Coupes", href: "/competitions" },
+    { icon: ({ strokeWidth, className }: { strokeWidth?: number, className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth || 2} strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 3v18"/><path d="M8 8h8v8H8z"/></svg>, label: "Matchs", href: "/matchs" },
     { icon: PlusSquare, label: "Créer", href: "#", isAction: true },
+    { icon: MessageSquare, label: "Chat", href: "/messages" },
     { icon: Bell, label: "Notifs", href: "/notifications" },
     { icon: User, label: "Profil", href: "/profil" },
   ];
 
   return (
-    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-t border-gray-200 pb-safe pt-2 px-6 flex items-center justify-between shadow-[0_-4px_10px_rgba(0,0,0,0.02)] transition-all duration-300">
+    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-t border-gray-200 pb-safe pt-2 px-2 flex items-center justify-between shadow-[0_-4px_10px_rgba(0,0,0,0.02)] transition-all duration-300">
       {navItems.map((item) => {
         const isActive = pathname === item.href && !item.isAction;
         const Icon = item.icon;

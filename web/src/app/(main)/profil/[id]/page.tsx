@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FollowButton } from "@/components/profile/FollowButton";
 import { PostInteractions } from "@/components/social/PostInteractions";
 import { PostImage } from "@/components/social/PostImage";
+import { PostOptions } from "@/components/social/PostOptions";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -150,9 +151,7 @@ export default async function PublicProfilePage(props: { params: Promise<{ id: s
                       </div>
                     </div>
                   </div>
-                  <Button variant="ghost" size="icon" className="text-gray-400 hover:bg-gray-50 h-8 w-8">
-                    <MoreHorizontal className="w-5 h-5" />
-                  </Button>
+                  <PostOptions post={{ id: post.id, caption: post.caption, user_id: post.user_id }} currentUserId={user?.id} />
                 </div>
                 
                 <div className="mt-4">

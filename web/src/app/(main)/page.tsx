@@ -1,12 +1,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { MoreHorizontal } from "lucide-react";
+import { PlusSquare, Settings } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/server";
 import { PostInteractions } from "@/components/social/PostInteractions";
 import { CreatePost } from "@/components/social/CreatePost";
+import { PostOptions } from "@/components/social/PostOptions";
 import { PostImage } from "@/components/social/PostImage";
 import { getMatchSlug } from "@/utils/match";
 
@@ -166,9 +167,7 @@ export default async function Home() {
                       </div>
                     </div>
                   </div>
-                  <Button variant="ghost" size="icon" className="text-gray-400 hover:bg-gray-50 h-8 w-8">
-                    <MoreHorizontal className="w-5 h-5" />
-                  </Button>
+                  <PostOptions post={{ id: post.id, caption: post.caption, user_id: post.user_id }} currentUserId={user?.id} />
                 </div>
                 
                 <div className="mt-4">
