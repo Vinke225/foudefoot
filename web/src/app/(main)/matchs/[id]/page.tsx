@@ -33,14 +33,13 @@ export default async function MatchDetailPage(props: { params: Promise<{ id: str
   let match = null;
   const idParam = params.id;
   
-  // Si l'URL utilise un slug (ex: france-vs-espagne-12345)
-  if (!idParam.includes('-') || idParam.split('-').length > 5) {
-    const parts = idParam.split('-');
-    const apiId = parts[parts.length - 1];
-    if (/^\d+$/.test(apiId)) {
-      const { data } = await supabase.from('matches').select('*').eq('api_id', apiId).single();
-      match = data;
-    }
+  // Si l'URL utilise un slug (ex: france-vs-espagne-12345) ou un API ID
+  const parts = idParam.split('-');
+  const possibleApiId = parts[parts.length - 1];
+  
+  if (/^\d+$/.test(possibleApiId)) {
+    const { data } = await supabase.from('matches').select('*').eq('api_id', possibleApiId).single();
+    match = data;
   }
   
   // Fallback si c'est un UUID classique ou si la recherche par API ID a échoué
