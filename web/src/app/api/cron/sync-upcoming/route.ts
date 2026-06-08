@@ -46,7 +46,7 @@ export async function GET() {
 
     const fixtures = Array.isArray(data) ? data : [];
 
-    const importantLeagues = ["28", "152", "302", "207", "175", "168"];
+    const importantLeagues = ["28", "152", "302", "207", "175", "168", "356"];
     
     for (const match of fixtures) {
       if (!match.match_id) continue;

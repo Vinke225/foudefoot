@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UserOnlineAvatar } from "@/components/user/UserOnlineAvatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Smile, Image as ImageIcon, X, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
@@ -251,10 +251,12 @@ export function PrivateChat({ conversationId, otherUser, currentUser }: { conver
       <ScrollArea className="flex-1 px-4 py-4 w-full h-[calc(100vh-140px)] hide-scrollbar">
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-center mt-20">
-            <Avatar className="w-20 h-20 mb-4 border-4 border-gray-50 shadow-sm">
-              <AvatarImage src={otherUser.avatar || undefined} className="object-cover" />
-              <AvatarFallback className="text-2xl">{otherUser.username?.[0] || "?"}</AvatarFallback>
-            </Avatar>
+            <UserOnlineAvatar
+              userId={otherUser.id}
+              avatarUrl={otherUser.avatar}
+              username={otherUser.username}
+              avatarClassName="w-20 h-20 mb-4 border-4 border-gray-50 shadow-sm"
+            />
             <h3 className="font-bold text-lg text-gray-900 mb-1">{otherUser.username}</h3>
             <p className="text-gray-500 text-sm mb-6">Commencez une discussion avec {otherUser.username}</p>
           </div>
@@ -270,10 +272,12 @@ export function PrivateChat({ conversationId, otherUser, currentUser }: { conver
                 {!isMe && (
                   <div className="w-8 shrink-0 flex items-end">
                     {showAvatar ? (
-                      <Avatar className="w-8 h-8 border border-gray-100 shadow-sm">
-                        <AvatarImage src={otherUser.avatar || undefined} className="object-cover" />
-                        <AvatarFallback className="text-[10px]">{otherUser.username?.[0] || "?"}</AvatarFallback>
-                      </Avatar>
+                      <UserOnlineAvatar
+                        userId={otherUser.id}
+                        avatarUrl={otherUser.avatar}
+                        username={otherUser.username}
+                        avatarClassName="w-8 h-8 border border-gray-100 shadow-sm"
+                      />
                     ) : (
                       <div className="w-8 h-8" />
                     )}

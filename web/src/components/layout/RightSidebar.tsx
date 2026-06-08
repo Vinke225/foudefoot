@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { PlayCircle, TrendingUp, ChevronRight, MessageSquare } from "lucide-react";
 import Link from "next/link";
@@ -6,6 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 import { startConversation } from "@/actions/messages";
 import { redirect } from "next/navigation";
 import { getMatchSlug } from "@/utils/match";
+import { UserOnlineAvatar } from "@/components/user/UserOnlineAvatar";
 
 export async function RightSidebar() {
   const supabase = await createClient();
@@ -118,10 +118,11 @@ export async function RightSidebar() {
             suggestedUsers.map((user) => (
               <div key={user.id} className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <Avatar className="w-10 h-10 border border-gray-100">
-                    <AvatarImage src={user.avatar || undefined} className="object-cover" />
-                    <AvatarFallback>{user.username?.[0] || "?"}</AvatarFallback>
-                  </Avatar>
+                  <UserOnlineAvatar 
+                    userId={user.id} 
+                    avatarUrl={user.avatar} 
+                    username={user.username} 
+                  />
                   <div className="flex flex-col">
                     <span className="text-[13px] font-bold text-black flex items-center gap-1.5 hover:underline cursor-pointer">
                       {user.username}

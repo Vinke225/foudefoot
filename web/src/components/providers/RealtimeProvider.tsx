@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 type RealtimeContextType = {
   unreadCount: number;
   setUnreadCount: React.Dispatch<React.SetStateAction<number>>;
+  onlineUsers: string[];
 };
 
 const RealtimeContext = createContext<RealtimeContextType | undefined>(undefined);
@@ -21,6 +22,7 @@ export function RealtimeProvider({
   userId?: string;
 }) {
   const [unreadCount, setUnreadCount] = useState(initialUnreadCount);
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
   const supabase = createClient();
   const router = useRouter();
 
@@ -30,6 +32,7 @@ export function RealtimeProvider({
     // Reset unreadCount to initialUnreadCount whenever it changes (e.g. Server Component refresh)
     setUnreadCount(initialUnreadCount);
 
+    // 1. Canal Notifications et Base de données
     const channel = supabase
       .channel('realtime_notifications')
       .on(
@@ -81,13 +84,34 @@ export function RealtimeProvider({
       )
       .subscribe();
 
+    // 2. Canal Presence (Statut en Ligne)
+    const presenceChannel = supabase.channel('online-users');
+
+    presenceChannel
+      .on('presence', { event: 'sync' }, () => {
+        const newState = presenceChannel.presenceState();
+        // newState a pour format: { "id_aleatoire": [{ user_id: "uuid" }] }
+        const onlineIds = Object.values(newState)
+          .flatMap((presenceArray) => presenceArray.map((p: any) => p.user_id))
+          .filter(Boolean);
+        
+        // Supprimer les doublons éventuels
+        setOnlineUsers(Array.from(new Set(onlineIds)));
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await presenceChannel.track({ user_id: userId });
+        }
+      });
+
     return () => {
       supabase.removeChannel(channel);
+      supabase.removeChannel(presenceChannel);
     };
-  }, [userId, initialUnreadCount, supabase]);
+  }, [userId, initialUnreadCount, supabase, router]);
 
   return (
-    <RealtimeContext.Provider value={{ unreadCount, setUnreadCount }}>
+    <RealtimeContext.Provider value={{ unreadCount, setUnreadCount, onlineUsers }}>
       {children}
     </RealtimeContext.Provider>
   );

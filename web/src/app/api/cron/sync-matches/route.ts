@@ -63,7 +63,7 @@ export async function GET() {
       statistics?: Array<Record<string, unknown>>;
     }
 
-    const importantLeagues = ["28", "152", "302", "207", "175", "168"];
+    const importantLeagues = ["28", "152", "302", "207", "175", "168", "356"];
     
     const matchesToInsert = fixtures
       .filter((match: ApiFootballMatch) => match.match_id && match.match_hometeam_name && match.match_awayteam_name)

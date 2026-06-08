@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hors Ligne - Fou de Foot</title>
+  <meta name="theme-color" content="#10b981">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f9fafb;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: #111827;
+      text-align: center;
+      padding: 20px;
+    }
+    .icon {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 24px;
+      color: #9ca3af;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    p {
+      font-size: 16px;
+      color: #6b7280;
+      max-width: 400px;
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+    button {
+      background-color: #10b981;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    button:hover {
+      background-color: #059669;
+    }
+    button:active {
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body>
+  <!-- Offline SVG Icon -->
+  <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
+  </svg>
+
+  <h1>Vous êtes hors ligne</h1>
+  <p>Il semble que vous ayez perdu votre connexion internet ou que le serveur mette un peu de temps à répondre. Vérifiez votre connexion et réessayez.</p>
+  
+  <button onclick="window.location.reload()">
+    Actualiser la page
+  </button>
+</body>
+</html>
