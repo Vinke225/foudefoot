@@ -53,9 +53,8 @@ export default async function ConversationPage(props: { params: Promise<{ id: st
     .eq('is_read', false);
 
   return (
-    <div className="flex flex-col h-full bg-white relative">
-      {/* Header */}
-      <div className="px-4 py-3 bg-white/80 backdrop-blur-md sticky top-0 z-20 border-b border-gray-100 flex items-center gap-3">
+    <div className="flex flex-col h-full bg-transparent relative">
+      <div className="px-4 py-3 bg-white/80 backdrop-blur-xl sticky top-0 z-20 border-b border-gray-100 flex items-center gap-3">
         <Link href="/messages">
           <Button variant="ghost" size="icon" className="rounded-full hover:bg-gray-100 shrink-0">
             <ArrowLeft className="w-5 h-5 text-gray-800" />

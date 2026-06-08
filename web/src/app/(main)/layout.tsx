@@ -34,7 +34,7 @@ export default async function MainLayout({
 
   return (
     <RealtimeProvider initialUnreadCount={unreadCount} userId={user?.id}>
-      <div className="flex justify-center w-full min-h-screen bg-white overflow-x-hidden pb-20 lg:pb-0">
+      <div className="flex justify-center w-full min-h-screen bg-transparent overflow-x-hidden pb-20 lg:pb-0">
         
         {/* Left Sidebar - Hidden on small screens, fixed or flex on large */}
         <div className="hidden lg:flex shrink-0">

@@ -38,7 +38,7 @@ export default function RootLayout({
       <head>
         <link rel="apple-touch-icon" href="/icon-192x192.png" />
       </head>
-      <body className="min-h-full bg-white text-foreground font-sans">
+      <body className="min-h-full bg-background text-foreground font-sans">
         {children}
         <Script id="register-sw" strategy="afterInteractive">
           {`

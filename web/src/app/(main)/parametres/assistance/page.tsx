@@ -1,6 +1,6 @@
 export default function AssistancePage() {
   return (
-    <div className="flex flex-col h-full bg-white p-6">
+    <div className="flex flex-col h-full bg-transparent p-6">
       <h1 className="text-2xl font-black text-black tracking-tight mb-6">Centre d&apos;aide</h1>
       <div className="p-6 rounded-3xl bg-gray-50 border border-gray-100 flex flex-col items-center justify-center text-center">
         <span className="text-4xl mb-4">🛟</span>

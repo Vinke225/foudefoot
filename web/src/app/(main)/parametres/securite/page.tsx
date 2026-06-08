@@ -6,7 +6,7 @@ import { ShieldCheck, KeyRound } from "lucide-react";
 
 export default function SecurityPage() {
   return (
-    <div className="flex flex-col h-full bg-white p-6 pb-20">
+    <div className="flex flex-col h-full bg-transparent p-6 pb-20">
       <h1 className="text-2xl font-black text-black tracking-tight mb-8">Mot de passe et sécurité</h1>
       
       <div className="max-w-xl space-y-8">

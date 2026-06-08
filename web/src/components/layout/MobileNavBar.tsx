@@ -22,7 +22,7 @@ export function MobileNavBar() {
   ];
 
   return (
-    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-t border-gray-200 pb-safe pt-2 px-2 flex items-center justify-between shadow-[0_-4px_10px_rgba(0,0,0,0.02)] transition-all duration-300">
+    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-gray-200 pb-safe pt-2 px-2 flex items-center justify-between shadow-[0_-4px_10px_rgba(0,0,0,0.02)] transition-all duration-300">
       {navItems.map((item) => {
         const isActive = pathname === item.href && !item.isAction;
         const Icon = item.icon;

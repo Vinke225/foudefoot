@@ -23,7 +23,7 @@ export function LeftSidebar({ profile }: { profile: { avatar?: string | null, us
     { icon: Settings, label: "Paramètres", href: "/parametres" },
   ];
   return (
-    <div className="w-65 h-screen sticky top-0 bg-white pt-8 px-6 pb-6 flex flex-col hide-scrollbar overflow-y-auto shrink-0 border-r border-gray-100">
+    <div className="w-65 h-screen sticky top-0 bg-white/80 backdrop-blur-xl pt-8 px-6 pb-6 flex flex-col hide-scrollbar overflow-y-auto shrink-0 border-r border-gray-100">
       
       {/* Logo */}
       <div className="flex items-end gap-1 mb-12 pl-2">

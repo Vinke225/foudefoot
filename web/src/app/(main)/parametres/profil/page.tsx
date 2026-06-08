@@ -17,8 +17,8 @@ export default async function EditProfilePage() {
     .single();
 
   return (
-    <div className="flex flex-col h-full bg-white">
-      <div className="px-6 py-4 border-b border-gray-100 sticky top-0 bg-white z-10">
+    <div className="flex flex-col h-full bg-transparent">
+      <div className="px-6 py-4 border-b border-gray-100 sticky top-0 bg-white/80 backdrop-blur-xl z-10">
         <h1 className="text-xl font-black text-black">Modifier le profil</h1>
       </div>
 

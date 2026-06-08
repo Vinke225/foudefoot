@@ -32,7 +32,7 @@ export default async function MessagesPage() {
 
   return (
     <div className="flex flex-col h-full bg-gray-50/30">
-      <div className="px-6 pt-6 pb-4 bg-white sticky top-0 z-10 border-b border-gray-100 flex justify-between items-center">
+      <div className="px-6 pt-6 pb-4 bg-white/80 backdrop-blur-xl sticky top-0 z-10 border-b border-gray-100 flex justify-between items-center">
         <h1 className="font-black text-[22px] tracking-tight">Messagerie</h1>
         <div className="p-2 bg-gray-100 rounded-full text-gray-500">
           <MessageSquarePlus className="w-5 h-5" />

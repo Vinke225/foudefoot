@@ -11,7 +11,7 @@ import { useRealtime } from "@/components/providers/RealtimeProvider";
 export function TopHeader({ profile }: { profile: { avatar?: string | null, username?: string } | null }) {
   const { unreadCount } = useRealtime();
   return (
-    <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-md border-b border-border/40 px-8 py-3 flex items-center justify-between">
+    <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-border/40 px-8 py-3 flex items-center justify-between">
       {/* Tabs - Aligned with Center Column */}
       <div className="flex items-center justify-between lg:w-175 pr-8">
         {/* Mobile Logo */}
