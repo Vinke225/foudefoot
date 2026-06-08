@@ -57,6 +57,9 @@ export async function GET() {
       const homeTeam = match.match_hometeam_name;
       const awayTeam = match.match_awayteam_name;
       
+      // Exclure les équipes de jeunes (U19, U20, U21, etc.)
+      if (/\bU\d{2}\b/i.test(homeTeam) || /\bU\d{2}\b/i.test(awayTeam)) continue;
+      
       const homeLogo = match.team_home_badge || null;
       const awayLogo = match.team_away_badge || null;
 

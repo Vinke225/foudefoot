@@ -68,6 +68,11 @@ export async function GET() {
     const matchesToInsert = fixtures
       .filter((match: ApiFootballMatch) => match.match_id && match.match_hometeam_name && match.match_awayteam_name)
       .filter((match: ApiFootballMatch) => importantLeagues.includes(match.league_id?.toString() || ''))
+      .filter((match: ApiFootballMatch) => {
+        // Exclure les équipes de jeunes (U19, U20, U21, etc.)
+        const isYouth = /\bU\d{2}\b/i.test(match.match_hometeam_name) || /\bU\d{2}\b/i.test(match.match_awayteam_name);
+        return !isYouth;
+      })
       .map((match: ApiFootballMatch) => {
         let score = null;
         if (match.match_hometeam_score !== "" && match.match_awayteam_score !== "") {
