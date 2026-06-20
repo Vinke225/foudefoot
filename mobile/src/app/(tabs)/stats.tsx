@@ -30,7 +30,7 @@ export default function StatsScreen() {
     try {
       // Direct call to API-SPORTS for mobile to avoid local IP routing issues
       const league = 1;
-      const season = 2026;
+      const season = 2022;
       const apiUrl = `https://v3.football.api-sports.io/players/${activeTab}?league=${league}&season=${season}`;
       
       const res = await fetch(apiUrl, {

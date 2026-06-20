@@ -35,24 +35,21 @@ export async function GET() {
 
     let allFixtures: any[] = [];
 
-    // Fetch fixtures for each date
-    for (const date of datesToSync) {
-      const url = `https://v3.football.api-sports.io/fixtures?date=${date}`;
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'x-apisports-key': apiKey,
-        }
-      });
-
-      if (!response.ok) {
-        console.error(`Erreur API pour la date ${date}:`, response.statusText);
-        continue;
+    // Fetch fixtures for World Cup 2022 (Free API limitation)
+    const url = `https://v3.football.api-sports.io/fixtures?league=1&season=2022`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'x-apisports-key': apiKey,
       }
+    });
 
+    if (!response.ok) {
+      console.error(`Erreur API:`, response.statusText);
+    } else {
       const data = await response.json();
       if (data.response && Array.isArray(data.response)) {
-        allFixtures = allFixtures.concat(data.response);
+        allFixtures = data.response;
       }
     }
 
@@ -107,6 +104,9 @@ export async function GET() {
       uniqueMatchesMap.set(match.api_id, match);
     }
     const finalMatches = Array.from(uniqueMatchesMap.values());
+
+    // Clean up old matches from other leagues that might have been synced previously
+    await supabase.from('matches').delete().neq('league_name', 'World Cup');
 
     let updatedCount = 0;
     
