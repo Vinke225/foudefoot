@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import * as WebBrowser from 'expo-web-browser';
 import * as Linking from 'expo-linking';
+import { makeRedirectUri } from 'expo-auth-session';
 
 // To support Google OAuth we need to complete the auth session
 WebBrowser.maybeCompleteAuthSession();
@@ -43,7 +44,10 @@ export default function RegisterScreen() {
   async function signInWithGoogle() {
     setLoading(true);
     try {
-      const redirectUrl = Linking.createURL('/(tabs)');
+      const redirectUrl = makeRedirectUri({
+        scheme: 'foudefoot',
+        path: 'auth-callback',
+      });
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -54,8 +58,7 @@ export default function RegisterScreen() {
       if (error) throw error;
 
       if (data.url) {
-        const result = await WebBrowser.openAuthSessionAsync(data.url, redirectUrl);
-        // Auth state is handled automatically via supabase listener
+        await WebBrowser.openAuthSessionAsync(data.url, redirectUrl);
       }
     } catch (error: any) {
       Alert.alert('Erreur Google', error.message);

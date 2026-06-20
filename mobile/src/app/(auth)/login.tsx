@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import * as WebBrowser from 'expo-web-browser';
 import * as Linking from 'expo-linking';
+import { makeRedirectUri } from 'expo-auth-session';
 
 // To support Google OAuth we need to complete the auth session
 WebBrowser.maybeCompleteAuthSession();
@@ -32,7 +33,10 @@ export default function LoginScreen() {
   async function signInWithGoogle() {
     setLoading(true);
     try {
-      const redirectUrl = Linking.createURL('/(tabs)');
+      const redirectUrl = makeRedirectUri({
+        scheme: 'foudefoot',
+        path: 'auth-callback',
+      });
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -43,12 +47,8 @@ export default function LoginScreen() {
       if (error) throw error;
 
       if (data.url) {
-        const result = await WebBrowser.openAuthSessionAsync(data.url, redirectUrl);
-        if (result.type === 'success') {
-          const { url } = result;
-          // Parse URL and create session manually if needed, 
-          // or Supabase will handle it if the URL has the correct scheme
-        }
+        await WebBrowser.openAuthSessionAsync(data.url, redirectUrl);
+        // Supabase picks up the session automatically when the WebBrowser closes and triggers the deep link
       }
     } catch (error: any) {
       Alert.alert('Erreur Google', error.message);
