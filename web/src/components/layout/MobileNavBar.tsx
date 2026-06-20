@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Trophy, PlusSquare, Bell, User, MessageSquare } from "lucide-react";
+import { Home, Trophy, PlusSquare, Bell, User, MessageSquare, Tv } from "lucide-react";
 import { useRealtime } from "@/components/providers/RealtimeProvider";
 import { CreatePostModal } from "@/components/social/CreatePostModal";
 import { cn } from "@/lib/utils";
@@ -16,6 +16,7 @@ export function MobileNavBar() {
     { icon: Trophy, label: "Coupes", href: "/competitions" },
     { icon: ({ strokeWidth, className }: { strokeWidth?: number, className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth || 2} strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 3v18"/><path d="M8 8h8v8H8z"/></svg>, label: "Matchs", href: "/matchs" },
     { icon: PlusSquare, label: "Créer", href: "#", isAction: true },
+    { icon: Tv, label: "Live TV", href: "https://www.aminnasritv.xyz" },
     { icon: MessageSquare, label: "Chat", href: "/messages" },
     { icon: Bell, label: "Notifs", href: "/notifications" },
     { icon: User, label: "Profil", href: "/profil" },
@@ -77,7 +78,7 @@ export function MobileNavBar() {
         }
 
         return (
-          <Link key={item.label} href={item.href}>
+          <Link key={item.label} href={item.href} target={item.href.startsWith("http") ? "_blank" : undefined} rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}>
             {content}
           </Link>
         );

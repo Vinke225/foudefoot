@@ -2,11 +2,11 @@ const { Client } = require('pg');
 const fs = require('fs');
 
 const client = new Client({
-  host: 'db.hydegfcxuoychqkxzytd.supabase.co',
+  host: process.env.DB_HOST || 'db.hydegfcxuoychqkxzytd.supabase.co',
   port: 5432,
   database: 'postgres',
   user: 'postgres',
-  password: 'nRavZk7E0qNIGDEK',
+  password: process.env.DB_PASSWORD,
 });
 
 async function run() {

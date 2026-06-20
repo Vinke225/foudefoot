@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Home, Trophy, Bell, MessageSquare, User, Settings, ChevronRight } from "lucide-react";
+import { Home, Trophy, Bell, MessageSquare, User, Settings, ChevronRight, Tv } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CreatePostModal } from "@/components/social/CreatePostModal";
@@ -17,6 +17,7 @@ export function LeftSidebar({ profile }: { profile: { avatar?: string | null, us
     { icon: Home, label: "Accueil", href: "/" },
     { icon: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 3v18"/><path d="M8 8h8v8H8z"/></svg>, label: "Matchs", href: "/matchs" },
     { icon: Trophy, label: "Compétitions", href: "/competitions" },
+    { icon: Tv, label: "Live TV", href: "https://www.aminnasritv.xyz" },
     { icon: Bell, label: "Notifications", href: "/notifications", badge: unreadCount && unreadCount > 0 ? unreadCount : undefined },
     { icon: MessageSquare, label: "Messages", href: "/messages" },
     { icon: User, label: "Profil", href: "/profil" },
@@ -37,7 +38,7 @@ export function LeftSidebar({ profile }: { profile: { avatar?: string | null, us
         {navItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href));
           return (
-          <Link key={item.label} href={item.href}>
+          <Link key={item.label} href={item.href} target={item.href.startsWith("http") ? "_blank" : undefined} rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}>
             <Button
               variant="ghost"
               className={`w-full justify-start gap-4 text-[15px] font-semibold h-12 rounded-xl transition-all ${

@@ -1,0 +1,65 @@
+                   
+                   
+┌─────────────────┐
+│ 6 Code Findings │
+└─────────────────┘
+               
+    mobile/.env
+   ❯❯❱ generic.secrets.security.detected-jwt-token.detected-jwt-token
+          ❰❰ Blocking ❱❱
+          JWT token detected          
+          Details: https://sg.run/05N5
+                                      
+            2┆ EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIs
+               InJlZiI6Imh5ZGVnZmN4dW95Y2hxa3h6eXRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNDQ0NDIsImV4cCI6MjA
+               5NTkyMDQ0Mn0.gLgpVbgfTFu_77gnwAW13c0yCRbVAMO5a6jFHSz-w_I                                   
+                     
+    web/check_user.js
+   ❯❯❱ generic.secrets.security.detected-jwt-token.detected-jwt-token
+          ❰❰ Blocking ❱❱
+          JWT token detected          
+          Details: https://sg.run/05N5
+                                      
+            5┆ 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5ZGVnZmN4dW95Y2hxa
+               3h6eXRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNDQ0NDIsImV4cCI6MjA5NTkyMDQ0Mn0.gLgpVbgfTFu_77gn
+               wAW13c0yCRbVAMO5a6jFHSz-w_I'                                                               
+                     
+    web/delete_all.ts
+   ❯❯❱ generic.secrets.security.detected-jwt-token.detected-jwt-token
+          ❰❰ Blocking ❱❱
+          JWT token detected          
+          Details: https://sg.run/05N5
+                                      
+            5┆ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6I
+               mh5ZGVnZmN4dW95Y2hxa3h6eXRkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MDM0NDQ0MiwiZXhwIjoy
+               MDk1OTIwNDQyfQ.Ag-7casDqi4XJD7tO7IxtRq2CDracBs_OhnfwGM6vfs';                               
+                                               
+    web/src/components/match/LiveSimulation.tsx
+    ❯❱ javascript.lang.security.audit.incomplete-sanitization.incomplete-sanitization
+          ❰❰ Blocking ❱❱
+          `data.matchElapsed.replace` method will only replace the first occurrence when used with a string
+          argument ("'"). If this method is used for escaping of dangerous data then there is a possibility
+          for a bypass. Try to use sanitization library instead or use a Regex with a global flag.         
+          Details: https://sg.run/1GbQ                                                                     
+                                                                                                           
+          272┆ const minStr = data.matchElapsed.replace("'", "");
+                                           
+    web/src/components/match/MatchStats.tsx
+    ❯❱ javascript.lang.security.audit.incomplete-sanitization.incomplete-sanitization
+          ❰❰ Blocking ❱❱
+          `stat.home.replace` method will only replace the first occurrence when used with a string argument
+          ('%'). If this method is used for escaping of dangerous data then there is a possibility for a    
+          bypass. Try to use sanitization library instead or use a Regex with a global flag.                
+          Details: https://sg.run/1GbQ                                                                      
+                                                                                                            
+           70┆ const homeRaw = stat.home.replace('%', '');
+            ⋮┆----------------------------------------
+    ❯❱ javascript.lang.security.audit.incomplete-sanitization.incomplete-sanitization
+          ❰❰ Blocking ❱❱
+          `stat.away.replace` method will only replace the first occurrence when used with a string argument
+          ('%'). If this method is used for escaping of dangerous data then there is a possibility for a    
+          bypass. Try to use sanitization library instead or use a Regex with a global flag.                
+          Details: https://sg.run/1GbQ                                                                      
+                                                                                                            
+           71┆ const awayRaw = stat.away.replace('%', '');
+
