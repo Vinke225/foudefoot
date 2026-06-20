@@ -22,6 +22,7 @@ interface Server {
 }
 
 export default function LiveTVPage() {
+  const [activeDay, setActiveDay] = useState<'yesterday' | 'today' | 'tomorrow'>('today');
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
   
@@ -31,7 +32,8 @@ export default function LiveTVPage() {
   const [loadingServers, setLoadingServers] = useState(false);
 
   useEffect(() => {
-    fetch('/api/matches')
+    setLoading(true);
+    fetch(`/api/matches?day=${activeDay}`)
       .then(res => res.json())
       .then(data => {
         setMatches(Array.isArray(data) ? data : []);
@@ -41,7 +43,7 @@ export default function LiveTVPage() {
         console.error(err);
         setLoading(false);
       });
-  }, []);
+  }, [activeDay]);
 
   const openMatch = async (match: Match) => {
     setSelectedMatch(match);
@@ -65,13 +67,36 @@ export default function LiveTVPage() {
 
   return (
     <div className="flex flex-col w-full min-h-screen pb-10 mt-6">
-      <div className="mb-6 flex items-center gap-3">
-        <div className="p-3 bg-blue-100 text-blue-600 rounded-xl">
-          <Tv size={24} />
+      <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-blue-100 text-blue-600 rounded-xl">
+            <Tv size={24} />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Live TV</h1>
+            <p className="text-gray-500">Regardez les matchs en direct avec une interface native</p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Live TV</h1>
-          <p className="text-gray-500">Regardez les matchs en direct avec une interface native</p>
+
+        <div className="flex gap-1 bg-white p-1 rounded-xl shadow-sm border border-gray-100">
+          <button 
+            onClick={() => setActiveDay('yesterday')}
+            className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors ${activeDay === 'yesterday' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-50'}`}
+          >
+            Hier
+          </button>
+          <button 
+            onClick={() => setActiveDay('today')}
+            className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors ${activeDay === 'today' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-50'}`}
+          >
+            Aujourd'hui
+          </button>
+          <button 
+            onClick={() => setActiveDay('tomorrow')}
+            className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors ${activeDay === 'tomorrow' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-50'}`}
+          >
+            Demain
+          </button>
         </div>
       </div>
 

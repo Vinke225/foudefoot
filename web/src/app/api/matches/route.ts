@@ -1,9 +1,16 @@
 import { NextResponse } from 'next/server';
 import * as cheerio from 'cheerio';
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const day = searchParams.get('day') || 'today';
+  
+  let targetUrl = 'https://www.aminnasritv.xyz';
+  if (day === 'yesterday') targetUrl = 'https://www.aminnasritv.xyz/p/yesterday-matches.html';
+  if (day === 'tomorrow') targetUrl = 'https://www.aminnasritv.xyz/p/tomorrow-matches.html';
+
   try {
-    const res = await fetch('https://www.aminnasritv.xyz', {
+    const res = await fetch(targetUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
       },

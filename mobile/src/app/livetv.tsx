@@ -15,6 +15,7 @@ interface Match {
 }
 
 export default function LiveTVScreen() {
+  const [activeDay, setActiveDay] = useState<'yesterday' | 'today' | 'tomorrow'>('today');
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
   
@@ -25,12 +26,16 @@ export default function LiveTVScreen() {
 
   useEffect(() => {
     fetchMatches();
-  }, []);
+  }, [activeDay]);
 
   const fetchMatches = async () => {
     setLoading(true);
+    let targetUrl = 'https://www.aminnasritv.xyz';
+    if (activeDay === 'yesterday') targetUrl = 'https://www.aminnasritv.xyz/p/yesterday-matches.html';
+    if (activeDay === 'tomorrow') targetUrl = 'https://www.aminnasritv.xyz/p/tomorrow-matches.html';
+
     try {
-      const res = await fetch('https://www.aminnasritv.xyz');
+      const res = await fetch(targetUrl);
       const html = await res.text();
       
       const parsedMatches: Match[] = [];
@@ -133,6 +138,18 @@ export default function LiveTVScreen() {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Live TV</Text>
         <Text style={styles.headerSubtitle}>Regardez les matchs en direct</Text>
+        
+        <View style={styles.tabsContainer}>
+          <TouchableOpacity onPress={() => setActiveDay('yesterday')} style={[styles.tabButton, activeDay === 'yesterday' && styles.tabButtonActive]}>
+            <Text style={[styles.tabButtonText, activeDay === 'yesterday' && styles.tabButtonTextActive]}>Hier</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setActiveDay('today')} style={[styles.tabButton, activeDay === 'today' && styles.tabButtonActive]}>
+            <Text style={[styles.tabButtonText, activeDay === 'today' && styles.tabButtonTextActive]}>Aujourd'hui</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setActiveDay('tomorrow')} style={[styles.tabButton, activeDay === 'tomorrow' && styles.tabButtonActive]}>
+            <Text style={[styles.tabButtonText, activeDay === 'tomorrow' && styles.tabButtonTextActive]}>Demain</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {loading ? (
@@ -267,6 +284,30 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6b7280',
     marginTop: 4,
+  },
+  tabsContainer: {
+    flexDirection: 'row',
+    marginTop: 16,
+    backgroundColor: '#f3f4f6',
+    borderRadius: 8,
+    padding: 4,
+  },
+  tabButton: {
+    flex: 1,
+    paddingVertical: 8,
+    alignItems: 'center',
+    borderRadius: 6,
+  },
+  tabButtonActive: {
+    backgroundColor: '#2563eb',
+  },
+  tabButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#6b7280',
+  },
+  tabButtonTextActive: {
+    color: '#fff',
   },
   loaderContainer: {
     flex: 1,
