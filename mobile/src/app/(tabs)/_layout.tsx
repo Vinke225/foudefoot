@@ -27,10 +27,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="competitions"
+        name="stats"
         options={{
-          title: 'Coupes',
-          tabBarIcon: ({ color }) => <Ionicons name="trophy" size={24} color={color} />,
+          title: 'Stats',
+          tabBarIcon: ({ color }) => <Ionicons name="bar-chart" size={24} color={color} />,
         }}
       />
       <Tabs.Screen

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Trophy, PlusSquare, Bell, User, MessageSquare, Tv, Calendar } from "lucide-react";
+import { Home, Trophy, PlusSquare, Bell, User, MessageSquare, Tv, Calendar, BarChart3 } from "lucide-react";
 import { useRealtime } from "@/components/providers/RealtimeProvider";
 import { CreatePostModal } from "@/components/social/CreatePostModal";
 import { cn } from "@/lib/utils";
@@ -13,7 +13,7 @@ export function MobileNavBar() {
 
   const navItems = [
     { icon: Home, label: "Accueil", href: "/" },
-    { icon: Trophy, label: "Coupes", href: "/competitions" },
+    { icon: BarChart3, label: "Stats", href: "/statistiques" },
     { icon: Calendar, label: "Matchs", href: "/matchs" },
     { icon: PlusSquare, label: "Créer", href: "#", isAction: true },
     { icon: Tv, label: "Live TV", href: "/livetv" },
