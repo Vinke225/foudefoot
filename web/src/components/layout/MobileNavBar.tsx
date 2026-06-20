@@ -16,7 +16,7 @@ export function MobileNavBar() {
     { icon: Trophy, label: "Coupes", href: "/competitions" },
     { icon: ({ strokeWidth, className }: { strokeWidth?: number, className?: string }) => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth || 2} strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 3v18"/><path d="M8 8h8v8H8z"/></svg>, label: "Matchs", href: "/matchs" },
     { icon: PlusSquare, label: "Créer", href: "#", isAction: true },
-    { icon: Tv, label: "Live TV", href: "https://www.aminnasritv.xyz" },
+    { icon: Tv, label: "Live TV", href: "/livetv" },
     { icon: MessageSquare, label: "Chat", href: "/messages" },
     { icon: Bell, label: "Notifs", href: "/notifications" },
     { icon: User, label: "Profil", href: "/profil" },
