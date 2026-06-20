@@ -106,7 +106,11 @@ export async function GET() {
     const finalMatches = Array.from(uniqueMatchesMap.values());
 
     // Clean up old matches from other leagues that might have been synced previously
-    await supabase.from('matches').delete().neq('league_name', 'World Cup');
+    const { error: deleteError } = await supabase.from('matches').delete().neq('league_name', 'World Cup');
+    if (deleteError) {
+      console.error("Erreur de suppression:", deleteError);
+      return NextResponse.json({ success: false, error: deleteError.message }, { status: 500 });
+    }
 
     let updatedCount = 0;
     
@@ -118,6 +122,7 @@ export async function GET() {
 
       if (error) {
         console.error("Erreur d'insertion en masse:", error);
+        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
       } else {
         updatedCount = finalMatches.length;
       }
