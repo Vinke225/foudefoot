@@ -23,6 +23,7 @@ export default async function MatchsPage(props: { searchParams: Promise<{ tab?: 
   const { data: allMatches } = await supabase
     .from('matches')
     .select('*')
+    .eq('league_name', 'World Cup')
     .order('created_at', { ascending: true });
 
   const matches = allMatches?.filter(match => {

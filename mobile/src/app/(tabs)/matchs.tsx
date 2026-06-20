@@ -26,6 +26,7 @@ export default function MatchsScreen() {
       const { data, error } = await supabase
         .from('matches')
         .select('*')
+        .eq('league_name', 'World Cup')
         .order('match_time', { ascending: true });
 
       if (error) throw error;
