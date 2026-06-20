@@ -17,7 +17,12 @@ export async function GET() {
     // Inject base href to fix relative resources
     html = html.replace('<head>', '<head><base href="https://www.aminnasritv.xyz/">');
 
-    // Inject CSS to crop the view and block ads
+    // Strip known ad scripts completely from HTML
+    html = html.replace(/<script[^>]+(?:google|ads|taboola|outbrain|popunder)[^>]+><\/script>/gi, '');
+    html = html.replace(/<ins[^>]+class="adsbygoogle"[^>]*>.*?<\/ins>/gi, '');
+    html = html.replace(/<iframe[^>]+src="[^"]*(google|doubleclick)[^"]*"[^>]*><\/iframe>/gi, '');
+
+    // Inject CSS to crop the view and block ads drastically
     const customCss = `
       <style>
         /* Hide Header, Footer and Menus */
@@ -25,9 +30,16 @@ export async function GET() {
           display: none !important;
         }
         
-        /* Hide Ads and Popups */
-        .MW-Ads, .mw-adblock, .Post-ads, .ad-zone-1, .mw-cookie-wrapper, [class*="adblock"], [id*="adblock"] {
+        /* Drastic Ad Hiding */
+        .MW-Ads, .mw-adblock, .Post-ads, .ad-zone-1, .mw-cookie-wrapper, 
+        [class*="adblock"], [id*="adblock"], [class*="ads"], [id*="ads"],
+        ins.adsbygoogle, iframe[name^="google_ads_iframe"], 
+        div[id^="google_ads_iframe"], iframe[src*="google"], iframe[src*="doubleclick"] {
           display: none !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
+          height: 0 !important;
+          width: 0 !important;
         }
 
         /* Hide body background padding/margins to make it look native */
@@ -43,6 +55,12 @@ export async function GET() {
           background: transparent;
         }
       </style>
+      <script>
+        // JS killer for dynamic ads
+        setInterval(() => {
+          document.querySelectorAll('.MW-Ads, .mw-adblock, ins.adsbygoogle, iframe[src*="google"], iframe[src*="doubleclick"], div[style*="z-index: 2147483647"]').forEach(el => el.remove());
+        }, 1000);
+      </script>
     `;
 
     html = html.replace('</head>', `${customCss}</head>`);

@@ -22,15 +22,29 @@ export default function LiveTVScreen() {
         '.ad-zone-1', 
         '.mw-cookie-wrapper',
         '[class*="adblock"]',
-        '[id*="adblock"]'
+        '[id*="adblock"]',
+        'ins.adsbygoogle',
+        'iframe[src*="google"]',
+        'iframe[src*="doubleclick"]',
+        'div[id^="google_ads_iframe"]',
+        'a[href*="bet"]'
       ];
       
       selectorsToHide.forEach(selector => {
         document.querySelectorAll(selector).forEach(el => {
           if(el) {
              el.style.setProperty('display', 'none', 'important');
+             el.remove(); // Drastically remove the element
           }
         });
+      });
+
+      // Remove popup overlays by looking for crazy z-indexes
+      document.querySelectorAll('div').forEach(div => {
+        const zIndex = window.getComputedStyle(div).zIndex;
+        if (zIndex && parseInt(zIndex) > 10000 && !div.id.includes('Match')) {
+          div.remove();
+        }
       });
       
       document.body.style.setProperty('padding', '0', 'important');
@@ -39,7 +53,7 @@ export default function LiveTVScreen() {
     };
 
     hideElements();
-    setInterval(hideElements, 1000);
+    setInterval(hideElements, 500);
     true;
   `;
 
