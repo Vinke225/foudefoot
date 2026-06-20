@@ -47,8 +47,25 @@ export default function LoginScreen() {
       if (error) throw error;
 
       if (data.url) {
-        await WebBrowser.openAuthSessionAsync(data.url, redirectUrl);
-        // Supabase picks up the session automatically when the WebBrowser closes and triggers the deep link
+        const res = await WebBrowser.openAuthSessionAsync(data.url, redirectUrl);
+        if (res.type === 'success' && res.url) {
+          const hashParams = res.url.split('#')[1];
+          if (hashParams) {
+            const params = hashParams.split('&').reduce((acc, current) => {
+              const [key, value] = current.split('=');
+              acc[key] = value;
+              return acc;
+            }, {} as Record<string, string>);
+
+            const access_token = params['access_token'];
+            const refresh_token = params['refresh_token'];
+
+            if (access_token && refresh_token) {
+              await supabase.auth.setSession({ access_token, refresh_token });
+              router.replace('/(tabs)');
+            }
+          }
+        }
       }
     } catch (error: any) {
       Alert.alert('Erreur Google', error.message);
