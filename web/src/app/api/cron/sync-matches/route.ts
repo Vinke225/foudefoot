@@ -30,18 +30,7 @@ export async function GET() {
     console.log(`Début de la synchronisation des matchs (API-SPORTS) pour ${yesterday}, ${today}, ${tomorrow}...`);
 
     const importantLeagues = [
-      39, // Premier League
-      140, // La Liga
-      135, // Serie A
-      78, // Bundesliga
-      61, // Ligue 1
-      2, // UEFA Champions League
-      3, // UEFA Europa League
       1, // World Cup
-      4, // Euro Championship
-      5, // UEFA Nations League
-      9, // Copa America
-      10, // Friendlies
     ];
 
     let allFixtures: any[] = [];

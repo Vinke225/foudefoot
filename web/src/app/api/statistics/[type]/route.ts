@@ -10,9 +10,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ type
     return NextResponse.json({ error: 'Invalid type' }, { status: 400 });
   }
 
-  // Use the World Cup 2022 by default
+  // Use the World Cup 2026
   const league = 1;
-  const season = 2022;
+  const season = 2026;
 
   try {
     const apiUrl = `https://v3.football.api-sports.io/players/${type}?league=${league}&season=${season}`;
