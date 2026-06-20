@@ -28,6 +28,9 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
+import { AppAuthSync } from "@/components/providers/AppAuthSync";
+import React, { Suspense } from "react";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -39,6 +42,9 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icon-192x192.png" />
       </head>
       <body className="min-h-full bg-background text-foreground font-sans">
+        <Suspense fallback={null}>
+          <AppAuthSync />
+        </Suspense>
         {children}
         <Script id="register-sw" strategy="afterInteractive">
           {`
