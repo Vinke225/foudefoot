@@ -3,13 +3,11 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
-import { LiveChat } from "@/components/chat/LiveChat";
+
 import { MatchStats } from "@/components/match/MatchStats";
 import { MatchLineups } from "@/components/match/MatchLineups";
-import { LiveSimulation } from "@/components/match/LiveSimulation";
 import { MatchEventsTimeline } from "@/components/match/MatchEventsTimeline";
 import { MatchScoreLive } from "@/components/match/MatchScoreLive";
-import { MatchPrediction } from "@/components/match/MatchPrediction";
 import { notFound } from "next/navigation";
 
 export const revalidate = 0;
@@ -26,7 +24,7 @@ const getInitials = (name: string) => {
 export default async function MatchDetailPage(props: { params: Promise<{ id: string }>, searchParams: Promise<{ tab?: string }> }) {
   const searchParams = await props.searchParams;
   const params = await props.params;
-  const tab = searchParams?.tab || 'direct';
+  const tab = searchParams?.tab || 'evenements';
 
   const supabase = await createClient();
   
@@ -118,44 +116,13 @@ export default async function MatchDetailPage(props: { params: Promise<{ id: str
               </div>
               
               <div className="flex border-t border-gray-100 bg-white overflow-x-auto">
-                <Link href={`/matchs/${matchSlug}?tab=direct`} className={`flex-1 py-4 text-center font-bold border-b-[3px] text-[14px] transition-colors whitespace-nowrap px-2 ${tab === 'direct' ? 'border-primary text-black' : 'border-transparent text-gray-500 hover:text-black'}`}>Direct</Link>
                 <Link href={`/matchs/${matchSlug}?tab=evenements`} className={`flex-1 py-4 text-center font-bold border-b-[3px] text-[14px] transition-colors whitespace-nowrap px-2 ${tab === 'evenements' ? 'border-primary text-black' : 'border-transparent text-gray-500 hover:text-black'}`}>Événements</Link>
-                <Link href={`/matchs/${matchSlug}?tab=predictions`} className={`flex-1 py-4 text-center font-bold border-b-[3px] text-[14px] transition-colors whitespace-nowrap px-2 ${tab === 'predictions' ? 'border-primary text-black' : 'border-transparent text-gray-500 hover:text-black'}`}>Prédictions</Link>
-                <Link href={`/matchs/${matchSlug}?tab=chat`} className={`flex-1 py-4 text-center font-bold border-b-[3px] text-[14px] transition-colors whitespace-nowrap px-2 ${tab === 'chat' ? 'border-primary text-black' : 'border-transparent text-gray-500 hover:text-black'}`}>Chat</Link>
                 <Link href={`/matchs/${matchSlug}?tab=stats`} className={`flex-1 py-4 text-center font-bold border-b-[3px] text-[14px] transition-colors whitespace-nowrap px-2 ${tab === 'stats' ? 'border-primary text-black' : 'border-transparent text-gray-500 hover:text-black'}`}>Stats</Link>
                 <Link href={`/matchs/${matchSlug}?tab=lineups`} className={`flex-1 py-4 text-center font-bold border-b-[3px] text-[14px] transition-colors whitespace-nowrap px-2 ${tab === 'lineups' ? 'border-primary text-black' : 'border-transparent text-gray-500 hover:text-black'}`}>Compos</Link>
               </div>
             </div>
           </div>
 
-          {tab === 'direct' && (
-             <div className="px-6 mb-10 space-y-4">
-               <LiveSimulation 
-                  homeTeam={match.home_team} 
-                  awayTeam={match.away_team}
-                  homeLogo={match.home_logo}
-                  awayLogo={match.away_logo}
-                  homeLineup={match.lineups?.home?.starting_lineups || []}
-                  awayLineup={match.lineups?.away?.starting_lineups || []}
-                  score={match.score}
-                  statistics={match.statistics || []}
-                  isLive={match.status === 'LIVE'}
-                  isFinished={isFinished}
-                  matchDate={match.match_date || match.created_at || null}
-                  apiId={match.api_id || null}
-               />
-               {/* Widget Événements sous le simulateur */}
-               <MatchEventsTimeline
-                  apiId={match.api_id || null}
-                  homeTeam={match.home_team}
-                  awayTeam={match.away_team}
-                  homeLogo={match.home_logo}
-                  awayLogo={match.away_logo}
-                  isLive={match.status === 'LIVE'}
-                  isFinished={isFinished}
-               />
-             </div>
-          )}
           {tab === 'evenements' && (
              <div className="px-6 mb-10">
                <MatchEventsTimeline
@@ -169,16 +136,6 @@ export default async function MatchDetailPage(props: { params: Promise<{ id: str
                />
              </div>
           )}
-          {tab === 'predictions' && (
-             <div className="px-6 mb-10">
-               <MatchPrediction 
-                  homeTeam={match.home_team} 
-                  awayTeam={match.away_team} 
-                  dateStr={match.match_date || new Date().toISOString()} 
-               />
-             </div>
-          )}
-          {tab === 'chat' && <LiveChat matchId={match.id} />}
           {tab === 'stats' && <MatchStats apiId={match.api_id} />}
           {tab === 'lineups' && <MatchLineups apiId={match.api_id} />}
         </div>
