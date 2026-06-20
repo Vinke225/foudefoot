@@ -35,6 +35,18 @@ export async function GET(request: Request) {
       }
     });
 
+    // Extracting from tab contents
+    $('.tab-content').each((i, el) => {
+      const src = $(el).attr('data-src');
+      const id = $(el).attr('id') || `Serveur ${servers.length + 1}`;
+      if (src && !src.includes('google') && !src.includes('doubleclick') && !src.includes('facebook') && !src.includes('twitter')) {
+        servers.push({
+          name: id,
+          url: src.startsWith('//') ? 'https:' + src : src
+        });
+      }
+    });
+
     // Remove duplicates
     const uniqueServers = Array.from(new Map(servers.map(item => [item.url, item])).values());
 

@@ -76,11 +76,26 @@ export default function LiveTVScreen() {
       const html = await res.text();
       
       const serversFound: {name: string, url: string}[] = [];
-      const iframeRegex = /<iframe[^>]+src="([^"]+)"/g;
-      
-      let iframeMatch;
-      let count = 1;
       const seen = new Set();
+      
+      const tabContentRegex = /<div class="tab-content[^"]*" data-src="([^"]+)"(?: id="([^"]+)")?/g;
+      let tabMatch;
+      while ((tabMatch = tabContentRegex.exec(html)) !== null) {
+        let src = tabMatch[1];
+        let id = tabMatch[2] || `Serveur ${serversFound.length + 1}`;
+        if (src.startsWith('//')) src = 'https:' + src;
+        
+        if (!src.includes('google') && !src.includes('doubleclick') && !src.includes('facebook') && !seen.has(src)) {
+          seen.add(src);
+          serversFound.push({
+            name: id,
+            url: src
+          });
+        }
+      }
+
+      const iframeRegex = /<iframe[^>]+src="([^"]+)"/g;
+      let iframeMatch;
       
       while ((iframeMatch = iframeRegex.exec(html)) !== null) {
         let src = iframeMatch[1];
@@ -89,7 +104,7 @@ export default function LiveTVScreen() {
         if (!src.includes('google') && !src.includes('doubleclick') && !src.includes('facebook') && !seen.has(src)) {
           seen.add(src);
           serversFound.push({
-            name: `Serveur ${count++}`,
+            name: `Serveur ${serversFound.length + 1}`,
             url: src
           });
         }
