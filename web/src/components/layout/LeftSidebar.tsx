@@ -15,7 +15,6 @@ export function LeftSidebar({ profile }: { profile: { avatar?: string | null, us
   
   const navItems = [
     { icon: Home, label: "Accueil", href: "/" },
-    { icon: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 3v18"/><path d="M8 8h8v8H8z"/></svg>, label: "Matchs", href: "/matchs" },
     { icon: Trophy, label: "Compétitions", href: "/competitions" },
     { icon: Tv, label: "Live TV", href: "/livetv" },
     { icon: Bell, label: "Notifications", href: "/notifications", badge: unreadCount && unreadCount > 0 ? unreadCount : undefined },
