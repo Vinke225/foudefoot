@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
-export async function GET(request: Request, { params }: { params: { type: string } }) {
-  const { type } = params;
+export async function GET(request: Request, { params }: { params: Promise<{ type: string }> }) {
+  const { type } = await params;
   // type can be: topscorers, topassists, topyellowcards, topredcards
 
   const validTypes = ['topscorers', 'topassists', 'topyellowcards', 'topredcards'];
