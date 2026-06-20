@@ -127,8 +127,38 @@ export default function LiveTVScreen() {
   };
 
   const injectedJavaScript = `
-    setInterval(() => {
+    const hideAds = () => {
       document.querySelectorAll('.MW-Ads, .mw-adblock, ins.adsbygoogle, iframe[src*="google"], iframe[src*="doubleclick"], a[href*="bet"], div[style*="z-index: 2147483647"]').forEach(el => el.remove());
+      // Hide floating elements often found on arabic streams like the red button
+      document.querySelectorAll('.floating-button, .float-btn, [class*="float"], [style*="position: fixed"], [style*="position: absolute"]').forEach(el => {
+        // Only hide if it's not the video player itself
+        if(!el.querySelector('video') && el.tagName !== 'VIDEO') {
+           el.style.display = 'none';
+        }
+      });
+    };
+    
+    const maximizePlayer = () => {
+      document.body.style.margin = '0';
+      document.body.style.padding = '0';
+      document.body.style.overflow = 'hidden';
+      document.body.style.backgroundColor = '#000';
+      
+      const player = document.querySelector('video') || document.querySelector('#player') || document.querySelector('.player');
+      if (player) {
+        player.style.position = 'absolute';
+        player.style.top = '0';
+        player.style.left = '0';
+        player.style.width = '100vw';
+        player.style.height = '100vh';
+        player.style.objectFit = 'contain';
+        player.style.zIndex = '9999';
+      }
+    };
+
+    setInterval(() => {
+      hideAds();
+      maximizePlayer();
     }, 500);
     true;
   `;
