@@ -16,16 +16,13 @@ export function MatchStats({ apiId }: { apiId: string | null }) {
 
     const fetchStats = async () => {
       try {
-        const { data, error } = await supabase
-          .from('matches')
-          .select('statistics')
-          .eq('api_id', apiId)
-          .single();
-          
-        if (error) {
-           throw new Error(error.message || "Erreur de récupération des statistiques");
+        // We first try to get it from our Next.js API route which will 
+        // check Supabase and fallback to API-SPORTS if missing, then cache it
+        const response = await fetch(`/api/matches/${apiId}/stats`);
+        if (!response.ok) {
+          throw new Error("Erreur de récupération des statistiques");
         }
-        
+        const data = await response.json();
         setStats(data?.statistics || []);
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : "Unknown error");

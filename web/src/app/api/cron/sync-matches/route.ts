@@ -9,114 +9,134 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 export async function GET() {
   try {
-    const apiKey = process.env.APIFOOTBALL_KEY || '14489a24c7a2602d88fcbbae12deab98ab32ef98dcd11ae567f29640de3d7eed';
+    const apiKey = process.env.APIFOOTBALL_KEY;
+    if (!apiKey) {
+      throw new Error("Missing APIFOOTBALL_KEY in environment");
+    }
     
-    // Récupérer la date de la veille, du jour et du lendemain
     const todayObj = new Date();
     
     const yesterdayObj = new Date(todayObj);
     yesterdayObj.setDate(yesterdayObj.getDate() - 1);
     const yesterday = yesterdayObj.toISOString().split('T')[0];
 
+    const today = todayObj.toISOString().split('T')[0];
+
     const tomorrowObj = new Date(todayObj);
     tomorrowObj.setDate(tomorrowObj.getDate() + 1);
     const tomorrow = tomorrowObj.toISOString().split('T')[0];
     
-    // On synchronise depuis hier jusqu'à demain pour éviter que les matchs de minuit restent bloqués sur LIVE
-    const url = `https://apiv3.apifootball.com/?action=get_events&from=${yesterday}&to=${tomorrow}&APIkey=${apiKey}`;
+    const datesToSync = [yesterday, today, tomorrow];
+    console.log(`Début de la synchronisation des matchs (API-SPORTS) pour ${yesterday}, ${today}, ${tomorrow}...`);
 
-    console.log(`Début de la synchronisation des matchs (APIFootball) du ${yesterday} au ${tomorrow}...`);
+    const importantLeagues = [
+      39, // Premier League
+      140, // La Liga
+      135, // Serie A
+      78, // Bundesliga
+      61, // Ligue 1
+      2, // UEFA Champions League
+      3, // UEFA Europa League
+      1, // World Cup
+      4, // Euro Championship
+      5, // UEFA Nations League
+      9, // Copa America
+      10, // Friendlies
+    ];
 
-    const response = await fetch(url, {
-      method: 'GET'
-    });
+    let allFixtures: any[] = [];
 
-    if (!response.ok) {
-      throw new Error(`Erreur API: ${response.statusText}`);
-    }
+    // Fetch fixtures for each date
+    for (const date of datesToSync) {
+      const url = `https://v3.football.api-sports.io/fixtures?date=${date}`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'x-apisports-key': apiKey,
+        }
+      });
 
-    const data = await response.json();
-    
-    // APIFootball renvoie un tableau d'événements, ou un objet d'erreur s'il n'y a pas de matchs
-    let fixtures = data;
-    if (!Array.isArray(fixtures)) {
-      if (data.error) {
-        console.log("Aucun match trouvé ou erreur API:", data.message || data.error);
-        return NextResponse.json({ success: true, message: "Aucun match aujourd'hui ou erreur API", data });
+      if (!response.ok) {
+        console.error(`Erreur API pour la date ${date}:`, response.statusText);
+        continue;
       }
-      fixtures = [];
+
+      const data = await response.json();
+      if (data.response && Array.isArray(data.response)) {
+        allFixtures = allFixtures.concat(data.response);
+      }
     }
 
-    interface ApiFootballMatch {
-      match_id: string;
-      match_hometeam_name: string;
-      match_awayteam_name: string;
-      match_hometeam_score: string;
-      match_awayteam_score: string;
-      match_status: string;
-      match_live: string;
-      team_home_badge: string;
-      team_away_badge: string;
-      league_id?: string | number;
-      country_name?: string;
-      lineup?: Record<string, unknown>;
-      statistics?: Array<Record<string, unknown>>;
-    }
-
-    const importantLeagues = ["28", "152", "302", "207", "175", "168", "356"];
-    
-    const matchesToInsert = fixtures
-      .filter((match: ApiFootballMatch) => match.match_id && match.match_hometeam_name && match.match_awayteam_name)
-      .filter((match: ApiFootballMatch) => importantLeagues.includes(match.league_id?.toString() || ''))
-      .filter((match: ApiFootballMatch) => {
-        // Exclure les équipes de jeunes (U19, U20, U21, etc.)
-        const isYouth = /\bU\d{2}\b/i.test(match.match_hometeam_name) || /\bU\d{2}\b/i.test(match.match_awayteam_name);
+    const matchesToInsert = allFixtures
+      .filter((fixture: any) => fixture.fixture && fixture.teams && fixture.league)
+      .filter((fixture: any) => importantLeagues.includes(fixture.league.id))
+      .filter((fixture: any) => {
+        const home = fixture.teams.home.name;
+        const away = fixture.teams.away.name;
+        const isYouth = /\bU\d{2}\b/i.test(home) || /\bU\d{2}\b/i.test(away);
         return !isYouth;
       })
-      .map((match: ApiFootballMatch) => {
+      .map((item: any) => {
+        const fixture = item.fixture;
+        const league = item.league;
+        const teams = item.teams;
+        const goals = item.goals;
+
         let score = null;
-        if (match.match_hometeam_score !== "" && match.match_awayteam_score !== "") {
-          score = `${match.match_hometeam_score} - ${match.match_awayteam_score}`;
+        if (goals.home !== null && goals.away !== null) {
+          score = `${goals.home} - ${goals.away}`;
         }
-        
+
+        // Mapping API-SPORTS status to our simplified status
         let status = 'NS';
-        if (match.match_status === 'Finished' || match.match_status === 'FT' || match.match_status === 'AET' || match.match_status === 'PEN') {
+        const shortStatus = fixture.status.short;
+        if (['FT', 'AET', 'PEN', 'PST', 'CANC', 'ABD', 'AWD', 'WO'].includes(shortStatus)) {
           status = 'FT';
-        } else if (match.match_live === '1') {
+        } else if (['1H', 'HT', '2H', 'ET', 'BT', 'P', 'SUSP', 'INT'].includes(shortStatus)) {
           status = 'LIVE';
         }
 
         return {
-          api_id: match.match_id,
-          home_team: match.match_hometeam_name,
-          away_team: match.match_awayteam_name,
-          home_logo: match.team_home_badge || null,
-          away_logo: match.team_away_badge || null,
+          api_id: fixture.id.toString(),
+          home_team: teams.home.name,
+          away_team: teams.away.name,
+          home_logo: teams.home.logo,
+          away_logo: teams.away.logo,
           score: score,
           status: status,
-          lineups: match.lineup || null,
-          statistics: match.statistics || null
+          lineups: null,
+          statistics: null,
+          // Extra useful fields we can store for better UI later
+          match_time: fixture.date,
+          league_name: league.name
         };
       });
 
+    // Remove duplicates (sometimes friendlies appear multiple times or timezone overlaps)
+    const uniqueMatchesMap = new Map();
+    for (const match of matchesToInsert) {
+      uniqueMatchesMap.set(match.api_id, match);
+    }
+    const finalMatches = Array.from(uniqueMatchesMap.values());
+
     let updatedCount = 0;
     
-    if (matchesToInsert.length > 0) {
+    if (finalMatches.length > 0) {
       const { error } = await supabase
         .from('matches')
-        .upsert(matchesToInsert, { onConflict: 'api_id' })
+        .upsert(finalMatches, { onConflict: 'api_id' })
         .select();
 
       if (error) {
         console.error("Erreur d'insertion en masse:", error);
       } else {
-        updatedCount = matchesToInsert.length;
+        updatedCount = finalMatches.length;
       }
     }
 
     return NextResponse.json({ 
       success: true, 
-      message: `${updatedCount} matchs synchronisés avec succès depuis APIFootball.`,
+      message: `${updatedCount} matchs synchronisés avec succès depuis API-SPORTS.`,
       timestamp: new Date().toISOString()
     });
 

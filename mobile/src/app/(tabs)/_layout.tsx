@@ -34,6 +34,13 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="matchs"
+        options={{
+          title: 'Matchs',
+          tabBarIcon: ({ color }) => <Ionicons name="football" size={24} color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="livetv"
         options={{
           title: 'Live TV',

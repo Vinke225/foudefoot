@@ -1,5 +1,10 @@
 // cspell:disable
 import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 export async function GET(request: Request, props: { params: Promise<{ api_id: string }> }) {
   try {
@@ -9,15 +14,29 @@ export async function GET(request: Request, props: { params: Promise<{ api_id: s
       return NextResponse.json({ error: "Missing api_id" }, { status: 400 });
     }
 
+    // 1. Check if we already have the lineups in Supabase to save API calls
+    const { data: existingMatch } = await supabase
+      .from('matches')
+      .select('lineups, status')
+      .eq('api_id', apiId)
+      .single();
+
+    if (existingMatch && existingMatch.lineups && Object.keys(existingMatch.lineups).length > 0) {
+      return NextResponse.json({ lineup: existingMatch.lineups });
+    }
+
+    // 2. Fetch from API-SPORTS
     const apiKey = process.env.APIFOOTBALL_KEY;
     if (!apiKey) {
       throw new Error("Missing APIFOOTBALL_KEY");
     }
 
-    const url = `https://apiv3.apifootball.com/?action=get_events&match_id=${apiId}&APIkey=${apiKey}`;
-
+    const url = `https://v3.football.api-sports.io/fixtures/lineups?fixture=${apiId}`;
     const response = await fetch(url, {
       method: 'GET',
+      headers: {
+        'x-apisports-key': apiKey,
+      },
       next: { revalidate: 600 } // Les compos changent peu, cache de 10 min
     });
 
@@ -26,19 +45,50 @@ export async function GET(request: Request, props: { params: Promise<{ api_id: s
     }
 
     const data = await response.json();
-    if (data.error) {
-       return NextResponse.json({ error: data.message }, { status: 400 });
+    if (data.errors && Object.keys(data.errors).length > 0) {
+       return NextResponse.json({ error: Object.values(data.errors)[0] }, { status: 400 });
     }
 
-    const match = Array.isArray(data) ? data[0] : null;
-    if (!match) {
-       return NextResponse.json({ error: "Match non trouvé" }, { status: 404 });
+    if (!data.response || data.response.length === 0) {
+       return NextResponse.json({ lineup: null });
     }
 
-    return NextResponse.json({ lineup: match.lineup || null });
+    // 3. Transform API-SPORTS format to our App Format
+    const mapPlayers = (playersArray: any[]) => {
+      return playersArray.map((p: any) => ({
+        lineup_player: p.player.name,
+        lineup_number: p.player.number !== null ? String(p.player.number) : ""
+      }));
+    };
+
+    const homeData = data.response[0] || {};
+    const awayData = data.response[1] || {};
+
+    const formattedLineups = {
+      home: {
+        starting_lineups: mapPlayers(homeData.startXI || []),
+        substitutes: mapPlayers(homeData.substitutes || []),
+        coach: homeData.coach && homeData.coach.name ? [{ lineup_player: homeData.coach.name }] : []
+      },
+      away: {
+        starting_lineups: mapPlayers(awayData.startXI || []),
+        substitutes: mapPlayers(awayData.substitutes || []),
+        coach: awayData.coach && awayData.coach.name ? [{ lineup_player: awayData.coach.name }] : []
+      }
+    };
+
+    // 4. Save to Supabase for caching
+    if (formattedLineups.home.starting_lineups.length > 0) {
+      await supabase
+        .from('matches')
+        .update({ lineups: formattedLineups })
+        .eq('api_id', apiId);
+    }
+
+    return NextResponse.json({ lineup: formattedLineups });
 
   } catch (error: unknown) {
-    console.error('Erreur Proxy Lineups APIFootball:', error);
+    console.error('Erreur Proxy Lineups API-SPORTS:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }

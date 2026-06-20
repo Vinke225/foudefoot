@@ -32,20 +32,18 @@ export function MatchLineups({ apiId }: { apiId: string | null }) {
 
     const fetchLineups = async () => {
       try {
-        const { data, error } = await supabase
-          .from('matches')
-          .select('lineups')
-          .eq('api_id', apiId)
-          .single();
-          
-        if (error) {
-           throw new Error(error.message || "Erreur de récupération des compositions");
+        // We first try to get it from our Next.js API route which will 
+        // check Supabase and fallback to API-SPORTS if missing, then cache it
+        const response = await fetch(`/api/matches/${apiId}/lineups`);
+        if (!response.ok) {
+          throw new Error("Erreur de récupération des compositions");
         }
+        const data = await response.json();
         
-        if (!data?.lineups || (!data.lineups.home && !data.lineups.away)) {
+        if (!data?.lineup || (!data.lineup.home && !data.lineup.away)) {
            setLineups(null);
         } else {
-           setLineups(data.lineups as unknown as LineupData);
+           setLineups(data.lineup as unknown as LineupData);
         }
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : "Unknown error");

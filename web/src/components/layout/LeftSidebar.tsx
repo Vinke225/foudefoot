@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Home, Trophy, Bell, MessageSquare, User, Settings, ChevronRight, Tv } from "lucide-react";
+import { Home, Trophy, Bell, MessageSquare, User, Settings, ChevronRight, Tv, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CreatePostModal } from "@/components/social/CreatePostModal";
@@ -16,6 +16,7 @@ export function LeftSidebar({ profile }: { profile: { avatar?: string | null, us
   const navItems = [
     { icon: Home, label: "Accueil", href: "/" },
     { icon: Trophy, label: "Compétitions", href: "/competitions" },
+    { icon: Calendar, label: "Matchs", href: "/matchs" },
     { icon: Tv, label: "Live TV", href: "/livetv" },
     { icon: Bell, label: "Notifications", href: "/notifications", badge: unreadCount && unreadCount > 0 ? unreadCount : undefined },
     { icon: MessageSquare, label: "Messages", href: "/messages" },

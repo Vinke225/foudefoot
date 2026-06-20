@@ -1,9 +1,10 @@
 // cspell:disable
 import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 
 export interface LiveMatchEvent {
   time: string;
-  type: 'BUT' | 'CARTON_JAUNE' | 'CARTON_ROUGE' | 'PENALTY' | 'PROLONGATION';
+  type: 'BUT' | 'CARTON_JAUNE' | 'CARTON_ROUGE' | 'PENALTY' | 'PROLONGATION' | 'REMPLACEMENT';
   team: 'home' | 'away';
   player: string;
   score?: string;
@@ -22,7 +23,6 @@ export interface LiveMatchData {
   score: string;
   halfTimeScore: string;
   events: LiveMatchEvent[];
-  statistics: Array<{ type: string; home: string; away: string }>;
   homePossession: number;
 }
 
@@ -43,121 +43,116 @@ export async function GET(
       return NextResponse.json({ error: 'Missing API key' }, { status: 500 });
     }
 
-    const url = `https://apiv3.apifootball.com/?action=get_events&match_id=${apiId}&APIkey=${apiKey}`;
+    const url = `https://v3.football.api-sports.io/fixtures?id=${apiId}`;
 
     const response = await fetch(url, {
       method: 'GET',
+      headers: {
+        'x-apisports-key': apiKey,
+      },
       // Pas de cache pour les données live
       next: { revalidate: 0 },
     });
 
     if (!response.ok) {
-      throw new Error(`APIFootball error: ${response.statusText}`);
+      throw new Error(`API-SPORTS error: ${response.statusText}`);
     }
 
     const data = await response.json();
 
-    if (data.error) {
-      return NextResponse.json({ error: data.message }, { status: 404 });
+    if (data.errors && Object.keys(data.errors).length > 0) {
+      return NextResponse.json({ error: Object.values(data.errors)[0] }, { status: 404 });
     }
 
-    const match = Array.isArray(data) ? data[0] : null;
-    if (!match) {
+    const matchData = data.response && data.response.length > 0 ? data.response[0] : null;
+    if (!matchData) {
       return NextResponse.json({ error: 'Match non trouvé' }, { status: 404 });
     }
 
+    const fixture = matchData.fixture;
+    const teams = matchData.teams;
+    const goals = matchData.goals;
+    const scoreObj = matchData.score;
+    const eventsRaw = matchData.events || [];
+    const statsRaw = matchData.statistics || [];
+
     // --- Détermination du statut ---
-    const isLive = match.match_live === '1';
-    const isFinished =
-      match.match_status === 'Finished' ||
-      match.match_status === 'FT' ||
-      match.match_status === 'AET' ||
-      match.match_status === 'PEN';
+    const shortStatus = fixture.status.short;
+    const isLive = ['1H', 'HT', '2H', 'ET', 'BT', 'P', 'SUSP', 'INT'].includes(shortStatus);
+    const isFinished = ['FT', 'AET', 'PEN', 'PST', 'CANC', 'ABD', 'AWD', 'WO'].includes(shortStatus);
 
     // --- Construction des événements unifiés ---
     const events: LiveMatchEvent[] = [];
 
-    // Buts
-    if (Array.isArray(match.goalscorer)) {
-      for (const g of match.goalscorer) {
-        const isHome = g.home_scorer && g.home_scorer !== '';
-        const player = isHome ? g.home_scorer : g.away_scorer;
-        if (!player) continue;
-
-        events.push({
-          time: g.time || '?',
-          type: g.info?.toLowerCase().includes('penalty') ? 'PENALTY' : 'BUT',
-          team: isHome ? 'home' : 'away',
-          player,
-          score: g.score,
-          info: g.info || '',
-        });
+    for (const ev of eventsRaw) {
+      const isHome = ev.team.id === teams.home.id;
+      let type: LiveMatchEvent['type'] = 'BUT';
+      
+      if (ev.type === 'Goal') {
+        type = ev.detail === 'Penalty' ? 'PENALTY' : 'BUT';
+      } else if (ev.type === 'Card') {
+        type = ev.detail.includes('Red') ? 'CARTON_ROUGE' : 'CARTON_JAUNE';
+      } else if (ev.type === 'subst') {
+        type = 'REMPLACEMENT';
+      } else {
+        continue;
       }
+
+      events.push({
+        time: ev.time.elapsed.toString() + (ev.time.extra ? `+${ev.time.extra}` : ''),
+        type,
+        team: isHome ? 'home' : 'away',
+        player: ev.player.name,
+        score: type === 'BUT' || type === 'PENALTY' ? `${goals.home}-${goals.away}` : undefined,
+        info: ev.assist?.name ? `Passe: ${ev.assist.name}` : ev.detail,
+      });
     }
-
-    // Cartons
-    if (Array.isArray(match.cards)) {
-      for (const c of match.cards) {
-        const isHome = c.home_fault && c.home_fault !== '';
-        const player = isHome ? c.home_fault : c.away_fault;
-        if (!player) continue;
-
-        const cardType = c.card?.toLowerCase().includes('red')
-          ? 'CARTON_ROUGE'
-          : 'CARTON_JAUNE';
-
-        events.push({
-          time: c.time || '?',
-          type: cardType,
-          team: isHome ? 'home' : 'away',
-          player,
-        });
-      }
-    }
-
-    // Trier par minute
-    events.sort((a, b) => {
-      const tA = parseInt(a.time.replace('+', '.')) || 0;
-      const tB = parseInt(b.time.replace('+', '.')) || 0;
-      return tA - tB;
-    });
 
     // --- Possession ---
-    const stats = Array.isArray(match.statistics) ? match.statistics : [];
-    const possessionStat = stats.find(
-      (s: { type: string; home: string }) =>
-        s.type === 'Ball Possession' || s.type === 'Possession'
-    );
-    const homePossession = possessionStat
-      ? parseInt(possessionStat.home)
-      : 50;
+    let homePossession = 50;
+    if (statsRaw.length > 0) {
+      const homeStats = statsRaw[0]?.statistics || [];
+      const possessionStat = homeStats.find((s: any) => s.type === 'Ball Possession');
+      if (possessionStat && possessionStat.value) {
+        homePossession = parseInt(possessionStat.value.replace('%', ''));
+      }
+    }
 
     // --- Score ---
-    const homeScore = match.match_hometeam_score || '0';
-    const awayScore = match.match_awayteam_score || '0';
-    const score =
-      homeScore !== '' && awayScore !== ''
-        ? `${homeScore} - ${awayScore}`
-        : null;
+    const homeScore = goals.home !== null ? goals.home.toString() : '0';
+    const awayScore = goals.away !== null ? goals.away.toString() : '0';
+    const scoreStr = goals.home !== null && goals.away !== null ? `${homeScore} - ${awayScore}` : '0 - 0';
 
-    const htHome = match.match_hometeam_halftime_score;
-    const htAway = match.match_awayteam_halftime_score;
-    const halfTimeScore =
-      htHome !== '' && htAway !== '' ? `${htHome} - ${htAway}` : null;
+    const htHome = scoreObj.halftime.home !== null ? scoreObj.halftime.home : '';
+    const htAway = scoreObj.halftime.away !== null ? scoreObj.halftime.away : '';
+    const halfTimeScoreStr = htHome !== '' && htAway !== '' ? `${htHome} - ${htAway}` : '0 - 0';
+
+    // Update the live score and status in Supabase so users don't have to wait for cron
+    try {
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+      const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+      const supabase = createClient(supabaseUrl, supabaseServiceKey);
+      
+      await supabase.from('matches').update({
+        score: scoreStr,
+        status: isFinished ? 'FT' : (isLive ? 'LIVE' : 'NS'),
+      }).eq('api_id', apiId);
+    } catch (e) {
+      console.error("Failed to update live match in Supabase", e);
+    }
 
     const liveData: LiveMatchData = {
       isLive,
       isFinished,
-      status: match.match_status || 'NS',
-      matchTime: match.match_time || '',
-      matchDate: match.match_date || '',
-      matchElapsed: match.match_status || '',
+      status: shortStatus || 'NS',
+      matchTime: fixture.date || '',
+      matchDate: fixture.date || '',
+      matchElapsed: fixture.status.elapsed ? `${fixture.status.elapsed}'` : shortStatus,
       homeScore,
       awayScore,
-      score: score || '0 - 0',
-      halfTimeScore: halfTimeScore || '0 - 0',
+      score: scoreStr,
+      halfTimeScore: halfTimeScoreStr,
       events,
-      statistics: stats,
       homePossession,
     };
 
