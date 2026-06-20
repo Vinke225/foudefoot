@@ -4,6 +4,7 @@ import { TopHeader } from "@/components/layout/TopHeader";
 import { MobileNavBar } from "@/components/layout/MobileNavBar";
 import { createClient } from "@/utils/supabase/server";
 import { RealtimeProvider } from "@/components/providers/RealtimeProvider";
+import React from "react";
 
 export default async function MainLayout({
   children,
@@ -60,7 +61,9 @@ export default async function MainLayout({
         </div>
         
         {/* Mobile Navigation Bar */}
-        <MobileNavBar />
+        <React.Suspense fallback={null}>
+          <MobileNavBar />
+        </React.Suspense>
         
       </div>
     </RealtimeProvider>

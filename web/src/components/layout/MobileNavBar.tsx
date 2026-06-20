@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Home, Trophy, PlusSquare, Bell, User, MessageSquare, Tv, Calendar, BarChart3 } from "lucide-react";
 import { useRealtime } from "@/components/providers/RealtimeProvider";
 import { CreatePostModal } from "@/components/social/CreatePostModal";
@@ -9,14 +9,17 @@ import { cn } from "@/lib/utils";
 
 export function MobileNavBar() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { unreadCount } = useRealtime();
+
+  const isInApp = searchParams?.get('in_app') === 'true';
+
+  if (isInApp) return null;
 
   const navItems = [
     { icon: Home, label: "Accueil", href: "/" },
-    { icon: BarChart3, label: "Stats", href: "/statistiques" },
-    { icon: Calendar, label: "Matchs", href: "/matchs" },
-    { icon: PlusSquare, label: "Créer", href: "#", isAction: true },
     { icon: Tv, label: "Live TV", href: "/livetv" },
+    { icon: PlusSquare, label: "Créer", href: "#", isAction: true },
     { icon: MessageSquare, label: "Chat", href: "/messages" },
     { icon: Bell, label: "Notifs", href: "/notifications" },
     { icon: User, label: "Profil", href: "/profil" },
