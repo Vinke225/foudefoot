@@ -152,7 +152,7 @@ export default function LiveTVScreen() {
 
   const injectedJavaScript = `
     const hideAds = () => {
-      document.querySelectorAll('.MW-Ads, .mw-adblock, ins.adsbygoogle, iframe[src*="google"], iframe[src*="doubleclick"], a[href*="bet"], div[style*="z-index: 2147483647"]').forEach(el => el.remove());
+      document.querySelectorAll('.MW-Ads, .mw-adblock, ins.adsbygoogle, iframe[src*="google"], iframe[src*="doubleclick"], a[href*="bet"], a[href*="t.me"], a[href*="telegram"], img[src*="telegram"], div[style*="z-index: 2147483647"]').forEach(el => el.remove());
       // Hide floating elements often found on arabic streams like the red button
       document.querySelectorAll('.floating-button, .float-btn, [class*="float"], [style*="position: fixed"], [style*="position: absolute"]').forEach(el => {
         // Only hide if it's not the video player itself

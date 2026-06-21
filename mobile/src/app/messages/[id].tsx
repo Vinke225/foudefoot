@@ -292,7 +292,7 @@ export default function PrivateChatScreen() {
           activeOpacity={isMe ? 0.8 : 1}
           onLongPress={isMe ? () => handleDeleteMessage(item.id) : undefined}
           delayLongPress={400}
-          className={`max-w-[75%] p-3 ${isMe ? 'bg-primary text-white rounded-2xl rounded-tr-sm' : 'bg-white border border-gray-100 rounded-2xl rounded-tl-sm'}`}
+          className={`max-w-[75%] p-3 ${isMe ? 'bg-blue-600 text-white rounded-2xl rounded-tr-sm' : 'bg-white border border-gray-100 rounded-2xl rounded-tl-sm'}`}
         >
           {item.media_url && (
             <TouchableOpacity onPress={() => setSelectedImage(item.media_url)} activeOpacity={0.9}>
@@ -410,7 +410,7 @@ export default function PrivateChatScreen() {
             </View>
 
             <TouchableOpacity 
-              className={`ml-2 w-11 h-11 rounded-full items-center justify-center ${(!newMessage.trim() && !imageUri) || isSending ? 'bg-gray-200' : 'bg-primary'}`}
+              className={`ml-2 w-11 h-11 rounded-full items-center justify-center ${(!newMessage.trim() && !imageUri) || isSending ? 'bg-gray-200' : 'bg-blue-600'}`}
               onPress={handleSendMessage}
               disabled={(!newMessage.trim() && !imageUri) || isSending}
             >

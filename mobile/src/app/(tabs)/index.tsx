@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, SafeAreaView, ActivityIndicator, FlatList, Text, RefreshControl, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, SafeAreaView, ActivityIndicator, FlatList, Text, RefreshControl, TouchableOpacity, Platform, StatusBar } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../providers/AuthProvider';
 import { PostCard } from '../../components/social/post-card';
@@ -176,6 +176,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F3F4F6', // Tailwind gray-100
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   listContent: {
     padding: 16,
