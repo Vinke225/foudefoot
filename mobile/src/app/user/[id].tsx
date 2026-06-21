@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
-import { supabase } from '../../../lib/supabase';
-import { useAuth } from '../../../providers/AuthProvider';
-import { PostCard } from '../../../components/social/post-card';
-import { Avatar } from '../../../components/ui/avatar';
+import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../providers/AuthProvider';
+import { PostCard } from '../../components/social/post-card';
+import { Avatar } from '../../components/ui/avatar';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function UserProfileScreen() {
