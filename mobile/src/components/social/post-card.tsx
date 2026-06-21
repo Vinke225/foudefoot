@@ -51,8 +51,9 @@ export function PostCard({ post, currentUserId, onLikeChange, onPostDeleted }: P
 
   // Realtime subscription for Comments on Feed
   React.useEffect(() => {
+    const channelName = `comments_feed_${post.id}_${Math.random().toString(36).substring(7)}`;
     const channel = supabase
-      .channel(`public:comments_feed:${post.id}`)
+      .channel(channelName)
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'comments', filter: `post_id=eq.${post.id}` },
@@ -77,8 +78,9 @@ export function PostCard({ post, currentUserId, onLikeChange, onPostDeleted }: P
 
   // Realtime subscription for Likes
   React.useEffect(() => {
+    const channelName = `likes_${post.id}_${Math.random().toString(36).substring(7)}`;
     const channel = supabase
-      .channel(`public:likes:${post.id}`)
+      .channel(channelName)
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'likes', filter: `post_id=eq.${post.id}` },

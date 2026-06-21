@@ -24,8 +24,9 @@ export function CommentsModal({ visible, onClose, postId, currentUserId, onComme
     fetchComments(true);
 
     // Subscribe to realtime comments
+    const channelName = `comments_modal_${postId}_${Math.random().toString(36).substring(7)}`;
     const channel = supabase
-      .channel(`public:comments:${postId}`)
+      .channel(channelName)
       .on(
         'postgres_changes',
         {

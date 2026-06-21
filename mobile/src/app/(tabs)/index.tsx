@@ -19,8 +19,9 @@ export default function HomeScreen() {
     fetchData();
 
     // Subscribe to realtime posts
+    const channelName = `public_posts_${Math.random().toString(36).substring(7)}`;
     const channel = supabase
-      .channel('public:posts')
+      .channel(channelName)
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'posts' },
