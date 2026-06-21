@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Modal, SafeAreaView, KeyboardAvoidingView, Platform, Image, ActivityIndicator, StatusBar } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Modal, SafeAreaView, KeyboardAvoidingView, Platform, Image, ActivityIndicator, StatusBar, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system/legacy';
@@ -17,6 +17,8 @@ interface CreatePostModalProps {
   onPostCreated: (newPost: any) => void;
 }
 
+const BACKGROUNDS = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#1f2937', '#000000'];
+
 export function CreatePostModal({ visible, onClose, userProfile, onPostCreated }: CreatePostModalProps) {
   const [caption, setCaption] = useState('');
   const [imageUri, setImageUri] = useState<string | null>(null);
@@ -24,6 +26,43 @@ export function CreatePostModal({ visible, onClose, userProfile, onPostCreated }
   const [loading, setLoading] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showGifPicker, setShowGifPicker] = useState(false);
+  const [postBackground, setPostBackground] = useState<string | null>(null);
+  const [showBackgroundPicker, setShowBackgroundPicker] = useState(false);
+  const [mentionSearch, setMentionSearch] = useState<string | null>(null);
+  const [mentionResults, setMentionResults] = useState<any[]>([]);
+
+  const searchUsers = async (search: string) => {
+    if (!search) {
+      const { data } = await supabase.from('users').select('id, username, avatar').limit(5);
+      if (data) setMentionResults(data);
+      return;
+    }
+    const { data } = await supabase.from('users').select('id, username, avatar').ilike('username', `${search}%`).limit(5);
+    if (data) setMentionResults(data);
+  };
+
+  const handleCaptionChange = (text: string) => {
+    setCaption(text);
+    const words = text.split(/[\s\n]+/);
+    const lastWord = words[words.length - 1];
+    if (lastWord.startsWith('@')) {
+      const search = lastWord.substring(1);
+      setMentionSearch(search);
+      searchUsers(search);
+    } else {
+      setMentionSearch(null);
+      setMentionResults([]);
+    }
+  };
+
+  const handleMentionSelect = (username: string) => {
+    const words = caption.split(/[\s\n]+/);
+    words.pop();
+    const newCaption = words.join(' ') + (words.length > 0 ? ' ' : '') + `@${username} `;
+    setCaption(newCaption);
+    setMentionSearch(null);
+    setMentionResults([]);
+  };
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -35,12 +74,14 @@ export function CreatePostModal({ visible, onClose, userProfile, onPostCreated }
     if (!result.canceled && result.assets && result.assets.length > 0) {
       setImageUri(result.assets[0].uri);
       setGifUrl(null);
+      setPostBackground(null);
     }
   };
 
   const handleGifSelect = (url: string) => {
     setGifUrl(url);
     setImageUri(null);
+    setPostBackground(null);
   };
 
   const handlePublish = async () => {
@@ -50,6 +91,10 @@ export function CreatePostModal({ visible, onClose, userProfile, onPostCreated }
     setLoading(true);
     try {
       let finalMediaUrl = gifUrl;
+      
+      if (postBackground && caption.trim()) {
+        finalMediaUrl = `bg:${postBackground}`;
+      }
 
       // 1. Upload image to Supabase Storage if an image is selected
       if (imageUri) {
@@ -100,6 +145,8 @@ export function CreatePostModal({ visible, onClose, userProfile, onPostCreated }
       setCaption('');
       setImageUri(null);
       setGifUrl(null);
+      setPostBackground(null);
+      setShowBackgroundPicker(false);
       onPostCreated(newPost);
       onClose();
 
@@ -141,18 +188,21 @@ export function CreatePostModal({ visible, onClose, userProfile, onPostCreated }
 
           {/* Content area */}
           <View className="flex-1 px-4 py-4">
-            <View className="flex-row">
-              <Avatar url={userProfile?.avatar} fallback={userProfile?.username || '?'} size={44} />
+            <View 
+              className={`flex-row ${postBackground ? 'flex-col items-center justify-center p-8 rounded-2xl mb-4' : ''}`}
+              style={[postBackground ? { backgroundColor: postBackground, minHeight: 250 } : {}]}
+            >
+              {!postBackground && <Avatar url={userProfile?.avatar} fallback={userProfile?.username || '?'} size={44} />}
               <TextInput
-                className="flex-1 ml-3 text-base text-gray-900"
+                className={postBackground ? 'text-center font-bold text-2xl text-white w-full' : 'flex-1 ml-3 text-base text-gray-900'}
                 placeholder="Partagez votre émotion sur le match..."
-                placeholderTextColor="#9CA3AF"
+                placeholderTextColor={postBackground ? "rgba(255,255,255,0.7)" : "#9CA3AF"}
                 multiline
                 autoFocus
                 value={caption}
-                onChangeText={setCaption}
+                onChangeText={handleCaptionChange}
                 editable={!loading}
-                style={{ minHeight: 100, textAlignVertical: 'top' }}
+                style={{ minHeight: postBackground ? undefined : 100, textAlignVertical: postBackground ? 'center' : 'top' }}
               />
             </View>
 
@@ -173,6 +223,48 @@ export function CreatePostModal({ visible, onClose, userProfile, onPostCreated }
             )}
           </View>
 
+          {/* Mention Results */}
+          {mentionSearch !== null && mentionResults.length > 0 && (
+            <View className="bg-white border-t border-gray-100 max-h-32">
+              <ScrollView keyboardShouldPersistTaps="handled">
+                {mentionResults.map(u => (
+                  <TouchableOpacity 
+                    key={u.id} 
+                    className="flex-row items-center p-3 border-b border-gray-50"
+                    onPress={() => handleMentionSelect(u.username)}
+                  >
+                    <Avatar url={u.avatar} fallback={u.username} size={28} />
+                    <Text className="ml-2 font-bold">{u.username}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+          )}
+
+          {/* Background Picker */}
+          {showBackgroundPicker && !imageUri && !gifUrl && (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} className="border-t border-gray-100 p-3 max-h-[70px]" style={{ backgroundColor: '#fafafa', flexGrow: 0 }}>
+              <TouchableOpacity
+                onPress={() => setPostBackground(null)}
+                className="w-10 h-10 rounded-lg border-2 border-dashed border-gray-300 items-center justify-center mr-2 bg-white"
+              >
+                <Ionicons name="close" size={20} color="#9ca3af" />
+              </TouchableOpacity>
+              {BACKGROUNDS.map((bg) => (
+                <TouchableOpacity
+                  key={bg}
+                  onPress={() => {
+                    setPostBackground(bg);
+                    setImageUri(null);
+                    setGifUrl(null);
+                  }}
+                  style={{ backgroundColor: bg }}
+                  className={`w-10 h-10 rounded-lg mr-2 ${postBackground === bg ? 'border-2 border-black' : ''}`}
+                />
+              ))}
+            </ScrollView>
+          )}
+
           {/* Toolbar (Bottom) */}
           <View className="border-t border-gray-100 p-4 flex-row items-center gap-4" style={{ paddingBottom: Platform.OS === 'android' ? 30 : 20 }}>
             <TouchableOpacity onPress={pickImage} disabled={loading} className="p-2 bg-gray-50 rounded-full">
@@ -183,6 +275,12 @@ export function CreatePostModal({ visible, onClose, userProfile, onPostCreated }
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setShowGifPicker(true)} disabled={loading} className="px-3 py-2 bg-gray-50 rounded-full">
               <Text className="text-blue-500 font-bold text-xs">GIF</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleCaptionChange(caption + (caption.endsWith(' ') || caption === '' ? '@' : ' @'))} disabled={loading} className="w-9 h-9 items-center justify-center bg-gray-50 rounded-full ml-auto">
+              <Text className="text-blue-500 font-bold text-lg">@</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setShowBackgroundPicker(!showBackgroundPicker)} disabled={loading} className="w-9 h-9 items-center justify-center bg-gray-50 rounded-full">
+              <Text className="text-purple-500 font-bold text-lg">A</Text>
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>

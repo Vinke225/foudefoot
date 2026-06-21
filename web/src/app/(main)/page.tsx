@@ -6,7 +6,7 @@ import { createClient } from "@/utils/supabase/server";
 import { PostInteractions } from "@/components/social/PostInteractions";
 import { CreatePost } from "@/components/social/CreatePost";
 import { PostOptions } from "@/components/social/PostOptions";
-import { PostImage } from "@/components/social/PostImage";
+import { PostContent } from "@/components/social/PostContent";
 
 export const revalidate = 0; // Disable caching for realtime feel
 
@@ -78,11 +78,7 @@ export default async function Home() {
                 </div>
                 
                 <div className="mt-4">
-                  <p className="text-[15px] mb-3 leading-relaxed text-gray-800">{post.caption}</p>
-                  
-                  {post.media_url && (
-                    <PostImage mediaUrl={post.media_url} />
-                  )}
+                  <PostContent caption={post.caption} mediaUrl={post.media_url} />
 
                   <PostInteractions 
                     postId={post.id} 

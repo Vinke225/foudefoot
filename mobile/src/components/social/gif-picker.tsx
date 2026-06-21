@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, ActivityIndicator, Image, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { ScrollView } from 'react-native';
 
 interface GifPickerProps {
   visible: boolean;
@@ -25,7 +26,15 @@ export function GifPicker({ visible, onClose, onGifSelect }: GifPickerProps) {
       
       setLoading(true);
       try {
-        const query = debouncedSearch ? debouncedSearch + " african" : "african reaction meme";
+        let query = "african reaction meme";
+        if (debouncedSearch) {
+          // If the user clicked a category like "drapeaux", we use it directly, else we append "african" just in case they want normal gifs
+          if (debouncedSearch.startsWith("flag ") || debouncedSearch.startsWith("football club ") || debouncedSearch.startsWith("animal ")) {
+            query = debouncedSearch;
+          } else {
+             query = debouncedSearch + " african";
+          }
+        }
         const url = `https://g.tenor.com/v1/search?q=${encodeURIComponent(query)}&key=LIVDSRZULELA&limit=20`;
         const res = await fetch(url);
         const data = await res.json();
@@ -85,6 +94,21 @@ export function GifPicker({ visible, onClose, onGifSelect }: GifPickerProps) {
                 autoCapitalize="none"
               />
             </View>
+            
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mt-3 flex-row">
+              <TouchableOpacity onPress={() => setSearch('flag world')} className="px-3 py-1.5 bg-blue-50 rounded-full mr-2">
+                <Text className="text-blue-600 font-medium">🏳️ Drapeaux</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setSearch('football club logo')} className="px-3 py-1.5 bg-blue-50 rounded-full mr-2">
+                <Text className="text-blue-600 font-medium">⚽ Clubs</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setSearch('animal funny')} className="px-3 py-1.5 bg-blue-50 rounded-full mr-2">
+                <Text className="text-blue-600 font-medium">🦁 Animaux</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setSearch('football player reaction')} className="px-3 py-1.5 bg-blue-50 rounded-full mr-2">
+                <Text className="text-blue-600 font-medium">🏃 Joueurs</Text>
+              </TouchableOpacity>
+            </ScrollView>
           </View>
 
           {/* Grid */}

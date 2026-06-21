@@ -4,12 +4,16 @@ import { useState, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Loader2, Image as ImageIcon, Smile, X } from "lucide-react";
+import { Plus, Loader2, Image as ImageIcon, Smile, X, AtSign, Palette } from "lucide-react";
 import { createPost } from "@/actions/post";
 import dynamic from "next/dynamic";
 import { GifPicker } from "@/components/social/GifPicker";
+import { createClient } from "@/utils/supabase/client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const EmojiPicker = dynamic(() => import("emoji-picker-react"), { ssr: false });
+
+const BACKGROUNDS = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#1f2937', '#000000'];
 
 export function CreatePostModal({ trigger }: { trigger?: React.ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -22,7 +26,49 @@ export function CreatePostModal({ trigger }: { trigger?: React.ReactNode }) {
   const [gifUrl, setGifUrl] = useState<string | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showGifPicker, setShowGifPicker] = useState(false);
+  const [postBackground, setPostBackground] = useState<string | null>(null);
+  const [showBackgroundPicker, setShowBackgroundPicker] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [mentionSearch, setMentionSearch] = useState<string | null>(null);
+  const [mentionResults, setMentionResults] = useState<any[]>([]);
+  const supabase = createClient();
+
+  const searchUsers = async (search: string) => {
+    if (!search) {
+      const { data } = await supabase.from('users').select('id, username, avatar').limit(5);
+      if (data) setMentionResults(data);
+      return;
+    }
+    const { data } = await supabase.from('users').select('id, username, avatar').ilike('username', `${search}%`).limit(5);
+    if (data) setMentionResults(data);
+  };
+
+  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const text = e.target.value;
+    setContent(text);
+    
+    const words = text.split(/[\s\n]+/);
+    const lastWord = words[words.length - 1];
+    
+    if (lastWord.startsWith('@')) {
+      const search = lastWord.substring(1);
+      setMentionSearch(search);
+      searchUsers(search);
+    } else {
+      setMentionSearch(null);
+      setMentionResults([]);
+    }
+  };
+
+  const handleMentionSelect = (username: string) => {
+    const words = content.split(/[\s\n]+/);
+    words.pop();
+    const newContent = words.join(' ') + (words.length > 0 ? ' ' : '') + `@${username} `;
+    setContent(newContent);
+    setMentionSearch(null);
+    setMentionResults([]);
+  };
 
   const onEmojiClick = (emojiObject: { emoji: string }) => {
     setContent(prev => prev + emojiObject.emoji);
@@ -32,6 +78,7 @@ export function CreatePostModal({ trigger }: { trigger?: React.ReactNode }) {
     setGifUrl(url);
     setMediaPreview(url);
     setShowGifPicker(false);
+    setPostBackground(null);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,6 +86,7 @@ export function CreatePostModal({ trigger }: { trigger?: React.ReactNode }) {
     if (file) {
       setMediaFile(file);
       setGifUrl(null);
+      setPostBackground(null);
       setMediaPreview(URL.createObjectURL(file));
     }
   };
@@ -47,6 +95,7 @@ export function CreatePostModal({ trigger }: { trigger?: React.ReactNode }) {
     setMediaFile(null);
     setGifUrl(null);
     setMediaPreview(null);
+    setPostBackground(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -60,7 +109,11 @@ export function CreatePostModal({ trigger }: { trigger?: React.ReactNode }) {
     const formData = new FormData();
     if (content.trim()) formData.append("caption", content);
     if (mediaFile) formData.append("mediaFile", mediaFile);
-    if (gifUrl) formData.append("gifUrl", gifUrl);
+    if (postBackground && content.trim()) {
+      formData.append("gifUrl", `bg:${postBackground}`);
+    } else if (gifUrl) {
+      formData.append("gifUrl", gifUrl);
+    }
 
     try {
       const res = await createPost(formData);
@@ -99,13 +152,58 @@ export function CreatePostModal({ trigger }: { trigger?: React.ReactNode }) {
         </DialogHeader>
         
         <div className="p-6">
-          <Textarea 
-            placeholder="Que voulez-vous partager à propos du foot aujourd'hui ?"
-            className="min-h-30 text-base resize-none border-0 shadow-none focus-visible:ring-0 p-0 text-gray-800 placeholder:text-gray-400 font-medium bg-transparent"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            disabled={isLoading}
-          />
+          <div 
+            className={`transition-all duration-200 ${postBackground ? 'p-8 rounded-2xl mb-4 flex items-center justify-center min-h-[250px]' : ''}`}
+            style={postBackground ? { backgroundColor: postBackground } : undefined}
+          >
+            <Textarea 
+              placeholder="Que voulez-vous partager à propos du foot aujourd'hui ?"
+              className={`resize-none border-0 shadow-none focus-visible:ring-0 p-0 bg-transparent ${postBackground ? 'text-center font-bold text-2xl text-white placeholder:text-white/70 min-h-[auto]' : 'min-h-30 text-base text-gray-800 placeholder:text-gray-400 font-medium'}`}
+              value={content}
+              onChange={handleContentChange}
+              disabled={isLoading}
+            />
+          </div>
+          
+          {mentionSearch !== null && mentionResults.length > 0 && (
+            <div className="bg-white border border-gray-100 rounded-xl shadow-lg mt-2 overflow-hidden">
+              {mentionResults.map(u => (
+                <button
+                  key={u.id}
+                  onClick={() => handleMentionSelect(u.username)}
+                  className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors text-left border-b border-gray-50 last:border-0"
+                >
+                  <Avatar className="w-8 h-8">
+                    <AvatarImage src={u.avatar} />
+                    <AvatarFallback>{u.username?.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <span className="font-bold text-sm text-gray-900">{u.username}</span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {showBackgroundPicker && !mediaFile && !gifUrl && (
+            <div className="flex gap-2 overflow-x-auto hide-scrollbar py-2 mt-2">
+              <button
+                onClick={() => setPostBackground(null)}
+                className="w-10 h-10 shrink-0 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center bg-white hover:bg-gray-50 transition-colors"
+              >
+                <X className="w-4 h-4 text-gray-400" />
+              </button>
+              {BACKGROUNDS.map(bg => (
+                <button
+                  key={bg}
+                  onClick={() => {
+                    setPostBackground(bg);
+                    removeMedia();
+                  }}
+                  style={{ backgroundColor: bg }}
+                  className={`w-10 h-10 shrink-0 rounded-lg transition-transform hover:scale-105 ${postBackground === bg ? 'ring-2 ring-offset-2 ring-black' : ''}`}
+                />
+              ))}
+            </div>
+          )}
           
           {mediaPreview && (
             <div className="relative rounded-xl overflow-hidden w-40 h-40 border border-gray-100 bg-gray-50 mt-4">
@@ -179,8 +277,28 @@ export function CreatePostModal({ trigger }: { trigger?: React.ReactNode }) {
                 </div>
               )}
             </div>
+            
+            <Button 
+              type="button" 
+              variant="ghost" 
+              size="icon" 
+              className="rounded-full w-10 h-10 text-primary hover:bg-primary/10 transition-colors"
+              onClick={() => handleContentChange({ target: { value: content + (content.endsWith(' ') || content === '' ? '@' : ' @') } } as any)}
+            >
+              <AtSign className="w-5 h-5" />
+            </Button>
+
+            <Button 
+              type="button" 
+              variant="ghost" 
+              size="icon" 
+              className={`rounded-full w-10 h-10 transition-colors ${showBackgroundPicker ? 'bg-purple-500/10 text-purple-600' : 'text-purple-500 hover:bg-purple-500/10'}`}
+              onClick={() => setShowBackgroundPicker(!showBackgroundPicker)}
+            >
+              <Palette className="w-5 h-5" />
+            </Button>
           </div>
-          <Button 
+          <Button  
             onClick={handleSubmit} 
             disabled={(!content.trim() && !mediaFile && !gifUrl) || isLoading}
             className="bg-primary hover:bg-primary/90 text-white rounded-xl px-6 h-11 font-bold shadow-[0_4px_14px_rgba(30,143,69,0.3)]"

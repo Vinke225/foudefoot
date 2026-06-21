@@ -151,6 +151,27 @@ export function PostCard({ post, currentUserId, onLikeChange, onPostDeleted }: P
     }
   };
 
+  const renderCaptionWithMentions = (text: string, isBackground: boolean) => {
+    if (!text) return null;
+    const parts = text.split(/(@\w+)/g);
+    return parts.map((part, index) => {
+      if (part.startsWith('@') && part.length > 1) {
+        return (
+          <Text 
+            key={index} 
+            className={isBackground ? 'text-blue-200' : 'text-blue-600'}
+          >
+            {part}
+          </Text>
+        );
+      }
+      return <Text key={index}>{part}</Text>;
+    });
+  };
+
+  const isTextBackground = post.media_url?.startsWith('bg:');
+  const textBackgroundColor = isTextBackground ? post.media_url.substring(3) : null;
+
   return (
     <View className="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 mb-4 relative">
       <View className="flex-row justify-between items-start mb-3">
@@ -183,19 +204,34 @@ export function PostCard({ post, currentUserId, onLikeChange, onPostDeleted }: P
         </TouchableOpacity>
       </View>
       
-      <Text className="text-[15px] mb-3 text-gray-800 leading-6">
-        {caption}
-      </Text>
-      
-      {post.media_url && (
-        <TouchableOpacity activeOpacity={0.9} onPress={() => setShowImageViewer(true)}>
-          <Image 
-            source={{ uri: post.media_url }} 
-            style={{ width: '100%', aspectRatio: 4/5, maxHeight: 450 }}
-            className="rounded-xl mb-3 bg-gray-100"
-            resizeMode="cover"
-          />
-        </TouchableOpacity>
+      {isTextBackground ? (
+        <View 
+          className="rounded-2xl mb-3 items-center justify-center p-8"
+          style={{ backgroundColor: textBackgroundColor, minHeight: 250 }}
+        >
+          <Text className="text-white text-2xl font-bold text-center leading-8">
+            {renderCaptionWithMentions(caption, true)}
+          </Text>
+        </View>
+      ) : (
+        <>
+          {!!caption && (
+            <Text className="text-[15px] mb-3 text-gray-800 leading-6">
+              {renderCaptionWithMentions(caption, false)}
+            </Text>
+          )}
+          
+          {post.media_url && (
+            <TouchableOpacity activeOpacity={0.9} onPress={() => setShowImageViewer(true)}>
+              <Image 
+                source={{ uri: post.media_url }} 
+                style={{ width: '100%', aspectRatio: 4/5, maxHeight: 450 }}
+                className="rounded-xl mb-3 bg-gray-100"
+                resizeMode="cover"
+              />
+            </TouchableOpacity>
+          )}
+        </>
       )}
 
       {/* Aperçu des likes */}

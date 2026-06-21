@@ -20,7 +20,14 @@ export function GifPicker({ onGifClick }: { onGifClick: (gifUrl: string) => void
       setLoading(true);
       try {
         // Use Tenor public test key or Giphy public key. Here using a predefined set if API fails.
-        const query = debouncedSearch ? debouncedSearch + " african" : "african reaction meme";
+        let query = "african reaction meme";
+        if (debouncedSearch) {
+          if (debouncedSearch.startsWith("flag ") || debouncedSearch.startsWith("football club ") || debouncedSearch.startsWith("animal ")) {
+            query = debouncedSearch;
+          } else {
+             query = debouncedSearch + " african";
+          }
+        }
         const url = `https://g.tenor.com/v1/search?q=${encodeURIComponent(query)}&key=LIVDSRZULELA&limit=20`;
         const res = await fetch(url);
         const data = await res.json();
@@ -65,6 +72,21 @@ export function GifPicker({ onGifClick }: { onGifClick: (gifUrl: string) => void
             placeholder="Chercher un GIF..." 
             className="h-9 pl-9 bg-gray-50 border-transparent focus-visible:ring-1 focus-visible:ring-primary rounded-lg text-[13px]" 
           />
+        </div>
+        
+        <div className="flex gap-2 mt-2 overflow-x-auto hide-scrollbar pb-1">
+          <button onClick={() => setSearch('flag world')} className="shrink-0 px-3 py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-full text-xs font-medium transition-colors">
+            🏳️ Drapeaux
+          </button>
+          <button onClick={() => setSearch('football club logo')} className="shrink-0 px-3 py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-full text-xs font-medium transition-colors">
+            ⚽ Clubs
+          </button>
+          <button onClick={() => setSearch('animal funny')} className="shrink-0 px-3 py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-full text-xs font-medium transition-colors">
+            🦁 Animaux
+          </button>
+          <button onClick={() => setSearch('football player reaction')} className="shrink-0 px-3 py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-full text-xs font-medium transition-colors">
+            🏃 Joueurs
+          </button>
         </div>
       </div>
       

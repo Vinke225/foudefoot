@@ -6,7 +6,7 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import { EditProfileModal } from "@/components/profile/EditProfileModal";
-import { PostImage } from "@/components/social/PostImage";
+import { PostContent } from "@/components/social/PostContent";
 
 export const revalidate = 0;
 
@@ -141,11 +141,7 @@ export default async function ProfilPage() {
                   </div>
                   
                   <div className="mt-4">
-                    <p className="text-[15px] mb-3 leading-relaxed text-gray-800">{post.caption}</p>
-                    
-                    {post.media_url && (
-                      <PostImage mediaUrl={post.media_url} />
-                    )}
+                    <PostContent caption={post.caption} mediaUrl={post.media_url} />
 
                     <div className="flex items-center gap-10 text-gray-500 pt-1">
                       <button className="flex items-center gap-2.5 hover:text-red-500 group transition-colors">

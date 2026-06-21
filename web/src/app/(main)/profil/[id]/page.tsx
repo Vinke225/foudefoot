@@ -2,7 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FollowButton } from "@/components/profile/FollowButton";
 import { PostInteractions } from "@/components/social/PostInteractions";
-import { PostImage } from "@/components/social/PostImage";
+import { PostContent } from "@/components/social/PostContent";
 import { PostOptions } from "@/components/social/PostOptions";
 import { Button } from "@/components/ui/button";
 
@@ -154,11 +154,7 @@ export default async function PublicProfilePage(props: { params: Promise<{ id: s
                 </div>
                 
                 <div className="mt-4">
-                  <p className="text-[15px] mb-3 leading-relaxed text-gray-800">{post.caption}</p>
-                  
-                  {post.media_url && (
-                    <PostImage mediaUrl={post.media_url} />
-                  )}
+                  <PostContent caption={post.caption} mediaUrl={post.media_url} />
 
                   <PostInteractions 
                     postId={post.id} 
