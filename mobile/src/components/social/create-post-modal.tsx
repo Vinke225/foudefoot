@@ -7,6 +7,9 @@ import { decode } from 'base64-arraybuffer';
 import { Avatar } from '../ui/avatar';
 import { supabase } from '../../lib/supabase';
 
+import EmojiPicker from 'rn-emoji-keyboard';
+import { GifPicker } from './gif-picker';
+
 interface CreatePostModalProps {
   visible: boolean;
   onClose: () => void;
@@ -17,7 +20,10 @@ interface CreatePostModalProps {
 export function CreatePostModal({ visible, onClose, userProfile, onPostCreated }: CreatePostModalProps) {
   const [caption, setCaption] = useState('');
   const [imageUri, setImageUri] = useState<string | null>(null);
+  const [gifUrl, setGifUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showGifPicker, setShowGifPicker] = useState(false);
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -28,16 +34,22 @@ export function CreatePostModal({ visible, onClose, userProfile, onPostCreated }
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
       setImageUri(result.assets[0].uri);
+      setGifUrl(null);
     }
   };
 
+  const handleGifSelect = (url: string) => {
+    setGifUrl(url);
+    setImageUri(null);
+  };
+
   const handlePublish = async () => {
-    if (!caption.trim() && !imageUri) return;
+    if (!caption.trim() && !imageUri && !gifUrl) return;
     if (!userProfile) return;
 
     setLoading(true);
     try {
-      let uploadedMediaUrl = null;
+      let finalMediaUrl = gifUrl;
 
       // 1. Upload image to Supabase Storage if an image is selected
       if (imageUri) {
@@ -62,7 +74,7 @@ export function CreatePostModal({ visible, onClose, userProfile, onPostCreated }
           .from('posts_media')
           .getPublicUrl(filePath);
           
-        uploadedMediaUrl = publicUrl;
+        finalMediaUrl = publicUrl;
       }
 
       // 2. Create the post in the database
@@ -71,8 +83,8 @@ export function CreatePostModal({ visible, onClose, userProfile, onPostCreated }
         .insert({
           user_id: userProfile.id,
           caption: caption.trim(),
-          media_url: uploadedMediaUrl,
-          type: uploadedMediaUrl ? 'image' : 'text', // Added type column to satisfy not-null constraint
+          media_url: finalMediaUrl,
+          type: finalMediaUrl ? 'image' : 'text', // Added type column to satisfy not-null constraint
         })
         .select(`
           *,
@@ -87,6 +99,7 @@ export function CreatePostModal({ visible, onClose, userProfile, onPostCreated }
       // 3. Reset state and close modal
       setCaption('');
       setImageUri(null);
+      setGifUrl(null);
       onPostCreated(newPost);
       onClose();
 
@@ -97,6 +110,8 @@ export function CreatePostModal({ visible, onClose, userProfile, onPostCreated }
       setLoading(false);
     }
   };
+
+  const mediaPreviewUrl = imageUri || gifUrl;
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
@@ -113,13 +128,13 @@ export function CreatePostModal({ visible, onClose, userProfile, onPostCreated }
             <Text className="font-bold text-lg">Créer une publication</Text>
             <TouchableOpacity 
               onPress={handlePublish}
-              disabled={loading || (!caption.trim() && !imageUri)}
-              className={`px-4 py-1.5 rounded-full ${(!caption.trim() && !imageUri) ? 'bg-gray-200' : 'bg-blue-600'}`}
+              disabled={loading || (!caption.trim() && !mediaPreviewUrl)}
+              className={`px-4 py-1.5 rounded-full ${(!caption.trim() && !mediaPreviewUrl) ? 'bg-gray-200' : 'bg-blue-600'}`}
             >
               {loading ? (
                 <ActivityIndicator size="small" color="#fff" />
               ) : (
-                <Text className={`font-bold ${(!caption.trim() && !imageUri) ? 'text-gray-400' : 'text-white'}`}>Publier</Text>
+                <Text className={`font-bold ${(!caption.trim() && !mediaPreviewUrl) ? 'text-gray-400' : 'text-white'}`}>Publier</Text>
               )}
             </TouchableOpacity>
           </View>
@@ -141,12 +156,15 @@ export function CreatePostModal({ visible, onClose, userProfile, onPostCreated }
               />
             </View>
 
-            {imageUri && (
+            {mediaPreviewUrl && (
               <View className="mt-4 relative">
-                <Image source={{ uri: imageUri }} className="w-full h-64 rounded-xl" resizeMode="cover" />
+                <Image source={{ uri: mediaPreviewUrl }} className="w-full h-64 rounded-xl" resizeMode="cover" />
                 <TouchableOpacity 
                   className="absolute top-2 right-2 bg-black/50 p-1.5 rounded-full"
-                  onPress={() => setImageUri(null)}
+                  onPress={() => {
+                    setImageUri(null);
+                    setGifUrl(null);
+                  }}
                   disabled={loading}
                 >
                   <Ionicons name="close" size={20} color="#fff" />
@@ -156,14 +174,44 @@ export function CreatePostModal({ visible, onClose, userProfile, onPostCreated }
           </View>
 
           {/* Toolbar (Bottom) */}
-          <View className="border-t border-gray-100 p-4 flex-row items-center">
-            <TouchableOpacity onPress={pickImage} disabled={loading} className="flex-row items-center mr-4">
+          <View className="border-t border-gray-100 p-4 flex-row items-center gap-4">
+            <TouchableOpacity onPress={pickImage} disabled={loading} className="p-2 bg-gray-50 rounded-full">
               <Ionicons name="image-outline" size={24} color="#3B82F6" />
-              <Text className="text-blue-600 font-medium ml-2">Ajouter une image</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setShowEmojiPicker(true)} disabled={loading} className="p-2 bg-gray-50 rounded-full">
+              <Ionicons name="happy-outline" size={24} color="#3B82F6" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setShowGifPicker(true)} disabled={loading} className="px-3 py-2 bg-gray-50 rounded-full">
+              <Text className="text-blue-500 font-bold text-xs">GIF</Text>
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
+
+      <EmojiPicker 
+        open={showEmojiPicker} 
+        onClose={() => setShowEmojiPicker(false)} 
+        onEmojiSelected={(emoji) => setCaption(prev => prev + emoji.emoji)}
+        translation={{
+          search: "Rechercher",
+          recently_used: "Récemment utilisés",
+          smileys_emotion: "Smileys & Émotions",
+          people_body: "Personnes & Corps",
+          animals_nature: "Animaux & Nature",
+          food_drink: "Nourriture & Boissons",
+          travel_places: "Voyages & Lieux",
+          activities: "Activités",
+          objects: "Objets",
+          symbols: "Symboles",
+          flags: "Drapeaux"
+        }}
+      />
+
+      <GifPicker
+        visible={showGifPicker}
+        onClose={() => setShowGifPicker(false)}
+        onGifSelect={handleGifSelect}
+      />
     </Modal>
   );
 }

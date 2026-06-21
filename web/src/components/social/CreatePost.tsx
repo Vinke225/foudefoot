@@ -141,8 +141,16 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
                     <Smile className="w-5 h-5" />
                   </Button>
                   {showEmojiPicker && (
-                    <div className="absolute top-full left-0 sm:left-10 mt-2 z-50 shadow-xl rounded-xl overflow-hidden w-75 sm:w-80 max-w-[calc(100vw-3rem)]">
-                      <EmojiPicker onEmojiClick={onEmojiClick} width="100%" height={400} />
+                    <div 
+                      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm"
+                      onClick={() => setShowEmojiPicker(false)}
+                    >
+                      <div 
+                        onClick={e => e.stopPropagation()} 
+                        className="shadow-2xl rounded-xl overflow-hidden animate-in fade-in zoom-in duration-200"
+                      >
+                        <EmojiPicker onEmojiClick={onEmojiClick} width={320} height={400} />
+                      </div>
                     </div>
                   )}
                 </div>
@@ -160,8 +168,16 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
                     GIF
                   </Button>
                   {showGifPicker && (
-                    <div className="absolute top-full left-0 sm:left-20 mt-2 z-50 shadow-xl rounded-xl bg-white">
-                      <GifPicker onGifClick={onGifClick} />
+                    <div 
+                      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm"
+                      onClick={() => setShowGifPicker(false)}
+                    >
+                      <div 
+                        onClick={e => e.stopPropagation()} 
+                        className="shadow-2xl rounded-xl overflow-hidden animate-in fade-in zoom-in duration-200 bg-white"
+                      >
+                        <GifPicker onGifClick={onGifClick} />
+                      </div>
                     </div>
                   )}
                 </div>
