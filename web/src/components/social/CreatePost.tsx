@@ -142,12 +142,12 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
           </Avatar>
           <div className="flex-1 space-y-3">
             <div 
-              className={`transition-all duration-200 ${postBackground ? 'p-8 rounded-2xl mb-2 flex items-center justify-center min-h-62.5' : ''}`}
+              className={`transition-all duration-200 ${postBackground ? 'p-8 rounded-2xl mb-2 flex items-center justify-center min-h-[250px]' : ''}`}
               style={postBackground ? { backgroundColor: postBackground } : undefined}
             >
               <Textarea 
                 placeholder="Que se passe-t-il sur le terrain ?"
-                className={`border-none resize-none focus-visible:ring-0 px-0 bg-transparent ${postBackground ? 'text-center font-bold text-2xl text-white placeholder:text-white/70 min-h-auto' : 'min-h-20 text-[15px]'}`}
+                className={`border-none resize-none focus-visible:ring-0 px-0 bg-transparent ${postBackground ? 'text-center font-bold text-2xl text-white placeholder:text-white/70 min-h-[150px] w-full flex items-center justify-center' : 'min-h-20 text-[15px]'}`}
                 value={caption}
                 onChange={handleContentChange}
                 disabled={isLoading}
@@ -187,8 +187,11 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
                     key={bg}
                     type="button"
                     onClick={() => {
+                      setMediaFile(null);
+                      setGifUrl(null);
+                      setMediaPreview(null);
+                      if (fileInputRef.current) fileInputRef.current.value = "";
                       setPostBackground(bg);
-                      removeMedia();
                     }}
                     style={{ backgroundColor: bg }}
                     className={`w-10 h-10 shrink-0 rounded-lg transition-transform hover:scale-105 ${postBackground === bg ? 'ring-2 ring-offset-2 ring-black' : ''}`}

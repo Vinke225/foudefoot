@@ -153,12 +153,12 @@ export function CreatePostModal({ trigger }: { trigger?: React.ReactNode }) {
         
         <div className="p-6">
           <div 
-            className={`transition-all duration-200 ${postBackground ? 'p-8 rounded-2xl mb-4 flex items-center justify-center min-h-62.5' : ''}`}
+            className={`transition-all duration-200 ${postBackground ? 'p-8 rounded-2xl mb-4 flex items-center justify-center min-h-[250px]' : ''}`}
             style={postBackground ? { backgroundColor: postBackground } : undefined}
           >
             <Textarea 
               placeholder="Que voulez-vous partager à propos du foot aujourd'hui ?"
-              className={`resize-none border-0 shadow-none focus-visible:ring-0 p-0 bg-transparent ${postBackground ? 'text-center font-bold text-2xl text-white placeholder:text-white/70 min-h-auto' : 'min-h-30 text-base text-gray-800 placeholder:text-gray-400 font-medium'}`}
+              className={`resize-none border-0 shadow-none focus-visible:ring-0 p-0 bg-transparent ${postBackground ? 'text-center font-bold text-2xl text-white placeholder:text-white/70 min-h-[150px] w-full flex items-center justify-center' : 'min-h-30 text-base text-gray-800 placeholder:text-gray-400 font-medium'}`}
               value={content}
               onChange={handleContentChange}
               disabled={isLoading}
@@ -195,8 +195,11 @@ export function CreatePostModal({ trigger }: { trigger?: React.ReactNode }) {
                 <button
                   key={bg}
                   onClick={() => {
+                    setMediaFile(null);
+                    setGifUrl(null);
+                    setMediaPreview(null);
+                    if (fileInputRef.current) fileInputRef.current.value = "";
                     setPostBackground(bg);
-                    removeMedia();
                   }}
                   style={{ backgroundColor: bg }}
                   className={`w-10 h-10 shrink-0 rounded-lg transition-transform hover:scale-105 ${postBackground === bg ? 'ring-2 ring-offset-2 ring-black' : ''}`}
