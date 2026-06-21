@@ -12,6 +12,28 @@ export default function NotificationsScreen() {
 
   useEffect(() => {
     fetchNotifications();
+
+    if (!session?.user) return;
+
+    const channel = supabase
+      .channel(`mobile_notifications_${session.user.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${session.user.id}`,
+        },
+        () => {
+          fetchNotifications();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [session]);
 
   const fetchNotifications = async () => {

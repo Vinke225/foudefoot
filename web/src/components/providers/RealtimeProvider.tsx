@@ -27,10 +27,11 @@ export function RealtimeProvider({
   const router = useRouter();
 
   useEffect(() => {
-    if (!userId) return;
-
-    // Reset unreadCount to initialUnreadCount whenever it changes (e.g. Server Component refresh)
     setUnreadCount(initialUnreadCount);
+  }, [initialUnreadCount]);
+
+  useEffect(() => {
+    if (!userId) return;
 
     // 1. Canal Notifications et Base de données
     const channel = supabase
@@ -108,7 +109,7 @@ export function RealtimeProvider({
       supabase.removeChannel(channel);
       supabase.removeChannel(presenceChannel);
     };
-  }, [userId, initialUnreadCount, supabase, router]);
+  }, [userId, supabase, router]);
 
   return (
     <RealtimeContext.Provider value={{ unreadCount, setUnreadCount, onlineUsers }}>

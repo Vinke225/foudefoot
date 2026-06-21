@@ -37,7 +37,7 @@ export function MobileNavBar() {
               className={cn(
                 "flex items-center justify-center transition-all duration-300 ease-spring cursor-pointer",
                 item.isAction 
-                  ? "w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg shadow-blue-600/40 transform active:scale-95 -mt-8 flex items-center justify-center border-4 border-white" 
+                  ? "w-14 h-14 bg-green-600 text-white rounded-full shadow-lg shadow-green-600/40 transform active:scale-95 -mt-8 flex items-center justify-center border-4 border-white" 
                   : "w-10 h-10 rounded-full active:scale-90",
                 isActive && !item.isAction ? "text-primary" : "text-gray-500",
                 !item.isAction && "hover:bg-gray-100"
