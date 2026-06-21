@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ActivityIndicator, FlatList, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, Image, Keyboard, Alert } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ActivityIndicator, FlatList, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, Image, Keyboard, Alert, StatusBar } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../providers/AuthProvider';
@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import EmojiPicker from 'rn-emoji-keyboard';
 import * as ImagePicker from 'expo-image-picker';
 import { decode } from 'base64-arraybuffer';
+import { ImageViewer } from '../../components/ui/image-viewer';
 
 export default function PrivateChatScreen() {
   const { id } = useLocalSearchParams();
@@ -31,6 +32,7 @@ export default function PrivateChatScreen() {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const flatListRef = useRef<FlatList>(null);
   const channelRef = useRef<any>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     if (!session?.user || !conversationId) return;
@@ -259,23 +261,52 @@ export default function PrivateChatScreen() {
     setIsSending(false);
   };
 
+  const handleDeleteMessage = (messageId: string) => {
+    Alert.alert(
+      "Supprimer le message",
+      "Voulez-vous vraiment supprimer ce message pour tout le monde ?",
+      [
+        { text: "Annuler", style: "cancel" },
+        { 
+          text: "Supprimer", 
+          style: "destructive",
+          onPress: async () => {
+            const { error } = await supabase.from('private_messages').delete().match({ id: messageId, sender_id: session?.user?.id });
+            if (error) {
+              Alert.alert('Erreur', 'Impossible de supprimer le message.');
+            } else {
+              setMessages(prev => prev.filter(m => m.id !== messageId));
+            }
+          }
+        }
+      ]
+    );
+  };
+
   const renderMessage = ({ item }: { item: any }) => {
     const isMe = item.sender_id === session?.user?.id;
     
     return (
       <View className={`flex w-full mb-3 ${isMe ? 'items-end' : 'items-start'}`}>
-        <View className={`max-w-[75%] p-3 ${isMe ? 'bg-primary text-white rounded-2xl rounded-tr-sm' : 'bg-white border border-gray-100 rounded-2xl rounded-tl-sm'}`}>
+        <TouchableOpacity 
+          activeOpacity={isMe ? 0.8 : 1}
+          onLongPress={isMe ? () => handleDeleteMessage(item.id) : undefined}
+          delayLongPress={400}
+          className={`max-w-[75%] p-3 ${isMe ? 'bg-primary text-white rounded-2xl rounded-tr-sm' : 'bg-white border border-gray-100 rounded-2xl rounded-tl-sm'}`}
+        >
           {item.media_url && (
-            <Image 
-              source={{ uri: item.media_url }} 
-              style={{ width: 200, height: 200, borderRadius: 12, marginBottom: item.message ? 8 : 0, backgroundColor: '#f3f4f6' }}
-              resizeMode="cover"
-            />
+            <TouchableOpacity onPress={() => setSelectedImage(item.media_url)} activeOpacity={0.9}>
+              <Image 
+                source={{ uri: item.media_url }} 
+                style={{ width: 200, height: 200, borderRadius: 12, marginBottom: item.message ? 8 : 0, backgroundColor: '#f3f4f6' }}
+                resizeMode="cover"
+              />
+            </TouchableOpacity>
           )}
           {item.message && (
             <Text className={`text-[15px] ${isMe ? 'text-white' : 'text-gray-900'}`}>{item.message}</Text>
           )}
-        </View>
+        </TouchableOpacity>
         <Text className="text-[10px] text-gray-400 mt-1 px-1">
           {new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           {isMe && item.is_read ? ' • Lu' : ''}
@@ -285,7 +316,7 @@ export default function PrivateChatScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }]}>
       {/* Header */}
       <View className="flex-row items-center px-4 py-3 bg-white border-b border-gray-100">
         <TouchableOpacity onPress={() => router.back()} className="mr-3 p-1">
@@ -400,6 +431,12 @@ export default function PrivateChatScreen() {
           onClose={() => setShowEmojiPicker(false)} 
         />
       </KeyboardAvoidingView>
+      
+      <ImageViewer 
+        visible={!!selectedImage} 
+        onClose={() => setSelectedImage(null)} 
+        imageUrl={selectedImage!} 
+      />
     </SafeAreaView>
   );
 }

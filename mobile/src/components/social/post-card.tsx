@@ -246,8 +246,9 @@ export function PostCard({ post, currentUserId, onLikeChange, onPostDeleted }: P
           className="flex-row items-center bg-gray-50 px-4 py-2 rounded-full"
           onPress={async () => {
             try {
+              const url = post.media_url ? `\nImage: ${post.media_url}` : '';
               await Share.share({
-                message: caption ? `Regarde ce post sur Fou de Foot ! ${caption}` : `Regarde ce post sur Fou de Foot !`,
+                message: caption ? `Regarde cette publication de ${post.users?.username || 'quelqu\'un'} sur Fou de Foot ! \n\n"${caption}"${url}` : `Regarde cette publication de ${post.users?.username || 'quelqu\'un'} sur Fou de Foot !${url}`,
               });
             } catch (error) {
               console.log(error);
