@@ -8,7 +8,7 @@ interface PostContentProps {
 
 export function PostContent({ caption, mediaUrl }: PostContentProps) {
   const isTextBackground = mediaUrl?.startsWith('bg:');
-  const textBackgroundColor = isTextBackground ? mediaUrl.substring(3) : null;
+  const textBackgroundColor = isTextBackground && mediaUrl ? mediaUrl.substring(3) : null;
 
   const renderCaptionWithMentions = (text: string | null | undefined, isBackground: boolean) => {
     if (!text) return null;
@@ -31,7 +31,7 @@ export function PostContent({ caption, mediaUrl }: PostContentProps) {
   if (isTextBackground) {
     return (
       <div 
-        className="rounded-2xl mb-3 flex items-center justify-center p-8 min-h-[250px] whitespace-pre-wrap"
+        className="rounded-2xl mb-3 flex items-center justify-center p-8 min-h-62.5 whitespace-pre-wrap"
         style={{ backgroundColor: textBackgroundColor || '#000' }}
       >
         <p className="text-white text-2xl font-bold text-center leading-relaxed">

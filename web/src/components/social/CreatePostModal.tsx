@@ -153,12 +153,12 @@ export function CreatePostModal({ trigger }: { trigger?: React.ReactNode }) {
         
         <div className="p-6">
           <div 
-            className={`transition-all duration-200 ${postBackground ? 'p-8 rounded-2xl mb-4 flex items-center justify-center min-h-[250px]' : ''}`}
+            className={`transition-all duration-200 ${postBackground ? 'p-8 rounded-2xl mb-4 flex items-center justify-center min-h-62.5' : ''}`}
             style={postBackground ? { backgroundColor: postBackground } : undefined}
           >
             <Textarea 
               placeholder="Que voulez-vous partager à propos du foot aujourd'hui ?"
-              className={`resize-none border-0 shadow-none focus-visible:ring-0 p-0 bg-transparent ${postBackground ? 'text-center font-bold text-2xl text-white placeholder:text-white/70 min-h-[auto]' : 'min-h-30 text-base text-gray-800 placeholder:text-gray-400 font-medium'}`}
+              className={`resize-none border-0 shadow-none focus-visible:ring-0 p-0 bg-transparent ${postBackground ? 'text-center font-bold text-2xl text-white placeholder:text-white/70 min-h-auto' : 'min-h-30 text-base text-gray-800 placeholder:text-gray-400 font-medium'}`}
               value={content}
               onChange={handleContentChange}
               disabled={isLoading}
