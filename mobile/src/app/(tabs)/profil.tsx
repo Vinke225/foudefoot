@@ -5,12 +5,16 @@ import { useAuth } from '../../providers/AuthProvider';
 import { PostCard } from '../../components/social/post-card';
 import { Avatar } from '../../components/ui/avatar';
 import { Ionicons } from '@expo/vector-icons';
+import { EditProfileModal } from '../../components/profile/edit-profile-modal';
 
 export default function ProfilScreen() {
   const { session } = useAuth();
   const [profile, setProfile] = useState<any>(null);
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [followersCount, setFollowersCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     fetchProfileData();
@@ -43,6 +47,21 @@ export default function ProfilScreen() {
         .order('created_at', { ascending: false });
 
       setPosts(userPosts || []);
+
+      // Fetch followers/following stats
+      const { count: followers } = await supabase
+        .from('followers')
+        .select('*', { count: 'exact', head: true })
+        .eq('following_id', session.user.id);
+        
+      const { count: following } = await supabase
+        .from('followers')
+        .select('*', { count: 'exact', head: true })
+        .eq('follower_id', session.user.id);
+
+      setFollowersCount(followers || 0);
+      setFollowingCount(following || 0);
+
     } catch (error) {
       console.error('Error fetching profile:', error);
     } finally {
@@ -56,6 +75,9 @@ export default function ProfilScreen() {
         <Avatar url={profile?.avatar} fallback={profile?.username || '?'} size={80} className="mb-4" />
         <Text className="text-2xl font-bold text-gray-900">{profile?.username || 'Utilisateur'}</Text>
         <Text className="text-gray-500 mt-1">{profile?.country || 'Sélectionnez votre pays'}</Text>
+        {profile?.bio && (
+          <Text className="text-gray-700 mt-3 text-center px-4 leading-5">{profile.bio}</Text>
+        )}
       </View>
       
       <View className="flex-row justify-around mt-6 pt-6 border-t border-gray-100">
@@ -64,12 +86,19 @@ export default function ProfilScreen() {
           <Text className="text-gray-500 text-sm">Publications</Text>
         </View>
         <View className="items-center">
-          <Text className="text-xl font-bold text-gray-900">0</Text>
+          <Text className="text-xl font-bold text-gray-900">{followersCount}</Text>
           <Text className="text-gray-500 text-sm">Abonnés</Text>
+        </View>
+        <View className="items-center">
+          <Text className="text-xl font-bold text-gray-900">{followingCount}</Text>
+          <Text className="text-gray-500 text-sm">Abonnements</Text>
         </View>
       </View>
       
-      <TouchableOpacity className="mt-6 bg-blue-50 py-3 rounded-full items-center">
+      <TouchableOpacity 
+        className="mt-6 bg-blue-50 py-3 rounded-full items-center"
+        onPress={() => setShowEditModal(true)}
+      >
         <Text className="text-blue-600 font-semibold">Modifier le profil</Text>
       </TouchableOpacity>
     </View>
@@ -108,6 +137,16 @@ export default function ProfilScreen() {
           </View>
         }
       />
+      
+      {session?.user && profile && (
+        <EditProfileModal
+          visible={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          userId={session.user.id}
+          initialData={profile}
+          onProfileUpdated={fetchProfileData}
+        />
+      )}
     </SafeAreaView>
   );
 }

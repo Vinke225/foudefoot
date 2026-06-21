@@ -21,24 +21,19 @@ export default function NotificationsScreen() {
     }
 
     try {
-      // Assuming a generic notifications table exists
       const { data, error } = await supabase
         .from('notifications')
-        .select(`
-          *,
-          actor:actor_id (username, avatar)
-        `)
+        .select('*')
         .eq('user_id', session.user.id)
         .order('created_at', { ascending: false });
 
       if (error && error.code !== '42P01') {
-        // Ignore table not found error just in case it's structured differently
         throw error;
       }
       
       setNotifications(data || []);
     } catch (error) {
-      console.log('Error fetching notifications (or table does not exist):', error);
+      console.log('Error fetching notifications:', error);
       setNotifications([]);
     } finally {
       setLoading(false);
@@ -48,6 +43,7 @@ export default function NotificationsScreen() {
   const renderNotification = ({ item }: { item: any }) => {
     let iconName = "notifications";
     let iconColor = "#3B82F6";
+    let bgColor = item.read ? "bg-white" : "bg-blue-50";
     
     if (item.type === 'like') {
       iconName = "heart";
@@ -55,24 +51,27 @@ export default function NotificationsScreen() {
     } else if (item.type === 'comment') {
       iconName = "chatbubble";
       iconColor = "#10B981";
+    } else if (item.type === 'follow') {
+      iconName = "person-add";
+      iconColor = "#3B82F6";
     }
 
     return (
-      <TouchableOpacity className="flex-row items-start p-4 bg-white border-b border-gray-50">
-        <View className="relative">
-          <Avatar url={item.actor?.avatar} fallback={item.actor?.username || '?'} size={48} />
-          <View className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5">
-            <Ionicons name={iconName as any} size={16} color={iconColor} />
-          </View>
+      <TouchableOpacity className={`flex-row items-center p-4 border-b border-gray-100 ${bgColor}`}>
+        <View className="bg-white p-2 rounded-full shadow-sm border border-gray-100">
+          <Ionicons name={iconName as any} size={24} color={iconColor} />
         </View>
-        <View className="flex-1 ml-3">
+        <View className="flex-1 ml-4">
           <Text className="text-[15px] text-gray-900 leading-5">
-            <Text className="font-bold">{item.actor?.username || 'Quelqu\'un'}</Text> {item.message || 'a interagi avec votre profil.'}
+            {item.content || 'Nouvelle notification'}
           </Text>
           <Text className="text-xs text-gray-400 mt-1">
-            {new Date(item.created_at).toLocaleDateString()}
+            {new Date(item.created_at).toLocaleString()}
           </Text>
         </View>
+        {!item.read && (
+          <View className="w-2 h-2 rounded-full bg-blue-600 ml-2" />
+        )}
       </TouchableOpacity>
     );
   };

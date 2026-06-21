@@ -139,7 +139,13 @@ export function PostCard({ post, currentUserId, onLikeChange, onPostDeleted }: P
     <View className="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 mb-4 relative">
       <View className="flex-row justify-between items-start mb-3">
         <View className="flex-row items-center">
-          <TouchableOpacity onPress={() => router.push(`/profil`)}>
+          <TouchableOpacity onPress={() => {
+            if (post.user_id === currentUserId) {
+              router.push('/(tabs)/profil');
+            } else {
+              router.push(`/user/${post.user_id}`);
+            }
+          }}>
             <Avatar url={post.users?.avatar} fallback={post.users?.username || '?'} size={40} />
           </TouchableOpacity>
           <View className="ml-3">
