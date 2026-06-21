@@ -5,6 +5,7 @@ import { useAuth } from '../../providers/AuthProvider';
 import { Avatar } from '../../components/ui/avatar';
 import { Ionicons } from '@expo/vector-icons';
 import { NewConversationModal } from '../../components/social/new-conversation-modal';
+import { router } from 'expo-router';
 
 export default function MessagesScreen() {
   const { session } = useAuth();
@@ -62,7 +63,10 @@ export default function MessagesScreen() {
     const isUnread = lastMessage && !lastMessage.is_read && lastMessage.sender_id !== session?.user?.id;
 
     return (
-      <TouchableOpacity className={`flex-row items-center p-4 border-b border-gray-50 ${isUnread ? 'bg-blue-50/30' : 'bg-white'}`}>
+      <TouchableOpacity 
+        className={`flex-row items-center p-4 border-b border-gray-50 ${isUnread ? 'bg-blue-50/30' : 'bg-white'}`}
+        onPress={() => router.push(`/messages/${item.id}`)}
+      >
         <Avatar url={otherParticipant?.avatar} fallback={otherParticipant?.username || '?'} size={52} />
         <View className="flex-1 ml-3">
           <View className="flex-row justify-between items-center mb-1">

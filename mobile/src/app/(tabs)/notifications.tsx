@@ -54,10 +54,26 @@ export default function NotificationsScreen() {
     } else if (item.type === 'follow') {
       iconName = "person-add";
       iconColor = "#3B82F6";
+    } else if (item.type === 'message') {
+      iconName = "chatbubble-ellipses";
+      iconColor = "#3B82F6";
     }
 
+    const handlePress = async () => {
+      if (!item.read) {
+        await supabase.from('notifications').update({ read: true }).eq('id', item.id);
+        setNotifications(prev => prev.map(n => n.id === item.id ? { ...n, read: true } : n));
+      }
+      if (item.type === 'message' && item.link) {
+        import('expo-router').then(({ router }) => router.push(item.link));
+      }
+    };
+
     return (
-      <TouchableOpacity className={`flex-row items-center p-4 border-b border-gray-100 ${bgColor}`}>
+      <TouchableOpacity 
+        className={`flex-row items-center p-4 border-b border-gray-100 ${bgColor}`}
+        onPress={handlePress}
+      >
         <View className="bg-white p-2 rounded-full shadow-sm border border-gray-100">
           <Ionicons name={iconName as any} size={24} color={iconColor} />
         </View>
