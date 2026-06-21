@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Modal, TouchableWithoutFeedback, Share } from 'react-native';
 import { Avatar } from '../ui/avatar';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -242,7 +242,18 @@ export function PostCard({ post, currentUserId, onLikeChange, onPostDeleted }: P
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity className="flex-row items-center bg-gray-50 px-4 py-2 rounded-full">
+        <TouchableOpacity 
+          className="flex-row items-center bg-gray-50 px-4 py-2 rounded-full"
+          onPress={async () => {
+            try {
+              await Share.share({
+                message: caption ? `Regarde ce post sur Fou de Foot ! ${caption}` : `Regarde ce post sur Fou de Foot !`,
+              });
+            } catch (error) {
+              console.log(error);
+            }
+          }}
+        >
           <Ionicons name="share-outline" size={20} color="#4B5563" />
         </TouchableOpacity>
         
