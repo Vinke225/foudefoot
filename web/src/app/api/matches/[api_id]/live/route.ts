@@ -114,7 +114,7 @@ export async function GET(
       const homeStats = statsRaw[0]?.statistics || [];
       const possessionStat = homeStats.find((s: any) => s.type === 'Ball Possession');
       if (possessionStat && possessionStat.value) {
-        homePossession = parseInt(possessionStat.value.replace('%', ''));
+        homePossession = parseInt(possessionStat.value.replace(/%/g, ''));
       }
     }
 

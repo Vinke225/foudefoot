@@ -64,8 +64,8 @@ export function MatchStats({ apiId }: { apiId: string | null }) {
 
       {stats.map((stat, index: number) => {
         // Nettoyage des valeurs pour le calcul du pourcentage (ex: "43%" -> 43)
-        const homeRaw = stat.home.replace('%', '');
-        const awayRaw = stat.away.replace('%', '');
+        const homeRaw = stat.home.replace(/%/g, '');
+        const awayRaw = stat.away.replace(/%/g, '');
         
         const homeVal = parseFloat(homeRaw) || 0;
         const awayVal = parseFloat(awayRaw) || 0;

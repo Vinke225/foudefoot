@@ -115,7 +115,7 @@ export default function StatistiquesPage() {
           <div className="divide-y divide-gray-100">
             {data.map((player, index) => (
               <div key={`${player.id}-${index}`} className="flex items-center p-4 hover:bg-gray-50 transition-colors group cursor-pointer">
-                <div className="w-8 text-center flex-shrink-0">
+                <div className="w-8 text-center shrink-0">
                   <span className={cn(
                     "text-lg font-black",
                     index === 0 ? "text-yellow-500" : index === 1 ? "text-gray-400" : index === 2 ? "text-amber-700" : "text-gray-300"

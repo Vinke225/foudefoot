@@ -269,7 +269,7 @@ export function LiveSimulation({
 
         // Synchroniser l'horloge avec la vraie minute du match
         if (data.matchElapsed) {
-          const minStr = data.matchElapsed.replace("'", "");
+          const minStr = data.matchElapsed.replace(/'/g, "");
           const min = parseInt(minStr, 10);
           if (!isNaN(min)) {
             syncClock(min);

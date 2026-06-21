@@ -45,20 +45,44 @@ export default function LiveTVScreen() {
         const boxHtml = blocks[i];
         
         const urlMatch = boxHtml.match(/<a href="([^"]+)" id="EventLink"/);
-        const team1Match = boxHtml.match(/<div class="EventTeam Right">[\s\S]*?<img alt="([^"]+)"[\s\S]*?(?:data-src|src)="([^"]+)"/);
-        const team2Match = boxHtml.match(/<div class="EventTeam Left">[\s\S]*?<img alt="([^"]+)"[\s\S]*?(?:data-src|src)="([^"]+)"/);
         const timeMatch = boxHtml.match(/<div id="EventHour">([^<]+)<\/div>/);
         const statusMatch = boxHtml.match(/<div class="EventDate[^"]*">([^<]+)<\/div>/);
         const leagueMatch = boxHtml.match(/<div class="EventLeague">([^<]+)<\/div>/);
         
-        if (team1Match && team2Match) {
+        const extractTeamInfo = (htmlBlock: string, side: 'Right' | 'Left') => {
+          const regex = side === 'Right' 
+            ? /<div class="EventTeam Right">[\s\S]*?<img ([^>]+)>/ 
+            : /<div class="EventTeam Left">[\s\S]*?<img ([^>]+)>/;
+          const blockMatch = htmlBlock.match(regex);
+          if (!blockMatch) return { name: '', logo: '' };
+          const attrs = blockMatch[1];
+          const altMatch = attrs.match(/alt="([^"]+)"/);
+          const dataSrcMatch = attrs.match(/data-src="([^"]+)"/);
+          const srcMatch = attrs.match(/src="([^"]+)"/);
+          
+          let logo = dataSrcMatch ? dataSrcMatch[1] : (srcMatch ? srcMatch[1] : '');
+          if (logo && logo.startsWith('//')) logo = 'https:' + logo;
+          
+          // Fallback if the logo is the empty gif
+          if (logo.includes('data:image/gif')) logo = '';
+          
+          return {
+            name: altMatch ? altMatch[1] : '',
+            logo: logo
+          };
+        };
+
+        const team1 = extractTeamInfo(boxHtml, 'Right');
+        const team2 = extractTeamInfo(boxHtml, 'Left');
+
+        if (team1.name && team2.name) {
            parsedMatches.push({
              id: i.toString(),
              url: urlMatch ? urlMatch[1] : '',
-             team1: team1Match[1],
-             team1Logo: team1Match[2].startsWith('//') ? 'https:' + team1Match[2] : team1Match[2],
-             team2: team2Match[1],
-             team2Logo: team2Match[2].startsWith('//') ? 'https:' + team2Match[2] : team2Match[2],
+             team1: team1.name,
+             team1Logo: team1.logo,
+             team2: team2.name,
+             team2Logo: team2.logo,
              time: timeMatch ? timeMatch[1].trim() : '',
              status: statusMatch ? statusMatch[1].trim() : '',
              league: leagueMatch ? leagueMatch[1].trim() : ''

@@ -11,7 +11,7 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: '#1E40AF',
         tabBarInactiveTintColor: 'gray',
-        headerShown: true,
+        headerShown: false,
         tabBarStyle: {
           borderTopWidth: 1,
           borderTopColor: '#f3f4f6',
@@ -27,20 +27,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="stats"
-        options={{
-          title: 'Stats',
-          tabBarIcon: ({ color }) => <Ionicons name="bar-chart" size={24} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="matchs"
-        options={{
-          title: 'Matchs',
-          tabBarIcon: ({ color }) => <Ionicons name="football" size={24} color={color} />,
-        }}
-      />
-      <Tabs.Screen
         name="livetv"
         options={{
           title: 'Live TV',
@@ -52,6 +38,13 @@ export default function TabLayout() {
         options={{
           title: 'Chat',
           tabBarIcon: ({ color }) => <Ionicons name="chatbubbles" size={24} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          title: 'Notifs',
+          tabBarIcon: ({ color }) => <Ionicons name="notifications" size={24} color={color} />,
         }}
       />
       <Tabs.Screen

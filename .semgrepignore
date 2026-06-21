@@ -1,0 +1,2 @@
+# Ignorer les erreurs d'intégrité sur les fichiers HTML contenant des scripts externes (Google, Ads, etc.)
+web/*.html

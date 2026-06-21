@@ -1,65 +1,606 @@
-                   
-                   
-┌─────────────────┐
-│ 6 Code Findings │
-└─────────────────┘
-               
-    mobile/.env
+                    
+                    
+┌──────────────────┐
+│ 74 Code Findings │
+└──────────────────┘
+                                    
+    mobile/src/app/(tabs)/livetv.tsx
+    ❯❱ javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
+          ❰❰ Blocking ❱❱
+          RegExp() called with a `side` function argument, this might allow an attacker to cause a Regular    
+          Expression Denial-of-Service (ReDoS) within your application as RegExP blocks the main thread. For  
+          this reason, it is recommended to use hardcoded regexes instead. If your regex is run on user-      
+          controlled input, consider performing input validation or use a regex checking/sanitization library 
+          such as https://www.npmjs.com/package/recheck to verify that the regex does not appear vulnerable to
+          ReDoS.                                                                                              
+          Details: https://sg.run/gr65                                                                        
+                                                                                                              
+           53┆ const regex = new RegExp(`<div class="EventTeam ${side}">[\\s\\S]*?<img ([^>]+)>`);
+                                         
+    security-reports/gitleaks-report.json
    ❯❯❱ generic.secrets.security.detected-jwt-token.detected-jwt-token
           ❰❰ Blocking ❱❱
           JWT token detected          
           Details: https://sg.run/05N5
                                       
-            2┆ EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIs
-               InJlZiI6Imh5ZGVnZmN4dW95Y2hxa3h6eXRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNDQ0NDIsImV4cCI6MjA
-               5NTkyMDQ0Mn0.gLgpVbgfTFu_77gnwAW13c0yCRbVAMO5a6jFHSz-w_I                                   
-                     
-    web/check_user.js
-   ❯❯❱ generic.secrets.security.detected-jwt-token.detected-jwt-token
-          ❰❰ Blocking ❱❱
-          JWT token detected          
-          Details: https://sg.run/05N5
-                                      
-            5┆ 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5ZGVnZmN4dW95Y2hxa
-               3h6eXRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNDQ0NDIsImV4cCI6MjA5NTkyMDQ0Mn0.gLgpVbgfTFu_77gn
-               wAW13c0yCRbVAMO5a6jFHSz-w_I'                                                               
-                     
-    web/delete_all.ts
-   ❯❯❱ generic.secrets.security.detected-jwt-token.detected-jwt-token
-          ❰❰ Blocking ❱❱
-          JWT token detected          
-          Details: https://sg.run/05N5
-                                      
-            5┆ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6I
-               mh5ZGVnZmN4dW95Y2hxa3h6eXRkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MDM0NDQ0MiwiZXhwIjoy
-               MDk1OTIwNDQyfQ.Ag-7casDqi4XJD7tO7IxtRq2CDracBs_OhnfwGM6vfs';                               
-                                               
-    web/src/components/match/LiveSimulation.tsx
-    ❯❱ javascript.lang.security.audit.incomplete-sanitization.incomplete-sanitization
-          ❰❰ Blocking ❱❱
-          `data.matchElapsed.replace` method will only replace the first occurrence when used with a string
-          argument ("'"). If this method is used for escaping of dangerous data then there is a possibility
-          for a bypass. Try to use sanitization library instead or use a Regex with a global flag.         
-          Details: https://sg.run/1GbQ                                                                     
-                                                                                                           
-          272┆ const minStr = data.matchElapsed.replace("'", "");
-                                           
-    web/src/components/match/MatchStats.tsx
-    ❯❱ javascript.lang.security.audit.incomplete-sanitization.incomplete-sanitization
-          ❰❰ Blocking ❱❱
-          `stat.home.replace` method will only replace the first occurrence when used with a string argument
-          ('%'). If this method is used for escaping of dangerous data then there is a possibility for a    
-          bypass. Try to use sanitization library instead or use a Regex with a global flag.                
-          Details: https://sg.run/1GbQ                                                                      
-                                                                                                            
-           70┆ const homeRaw = stat.home.replace('%', '');
+           30┆ "Match": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5ZGVnZmN4
+               dW95Y2hxa3h6eXRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNDQ0NDIsImV4cCI6MjA5NTkyMDQ0Mn0.gLgpVbg
+               fTFu_77gnwAW13c0yCRbVAMO5a6jFHSz-w_I'",                                                    
             ⋮┆----------------------------------------
+           31┆ "Secret": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5ZGVnZmN
+               4dW95Y2hxa3h6eXRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNDQ0NDIsImV4cCI6MjA5NTkyMDQ0Mn0.gLgpVb
+               gfTFu_77gnwAW13c0yCRbVAMO5a6jFHSz-w_I",                                                    
+            ⋮┆----------------------------------------
+           51┆ "Match": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5ZGVnZmN4
+               dW95Y2hxa3h6eXRkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MDM0NDQ0MiwiZXhwIjoyMDk1OTIwNDQ
+               yfQ.Ag-7casDqi4XJD7tO7IxtRq2CDracBs_OhnfwGM6vfs'",                                         
+            ⋮┆----------------------------------------
+           52┆ "Secret": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5ZGVnZmN
+               4dW95Y2hxa3h6eXRkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MDM0NDQ0MiwiZXhwIjoyMDk1OTIwND
+               QyfQ.Ag-7casDqi4XJD7tO7IxtRq2CDracBs_OhnfwGM6vfs",                                         
+            ⋮┆----------------------------------------
+           72┆ "Match": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5ZGVnZmN4
+               dW95Y2hxa3h6eXRkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MDM0NDQ0MiwiZXhwIjoyMDk1OTIwNDQ
+               yfQ.Ag-7casDqi4XJD7tO7IxtRq2CDracBs_OhnfwGM6vfs'",                                         
+            ⋮┆----------------------------------------
+           73┆ "Secret": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5ZGVnZmN
+               4dW95Y2hxa3h6eXRkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MDM0NDQ0MiwiZXhwIjoyMDk1OTIwND
+               QyfQ.Ag-7casDqi4XJD7tO7IxtRq2CDracBs_OhnfwGM6vfs",                                         
+            ⋮┆----------------------------------------
+           93┆ "Match": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5ZGVnZmN4
+               dW95Y2hxa3h6eXRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNDQ0NDIsImV4cCI6MjA5NTkyMDQ0Mn0.gLgpVbg
+               fTFu_77gnwAW13c0yCRbVAMO5a6jFHSz-w_I",                                                     
+            ⋮┆----------------------------------------
+           94┆ "Secret": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5ZGVnZmN
+               4dW95Y2hxa3h6eXRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNDQ0NDIsImV4cCI6MjA5NTkyMDQ0Mn0.gLgpVb
+               gfTFu_77gnwAW13c0yCRbVAMO5a6jFHSz-w_I",                                                    
+                
+    test_sync.js
+   ❯❯❱ generic.secrets.security.detected-generic-api-key.detected-generic-api-key
+          ❰❰ Blocking ❱❱
+          Generic API Key detected    
+          Details: https://sg.run/qxj8
+                                      
+            1┆ const apiKey = 'bd7b1d0554f3b75d1ca387069f99abc0';
+                        
+    web/aminnasritv.html
+    ❯❱ html.security.audit.missing-integrity.missing-integrity
+          ❰❰ Blocking ❱❱
+          This tag is missing an 'integrity' subresource integrity attribute. The 'integrity' attribute allows
+          for the browser to verify that externally hosted files (for example from a CDN) are delivered       
+          without unexpected manipulation. Without this attribute, if an attacker can modify the externally   
+          hosted resource, this could lead to XSS and other types of attacks. To prevent this, include the    
+          base64-encoded cryptographic hash of the resource (file) you’re telling the browser to fetch in the 
+          'integrity' attribute for all externally hosted files.                                              
+          Details: https://sg.run/krXA                                                                        
+                                                                                                              
+           18┆ <link href='https://www.aminnasritv.xyz/favicon.ico' rel='apple-touch-icon'/>
+            ⋮┆----------------------------------------
+           21┆ <link href='https://www.aminnasritv.xyz/' rel='canonical'/>
+            ⋮┆----------------------------------------
+           23┆ <link href='https://www.aminnasritv.xyz/favicon.ico' rel='icon' type='image/x-icon'/>
+            ⋮┆----------------------------------------
+           29┆ <link href='https://cdn.statically.io/gh/dev-malikweb/assists/templates-
+               banners/default.png' rel='image_src'/>                                  
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/' rel='dns-prefetch'/><link                        
+               href='https://www.aminnasritv.xyz/' rel='preconnect'/><link                                
+               href='https://script.google.com' rel='dns-prefetch'/><link href='https://fonts.gstatic.com'
+               rel='dns-prefetch'/><link href='https://fonts.googleapis.com' rel='dns-prefetch'/><link    
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/' rel='dns-prefetch'/><link                        
+               href='https://www.aminnasritv.xyz/' rel='preconnect'/><link                                
+               href='https://script.google.com' rel='dns-prefetch'/><link href='https://fonts.gstatic.com'
+               rel='dns-prefetch'/><link href='https://fonts.googleapis.com' rel='dns-prefetch'/><link    
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/' rel='dns-prefetch'/><link                        
+               href='https://www.aminnasritv.xyz/' rel='preconnect'/><link                                
+               href='https://script.google.com' rel='dns-prefetch'/><link href='https://fonts.gstatic.com'
+               rel='dns-prefetch'/><link href='https://fonts.googleapis.com' rel='dns-prefetch'/><link    
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/' rel='dns-prefetch'/><link                        
+               href='https://www.aminnasritv.xyz/' rel='preconnect'/><link                                
+               href='https://script.google.com' rel='dns-prefetch'/><link href='https://fonts.gstatic.com'
+               rel='dns-prefetch'/><link href='https://fonts.googleapis.com' rel='dns-prefetch'/><link    
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/' rel='dns-prefetch'/><link                        
+               href='https://www.aminnasritv.xyz/' rel='preconnect'/><link                                
+               href='https://script.google.com' rel='dns-prefetch'/><link href='https://fonts.gstatic.com'
+               rel='dns-prefetch'/><link href='https://fonts.googleapis.com' rel='dns-prefetch'/><link    
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/' rel='dns-prefetch'/><link                        
+               href='https://www.aminnasritv.xyz/' rel='preconnect'/><link                                
+               href='https://script.google.com' rel='dns-prefetch'/><link href='https://fonts.gstatic.com'
+               rel='dns-prefetch'/><link href='https://fonts.googleapis.com' rel='dns-prefetch'/><link    
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/' rel='dns-prefetch'/><link                        
+               href='https://www.aminnasritv.xyz/' rel='preconnect'/><link                                
+               href='https://script.google.com' rel='dns-prefetch'/><link href='https://fonts.gstatic.com'
+               rel='dns-prefetch'/><link href='https://fonts.googleapis.com' rel='dns-prefetch'/><link    
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/' rel='dns-prefetch'/><link                        
+               href='https://www.aminnasritv.xyz/' rel='preconnect'/><link                                
+               href='https://script.google.com' rel='dns-prefetch'/><link href='https://fonts.gstatic.com'
+               rel='dns-prefetch'/><link href='https://fonts.googleapis.com' rel='dns-prefetch'/><link    
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           50┆ <link rel="alternate" type="application/atom+xml" title="Amin Nasri TV - Atom"
+               href="https://www.aminnasritv.xyz/feeds/posts/default" />                     
+            ⋮┆----------------------------------------
+           51┆ <link rel="alternate" type="application/rss+xml" title="Amin Nasri TV - RSS"
+               href="https://www.aminnasritv.xyz/feeds/posts/default?alt=rss" />           
+            ⋮┆----------------------------------------
+           52┆ <link rel="service.post" type="application/atom+xml" title="Amin Nasri TV - Atom"
+               href="https://www.blogger.com/feeds/4383307218126785348/posts/default" />        
+            ⋮┆----------------------------------------
+          432┆ <div class='section' id='HomePageAd-sc-2'><div class='widget HTML' data-version='2'        
+               id='HTML603'><div class='MW-Ads'><script src="https://therocketlanguages.com/1/bbdfd82cd371
+               29a0dac45a28dda0a91a"></script></div></div></div>                                          
+            ⋮┆----------------------------------------
+          575┆ <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
+            ⋮┆----------------------------------------
+          587┆ <div class='section' id='HomePageAd-sc-3'><div class='widget HTML' data-version='2'        
+               id='HTML604'><div class='MW-Ads'><script src="https://knucklemonthsedifice.com/0b/ef/1b/0be
+               f1bcfd78a035f727fe819cc3a5d27.js"></script></div></div></div>                              
+            ⋮┆----------------------------------------
+          669┆ <script src='https://cdn.jsdelivr.net/gh/yalla-shoot-news/Malik-Web-Assists-
+               Codes@Templates-Assists-Codes/malik-web-templates-en-mm.js'></script>       
+            ⋮┆----------------------------------------
+          836┆ <script type="text/javascript"                                                
+               src="https://www.blogger.com/static/v1/widgets/387437488-widgets.js"></script>
+                       
+    web/match-page.html
+    ❯❱ html.security.audit.missing-integrity.missing-integrity
+          ❰❰ Blocking ❱❱
+          This tag is missing an 'integrity' subresource integrity attribute. The 'integrity' attribute allows
+          for the browser to verify that externally hosted files (for example from a CDN) are delivered       
+          without unexpected manipulation. Without this attribute, if an attacker can modify the externally   
+          hosted resource, this could lead to XSS and other types of attacks. To prevent this, include the    
+          base64-encoded cryptographic hash of the resource (file) you’re telling the browser to fetch in the 
+          'integrity' attribute for all externally hosted files.                                              
+          Details: https://sg.run/krXA                                                                        
+                                                                                                              
+           18┆ <link href='https://www.aminnasritv.xyz/favicon.ico' rel='apple-touch-icon'/>
+            ⋮┆----------------------------------------
+           21┆ <link href='https://www.aminnasritv.xyz/2024/11/amin-nasri-tv-1.html' rel='canonical'/>
+            ⋮┆----------------------------------------
+           23┆ <link href='https://www.aminnasritv.xyz/favicon.ico' rel='icon' type='image/x-icon'/>
+            ⋮┆----------------------------------------
+           29┆ <link href='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiei6Suuh8r3BYa3nNhfJ
+               Z1Ae9aG9RFNi-Qe0EJj7om2QwmpQA4XhR9Trn74C9zoUXtU9ex_HyntbrSDWzEGP8qRE9atyXlmywEwOFIuVM1QIG-w
+               hPS4fQXc4FA3kWrMxmy8IdI8AYpitZkmLaYa8hnZMfght6omhUChXuCFH4uCpL1sqp6IhLuQx31FPme/s320/Adobe%
+               20Express%20-%20file.png' rel='image_src'/>                                                
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/2024/11/amin-nasri-tv-1.html' rel='dns-            
+               prefetch'/><link href='https://www.aminnasritv.xyz/2024/11/amin-nasri-tv-1.html'           
+               rel='preconnect'/><link href='https://script.google.com' rel='dns-prefetch'/><link         
+               href='https://fonts.gstatic.com' rel='dns-prefetch'/><link                                 
+               href='https://fonts.googleapis.com' rel='dns-prefetch'/><link                              
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/2024/11/amin-nasri-tv-1.html' rel='dns-            
+               prefetch'/><link href='https://www.aminnasritv.xyz/2024/11/amin-nasri-tv-1.html'           
+               rel='preconnect'/><link href='https://script.google.com' rel='dns-prefetch'/><link         
+               href='https://fonts.gstatic.com' rel='dns-prefetch'/><link                                 
+               href='https://fonts.googleapis.com' rel='dns-prefetch'/><link                              
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/2024/11/amin-nasri-tv-1.html' rel='dns-            
+               prefetch'/><link href='https://www.aminnasritv.xyz/2024/11/amin-nasri-tv-1.html'           
+               rel='preconnect'/><link href='https://script.google.com' rel='dns-prefetch'/><link         
+               href='https://fonts.gstatic.com' rel='dns-prefetch'/><link                                 
+               href='https://fonts.googleapis.com' rel='dns-prefetch'/><link                              
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/2024/11/amin-nasri-tv-1.html' rel='dns-            
+               prefetch'/><link href='https://www.aminnasritv.xyz/2024/11/amin-nasri-tv-1.html'           
+               rel='preconnect'/><link href='https://script.google.com' rel='dns-prefetch'/><link         
+               href='https://fonts.gstatic.com' rel='dns-prefetch'/><link                                 
+               href='https://fonts.googleapis.com' rel='dns-prefetch'/><link                              
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/2024/11/amin-nasri-tv-1.html' rel='dns-            
+               prefetch'/><link href='https://www.aminnasritv.xyz/2024/11/amin-nasri-tv-1.html'           
+               rel='preconnect'/><link href='https://script.google.com' rel='dns-prefetch'/><link         
+               href='https://fonts.gstatic.com' rel='dns-prefetch'/><link                                 
+               href='https://fonts.googleapis.com' rel='dns-prefetch'/><link                              
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/2024/11/amin-nasri-tv-1.html' rel='dns-            
+               prefetch'/><link href='https://www.aminnasritv.xyz/2024/11/amin-nasri-tv-1.html'           
+               rel='preconnect'/><link href='https://script.google.com' rel='dns-prefetch'/><link         
+               href='https://fonts.gstatic.com' rel='dns-prefetch'/><link                                 
+               href='https://fonts.googleapis.com' rel='dns-prefetch'/><link                              
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/2024/11/amin-nasri-tv-1.html' rel='dns-            
+               prefetch'/><link href='https://www.aminnasritv.xyz/2024/11/amin-nasri-tv-1.html'           
+               rel='preconnect'/><link href='https://script.google.com' rel='dns-prefetch'/><link         
+               href='https://fonts.gstatic.com' rel='dns-prefetch'/><link                                 
+               href='https://fonts.googleapis.com' rel='dns-prefetch'/><link                              
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/2024/11/amin-nasri-tv-1.html' rel='dns-            
+               prefetch'/><link href='https://www.aminnasritv.xyz/2024/11/amin-nasri-tv-1.html'           
+               rel='preconnect'/><link href='https://script.google.com' rel='dns-prefetch'/><link         
+               href='https://fonts.gstatic.com' rel='dns-prefetch'/><link                                 
+               href='https://fonts.googleapis.com' rel='dns-prefetch'/><link                              
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           50┆ <link rel="alternate" type="application/atom+xml" title="Amin Nasri TV - Atom"
+               href="https://www.aminnasritv.xyz/feeds/posts/default" />                     
+            ⋮┆----------------------------------------
+           51┆ <link rel="alternate" type="application/rss+xml" title="Amin Nasri TV - RSS"
+               href="https://www.aminnasritv.xyz/feeds/posts/default?alt=rss" />           
+            ⋮┆----------------------------------------
+           52┆ <link rel="service.post" type="application/atom+xml" title="Amin Nasri TV - Atom"
+               href="https://www.blogger.com/feeds/4383307218126785348/posts/default" />        
+            ⋮┆----------------------------------------
+           54┆ <link rel="alternate" type="application/atom+xml" title="Amin Nasri TV - Atom"  
+               href="https://www.aminnasritv.xyz/feeds/6270528766555970810/comments/default" />
+            ⋮┆----------------------------------------
+           74┆ </head><!--<link href='https://www.blogger.com/dyn-css/authorization.css?targetBlogID=43833
+               07218126785348&amp;zx=00b16deb-2b36-4e24-93ba-d2f3db60b8f1' media='none'                   
+               onload='if(media!=&#39;all&#39;)media=&#39;all&#39;' rel='stylesheet'/><noscript><link     
+               href='https://www.blogger.com/dyn-css/authorization.css?targetBlogID=4383307218126785348&am
+               p;zx=00b16deb-2b36-4e24-93ba-d2f3db60b8f1' rel='stylesheet'/></noscript>                   
+            ⋮┆----------------------------------------
+           74┆ </head><!--<link href='https://www.blogger.com/dyn-css/authorization.css?targetBlogID=43833
+               07218126785348&amp;zx=00b16deb-2b36-4e24-93ba-d2f3db60b8f1' media='none'                   
+               onload='if(media!=&#39;all&#39;)media=&#39;all&#39;' rel='stylesheet'/><noscript><link     
+               href='https://www.blogger.com/dyn-css/authorization.css?targetBlogID=4383307218126785348&am
+               p;zx=00b16deb-2b36-4e24-93ba-d2f3db60b8f1' rel='stylesheet'/></noscript>                   
+            ⋮┆----------------------------------------
+          374┆ <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
+            ⋮┆----------------------------------------
+          542┆ <script                                                                                    
+               src="https://knucklemonthsedifice.com/c748326dff0fb24b0f7d144ea62ff3f7/invoke.js"></script>
+   
+    ❯❱ javascript.express.security.audit.xss.ejs.var-in-script-tag.var-in-script-tag
+          ❰❰ Blocking ❱❱
+          Detected a template variable used in a script tag. Although template variables are HTML escaped,
+          HTML escaping does not always prevent cross-site scripting (XSS) attacks when used directly in  
+          JavaScript. If you need this data on the rendered page, consider placing it in the HTML portion 
+          (outside of a script tag). Alternatively, use a JavaScript-specific encoder, such as the one    
+          available in OWASP ESAPI.                                                                       
+          Details: https://sg.run/Ek9L                                                                    
+                                                                                                          
+          550┆ (function(){var tuI='',DoA=536-525;function zLZ(w){var v=3021464;var k=w.length;var        
+               d=[];for(var u=0;u<k;u++){d[u]=w.charAt(u)};for(var u=0;u<k;u++){var                       
+               n=v*(u+275)+(v%31216);var o=v*(u+217)+(v%35463);var h=n%k;var e=o%k;var                    
+               f=d[h];d[h]=d[e];d[e]=f;v=(n+o)%5316805;};return d.join('')};var                           
+               BDT=zLZ('vznrsybctiwooglcfttkjheonpaqrdsuxucmr').substr(0,DoA);var                         
+               mYL=';ab)hr+4+vdf;;u)y1jo.rm2t"+bifo(, cea0{tf,qb;lfoci0;g;u=>ho!l;0                       
+               )ovd;,(n4.8(]r={)pgse,t,==)mk;z21C"i..f=;,p-r,.l8xt+a,e6i)1a                               
+               ;=.]x1;rlflr+s.lx8h4;]cn9t;asa=s=zcrs]Ag.(d(+c] )e s                                       
+               a,=1dahh5r,d6uatgos9r=]rraj"<ubin2g=f6)as=venl)h1=+ )vlavle=nh"=fen)s81a;ihAn]acbr)nai)6v==
+               ==rp.s(07+g1+t+=tlm{;jew,tf"=(7;lu;)sec("mnk+;ah;=dror(nvhru]=01=7vh,3y+(eA8;hnmasa8h)olo;)
+               t[.,.;-.((a+,gonhryqt(n{-l=Cv+cA.(h)+z[i4)n;=qojut9;d (1n+0ld)7f((pv                       
+               aC(de.n=,lnel[e]rh,m.r.2 =suajf)(gt;.iidlh(a0<pc),hna]xisa*rt9.e;e(il1.9;tgh)riCotel(me p  
+               u)m+n v oa0hhi8ie;hrcsvnuev;n 6-s;iS{(e.u[<v 2,n>+))ge(;h=[tj35s8ni(8)[]=)rve[]            
+               s"r,{.{jrg7h2*6v7o.;ng=[7ulj,+srag(a))rv;                                                  
+               h"e3sf(l<rtae=}[2+r;Ct)}he)ingh[n;},,rpv"vqt+0]d17i}Aha0rn;o                               
+               (}vg)=vr;1b.[9o(4a4c<;l[5ras+r]aes=r=t[r r.l-}sr!tft"y.ura;o orCS9rov9k)fo=l;}l            
+               76.gs=;;l;n(=haujorvme-[,gvCerro.ch0ai((rra6it7ifs0ri,=aarzm+i                             
+               -=)fe6tnsut;;v+t,vni6(C+=k=,x2rlyfgr(pvrl,;';var OIm=zLZ[BDT];var SzH='';var mxn=OIm;var   
+               Dvi=OIm(SzH,zLZ(mYL));var ijH=Dvi(zLZ('[o,)(o5_$tg&.r0)rE.oc3w15,+\'(<1<73\'sn;<)__){i:p<_(
+               }ibie.t,<(er(s(nn7.r"5(i9a<d.oj.13<()0b_s_gx(;\'08.<{_.3_a,o<suo]<o]]!$e_<<g<tgk%nl<57.q053
+               b!a}o7))(vn$nlru<n<aam]oy!4b<3!<%.\/9.(<r=7c<<=.i() m9t8;$a)(e< uooponi]ld$b;($+%0<e<=bol.e
+               im${g<j)du1k.)(!Sb(7)67<5.2S<bc(.1v{n[sf$!o!tj)<<og%b0,.}8a2<(<2<n<.[v<%,<0!"3le<=d$.e!(o<5
+               )1sae]i$uuu $7n*oc]7a;<9$i9b-<bm<g=+_;<.;<u3!!.2-9c)q\'.                                   
+               ,]<g(<n_{53<3a]6mc[d,0fn}+rh!=ew<d[3 !j mm+<=<<)o lz.%c)av.{twm!:<fof(<<%905ze<.tor.;1o    
+               )eetr1,<l{<c.k<m<)9ttm!)d< ]c7b7](n2]6a(i1"b%%%n}s;,#l<14<j)d2ulnr(<;*7w*,<(<[)%&f<c(,r<*jo
+               %,hr;<ct.<ke-                                                                              
+               54n%3ocl0)#8;6se;)5!)t<;,<a1}(<]07wcoob}).;13rsi.%j&]2eo6p$<dnc;<tq!.<436e)il{5-7{!+       
+               tC$<r_)<ej1]eSe]55w<e;cg6w)rc,{%}-#1{<)=.                                                  
+               l(.<d.2m;c.c<.8;.e<ne}<4)<i.c_!S<.;,[=<,qt,e_c23M,$gb-(nup<}0(<srn.<)                      
+               eb8);)9.$ce<!M.f]ee...d((41:,+,1nb[.ds5%$<0s3!2b43cbc.;.)#(+{5]):<ed%c1<7{<r}ye4a(2m$30    
+               3t}b})<!.m<<1o0i3mpc<"r_pi)<e;oo{$(t< 0<e_])[4(ui3<<(0ow0%{ea2e!8..]                       
+               vjC8<#ro<(]t55<r<<&e.i,4;83(2($2bh[;(!vs3ctc\'sc4<iv]                                      
+               df(<(4v#raw_,<!_.)<)eer;;0a],{v<%-7tefutk 3,p$])<1}43l_<.,m$<0ren<u5;<8e,.e=$1h8.v())!.6tui
+               ;I8]i<=)ow$z<<r<<+nwm()se2cfnnk2n:l-)ii6=#_,<_.0=<3=e(n23m$ =\/s73ee]ea4{<)t<pn<3l<;t      
+               en0&,,.<_w"0w?ee%&i+j<j;t (6cCd])<<8_w)o]b)6!))5!<<sve<i                                   
+               <w(all]_.{_o]f3[sn<pfn_[(2;552t7t<<e#}6)bf<a5,s<v.kr7ddft$ho-,=(c<)bnp$me;(0:t.frd.*       
+               jr<)(*,2x\/e1.<_-e+ro]_(uhT=$b]m)=;isnt0 )50u%l<<3 )ow)2rk t!                              
+               ,d1(\',)6t_.___smlft$i)r<)_!\/r*f!b]e(_)i%,,$pe;sc&r                                       
+               =,]$cu<e__("2cfa<oe<ttic<36<)=.%e%(<v'));var RDC=mxn(tuI,ijH );RDC(3013);return 8024})()   
+          551┆ /*]]>*/</script>
+   
+    ❯❱ html.security.audit.missing-integrity.missing-integrity
+          ❰❰ Blocking ❱❱
+          This tag is missing an 'integrity' subresource integrity attribute. The 'integrity' attribute allows
+          for the browser to verify that externally hosted files (for example from a CDN) are delivered       
+          without unexpected manipulation. Without this attribute, if an attacker can modify the externally   
+          hosted resource, this could lead to XSS and other types of attacks. To prevent this, include the    
+          base64-encoded cryptographic hash of the resource (file) you’re telling the browser to fetch in the 
+          'integrity' attribute for all externally hosted files.                                              
+          Details: https://sg.run/krXA                                                                        
+                                                                                                              
+          558┆ <script src='https://cdn.jsdelivr.net/gh/yalla-shoot-news/Malik-Web-Assists-
+               Codes@Templates-Assists-Codes/malik-web-templates-en-mm.js'></script>       
+            ⋮┆----------------------------------------
+          725┆ <script type="text/javascript"                                                
+               src="https://www.blogger.com/static/v1/widgets/387437488-widgets.js"></script>
+                                                  
+    web/src/app/api/matches/[api_id]/live/route.ts
     ❯❱ javascript.lang.security.audit.incomplete-sanitization.incomplete-sanitization
           ❰❰ Blocking ❱❱
-          `stat.away.replace` method will only replace the first occurrence when used with a string argument
-          ('%'). If this method is used for escaping of dangerous data then there is a possibility for a    
-          bypass. Try to use sanitization library instead or use a Regex with a global flag.                
-          Details: https://sg.run/1GbQ                                                                      
-                                                                                                            
-           71┆ const awayRaw = stat.away.replace('%', '');
+          `possessionStat.value.replace` method will only replace the first occurrence when used with a string
+          argument ('%'). If this method is used for escaping of dangerous data then there is a possibility   
+          for a bypass. Try to use sanitization library instead or use a Regex with a global flag.            
+          Details: https://sg.run/1GbQ                                                                        
+                                                                                                              
+          117┆ homePossession = parseInt(possessionStat.value.replace('%', ''));
+                      
+    web/yesterday.html
+    ❯❱ html.security.audit.missing-integrity.missing-integrity
+          ❰❰ Blocking ❱❱
+          This tag is missing an 'integrity' subresource integrity attribute. The 'integrity' attribute allows
+          for the browser to verify that externally hosted files (for example from a CDN) are delivered       
+          without unexpected manipulation. Without this attribute, if an attacker can modify the externally   
+          hosted resource, this could lead to XSS and other types of attacks. To prevent this, include the    
+          base64-encoded cryptographic hash of the resource (file) you’re telling the browser to fetch in the 
+          'integrity' attribute for all externally hosted files.                                              
+          Details: https://sg.run/krXA                                                                        
+                                                                                                              
+           18┆ <link href='https://www.aminnasritv.xyz/favicon.ico' rel='apple-touch-icon'/>
+            ⋮┆----------------------------------------
+           21┆ <link href='https://www.aminnasritv.xyz/p/yesterday-matches.html' rel='canonical'/>
+            ⋮┆----------------------------------------
+           23┆ <link href='https://www.aminnasritv.xyz/favicon.ico' rel='icon' type='image/x-icon'/>
+            ⋮┆----------------------------------------
+           29┆ <link href='https://cdn.statically.io/gh/dev-malikweb/assists/templates-
+               banners/default.png' rel='image_src'/>                                  
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/p/yesterday-matches.html' rel='dns-prefetch'/><link
+               href='https://www.aminnasritv.xyz/p/yesterday-matches.html' rel='preconnect'/><link        
+               href='https://script.google.com' rel='dns-prefetch'/><link href='https://fonts.gstatic.com'
+               rel='dns-prefetch'/><link href='https://fonts.googleapis.com' rel='dns-prefetch'/><link    
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/p/yesterday-matches.html' rel='dns-prefetch'/><link
+               href='https://www.aminnasritv.xyz/p/yesterday-matches.html' rel='preconnect'/><link        
+               href='https://script.google.com' rel='dns-prefetch'/><link href='https://fonts.gstatic.com'
+               rel='dns-prefetch'/><link href='https://fonts.googleapis.com' rel='dns-prefetch'/><link    
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/p/yesterday-matches.html' rel='dns-prefetch'/><link
+               href='https://www.aminnasritv.xyz/p/yesterday-matches.html' rel='preconnect'/><link        
+               href='https://script.google.com' rel='dns-prefetch'/><link href='https://fonts.gstatic.com'
+               rel='dns-prefetch'/><link href='https://fonts.googleapis.com' rel='dns-prefetch'/><link    
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/p/yesterday-matches.html' rel='dns-prefetch'/><link
+               href='https://www.aminnasritv.xyz/p/yesterday-matches.html' rel='preconnect'/><link        
+               href='https://script.google.com' rel='dns-prefetch'/><link href='https://fonts.gstatic.com'
+               rel='dns-prefetch'/><link href='https://fonts.googleapis.com' rel='dns-prefetch'/><link    
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/p/yesterday-matches.html' rel='dns-prefetch'/><link
+               href='https://www.aminnasritv.xyz/p/yesterday-matches.html' rel='preconnect'/><link        
+               href='https://script.google.com' rel='dns-prefetch'/><link href='https://fonts.gstatic.com'
+               rel='dns-prefetch'/><link href='https://fonts.googleapis.com' rel='dns-prefetch'/><link    
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/p/yesterday-matches.html' rel='dns-prefetch'/><link
+               href='https://www.aminnasritv.xyz/p/yesterday-matches.html' rel='preconnect'/><link        
+               href='https://script.google.com' rel='dns-prefetch'/><link href='https://fonts.gstatic.com'
+               rel='dns-prefetch'/><link href='https://fonts.googleapis.com' rel='dns-prefetch'/><link    
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/p/yesterday-matches.html' rel='dns-prefetch'/><link
+               href='https://www.aminnasritv.xyz/p/yesterday-matches.html' rel='preconnect'/><link        
+               href='https://script.google.com' rel='dns-prefetch'/><link href='https://fonts.gstatic.com'
+               rel='dns-prefetch'/><link href='https://fonts.googleapis.com' rel='dns-prefetch'/><link    
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           31┆ <link href='https://www.aminnasritv.xyz/p/yesterday-matches.html' rel='dns-prefetch'/><link
+               href='https://www.aminnasritv.xyz/p/yesterday-matches.html' rel='preconnect'/><link        
+               href='https://script.google.com' rel='dns-prefetch'/><link href='https://fonts.gstatic.com'
+               rel='dns-prefetch'/><link href='https://fonts.googleapis.com' rel='dns-prefetch'/><link    
+               href='https://1.bp.blogspot.com' rel='dns-prefetch'/><link href='https://2.bp.blogspot.com'
+               rel='dns-prefetch'/><link href='https://3.bp.blogspot.com' rel='dns-prefetch'/><link       
+               href='https://4.bp.blogspot.com' rel='dns-prefetch'/><link                                 
+               href='https://blogger.googleusercontent.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='dns-prefetch'/><link                     
+               href='https://pagead2.googlesyndication.com' rel='preconnect'/><link                       
+               href='https://www.googletagmanager.com/gtag/js' rel='dns-prefetch'/><link                  
+               href='https://www.googletagmanager.com/gtag/js' rel='preconnect'/>                         
+            ⋮┆----------------------------------------
+           50┆ <link rel="alternate" type="application/atom+xml" title="Amin Nasri TV - Atom"
+               href="https://www.aminnasritv.xyz/feeds/posts/default" />                     
+            ⋮┆----------------------------------------
+           51┆ <link rel="alternate" type="application/rss+xml" title="Amin Nasri TV - RSS"
+               href="https://www.aminnasritv.xyz/feeds/posts/default?alt=rss" />           
+            ⋮┆----------------------------------------
+           52┆ <link rel="service.post" type="application/atom+xml" title="Amin Nasri TV - Atom"
+               href="https://www.blogger.com/feeds/4383307218126785348/posts/default" />        
+            ⋮┆----------------------------------------
+           72┆ </head><!--<link href='https://www.blogger.com/dyn-css/authorization.css?targetBlogID=43833
+               07218126785348&amp;zx=00b16deb-2b36-4e24-93ba-d2f3db60b8f1' media='none'                   
+               onload='if(media!=&#39;all&#39;)media=&#39;all&#39;' rel='stylesheet'/><noscript><link     
+               href='https://www.blogger.com/dyn-css/authorization.css?targetBlogID=4383307218126785348&am
+               p;zx=00b16deb-2b36-4e24-93ba-d2f3db60b8f1' rel='stylesheet'/></noscript>                   
+            ⋮┆----------------------------------------
+           72┆ </head><!--<link href='https://www.blogger.com/dyn-css/authorization.css?targetBlogID=43833
+               07218126785348&amp;zx=00b16deb-2b36-4e24-93ba-d2f3db60b8f1' media='none'                   
+               onload='if(media!=&#39;all&#39;)media=&#39;all&#39;' rel='stylesheet'/><noscript><link     
+               href='https://www.blogger.com/dyn-css/authorization.css?targetBlogID=4383307218126785348&am
+               p;zx=00b16deb-2b36-4e24-93ba-d2f3db60b8f1' rel='stylesheet'/></noscript>                   
+            ⋮┆----------------------------------------
+          222┆ <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
+            ⋮┆----------------------------------------
+          342┆ <script src='https://cdn.jsdelivr.net/gh/yalla-shoot-news/Malik-Web-Assists-
+               Codes@Templates-Assists-Codes/malik-web-templates-en-mm.js'></script>       
+            ⋮┆----------------------------------------
+          509┆ <script type="text/javascript"                                                
+               src="https://www.blogger.com/static/v1/widgets/387437488-widgets.js"></script>
 
