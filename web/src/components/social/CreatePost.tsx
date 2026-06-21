@@ -4,11 +4,14 @@ import { useState, useRef } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Image as ImageIcon, Smile, X, Loader2 } from "lucide-react";
+import { Image as ImageIcon, Smile, X, Loader2, Palette, AtSign } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import { createPost } from "@/actions/post";
+import { createClient } from "@/utils/supabase/client";
 
 import { GifPicker } from "@/components/social/GifPicker";
+
+const BACKGROUNDS = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#1f2937', '#000000'];
 
 export function CreatePost({ user }: { user: { id: string, username?: string, avatar?: string } | null }) {
   const [caption, setCaption] = useState("");
@@ -17,8 +20,50 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
   const [gifUrl, setGifUrl] = useState<string | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showGifPicker, setShowGifPicker] = useState(false);
+  const [postBackground, setPostBackground] = useState<string | null>(null);
+  const [showBackgroundPicker, setShowBackgroundPicker] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [mentionSearch, setMentionSearch] = useState<string | null>(null);
+  const [mentionResults, setMentionResults] = useState<any[]>([]);
+  const supabase = createClient();
+
+  const searchUsers = async (search: string) => {
+    if (!search) {
+      const { data } = await supabase.from('users').select('id, username, avatar').limit(5);
+      if (data) setMentionResults(data);
+      return;
+    }
+    const { data } = await supabase.from('users').select('id, username, avatar').ilike('username', `${search}%`).limit(5);
+    if (data) setMentionResults(data);
+  };
+
+  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const text = e.target.value;
+    setCaption(text);
+    
+    const words = text.split(/[\s\n]+/);
+    const lastWord = words[words.length - 1];
+    
+    if (lastWord.startsWith('@')) {
+      const search = lastWord.substring(1);
+      setMentionSearch(search);
+      searchUsers(search);
+    } else {
+      setMentionSearch(null);
+      setMentionResults([]);
+    }
+  };
+
+  const handleMentionSelect = (username: string) => {
+    const words = caption.split(/[\s\n]+/);
+    words.pop();
+    const newContent = words.join(' ') + (words.length > 0 ? ' ' : '') + `@${username} `;
+    setCaption(newContent);
+    setMentionSearch(null);
+    setMentionResults([]);
+  };
 
   if (!user) return null;
 
@@ -30,6 +75,7 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
     setGifUrl(url);
     setMediaPreview(url);
     setShowGifPicker(false);
+    setPostBackground(null);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,6 +83,7 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
     if (file) {
       setMediaFile(file);
       setGifUrl(null);
+      setPostBackground(null);
       setMediaPreview(URL.createObjectURL(file));
     }
   };
@@ -45,6 +92,7 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
     setMediaFile(null);
     setGifUrl(null);
     setMediaPreview(null);
+    setPostBackground(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -61,7 +109,11 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
     const formData = new FormData();
     if (caption.trim()) formData.append("caption", caption);
     if (mediaFile) formData.append("mediaFile", mediaFile);
-    if (gifUrl) formData.append("gifUrl", gifUrl);
+    if (postBackground && caption.trim()) {
+      formData.append("gifUrl", `bg:${postBackground}`);
+    } else if (gifUrl) {
+      formData.append("gifUrl", gifUrl);
+    }
 
     try {
       const res = await createPost(formData);
@@ -89,12 +141,61 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
             <AvatarFallback>{user.username?.[0] || "?"}</AvatarFallback>
           </Avatar>
           <div className="flex-1 space-y-3">
-            <Textarea 
-              placeholder="Que se passe-t-il sur le terrain ?"
-              className="min-h-20 border-none resize-none focus-visible:ring-0 px-0 text-[15px] bg-transparent"
-              value={caption}
-              onChange={(e) => setCaption(e.target.value)}
-            />
+            <div 
+              className={`transition-all duration-200 ${postBackground ? 'p-8 rounded-2xl mb-2 flex items-center justify-center min-h-62.5' : ''}`}
+              style={postBackground ? { backgroundColor: postBackground } : undefined}
+            >
+              <Textarea 
+                placeholder="Que se passe-t-il sur le terrain ?"
+                className={`border-none resize-none focus-visible:ring-0 px-0 bg-transparent ${postBackground ? 'text-center font-bold text-2xl text-white placeholder:text-white/70 min-h-auto' : 'min-h-20 text-[15px]'}`}
+                value={caption}
+                onChange={handleContentChange}
+                disabled={isLoading}
+              />
+            </div>
+
+            {mentionSearch !== null && mentionResults.length > 0 && (
+              <div className="bg-white border border-gray-100 rounded-xl shadow-lg overflow-hidden absolute z-10 w-full max-w-sm left-12 top-28">
+                {mentionResults.map(u => (
+                  <button
+                    key={u.id}
+                    type="button"
+                    onClick={() => handleMentionSelect(u.username)}
+                    className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors text-left border-b border-gray-50 last:border-0"
+                  >
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={u.avatar} />
+                      <AvatarFallback>{u.username?.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <span className="font-bold text-sm text-gray-900">{u.username}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {showBackgroundPicker && !mediaFile && !gifUrl && (
+              <div className="flex gap-2 overflow-x-auto hide-scrollbar py-2">
+                <button
+                  type="button"
+                  onClick={() => setPostBackground(null)}
+                  className="w-10 h-10 shrink-0 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center bg-white hover:bg-gray-50 transition-colors"
+                >
+                  <X className="w-4 h-4 text-gray-400" />
+                </button>
+                {BACKGROUNDS.map(bg => (
+                  <button
+                    key={bg}
+                    type="button"
+                    onClick={() => {
+                      setPostBackground(bg);
+                      removeMedia();
+                    }}
+                    style={{ backgroundColor: bg }}
+                    className={`w-10 h-10 shrink-0 rounded-lg transition-transform hover:scale-105 ${postBackground === bg ? 'ring-2 ring-offset-2 ring-black' : ''}`}
+                  />
+                ))}
+              </div>
+            )}
             
             {mediaPreview && (
               <div className="relative rounded-xl overflow-hidden w-40 h-40 border border-gray-100 bg-gray-50 mt-2">
@@ -181,6 +282,26 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
                     </div>
                   )}
                 </div>
+                
+                <Button 
+                  type="button" 
+                  variant="ghost" 
+                  size="icon" 
+                  className="rounded-full w-10 h-10 text-primary hover:bg-primary/10 transition-colors"
+                  onClick={() => handleContentChange({ target: { value: caption + (caption.endsWith(' ') || caption === '' ? '@' : ' @') } } as any)}
+                >
+                  <AtSign className="w-5 h-5" />
+                </Button>
+
+                <Button 
+                  type="button" 
+                  variant="ghost" 
+                  size="icon" 
+                  className={`rounded-full w-10 h-10 transition-colors ${showBackgroundPicker ? 'bg-purple-500/10 text-purple-600' : 'text-purple-500 hover:bg-purple-500/10'}`}
+                  onClick={() => setShowBackgroundPicker(!showBackgroundPicker)}
+                >
+                  <Palette className="w-5 h-5" />
+                </Button>
               </div>
               <Button 
                 type="submit" 
