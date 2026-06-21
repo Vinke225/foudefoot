@@ -120,7 +120,7 @@ export default function UserProfileScreen() {
         await supabase.from('notifications').insert({
           user_id: id,
           type: 'follow',
-          content: `${session.user.user_metadata?.username || 'Quelqu\\'un'} a commencé à vous suivre.`,
+          content: `${session.user.user_metadata?.username || "Quelqu'un"} a commencé à vous suivre.`,
           link: `/user/${session.user.id}`
         });
 
