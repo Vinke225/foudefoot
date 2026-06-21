@@ -142,12 +142,12 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
           </Avatar>
           <div className="flex-1 space-y-3">
             <div 
-              className={`transition-all duration-200 ${postBackground ? 'p-8 rounded-2xl mb-2 flex items-center justify-center min-h-[250px]' : ''}`}
+              className={`transition-all duration-200 ${postBackground ? 'p-8 rounded-2xl mb-2 flex items-center justify-center min-h-62.5' : ''}`}
               style={postBackground ? { backgroundColor: postBackground } : undefined}
             >
               <Textarea 
                 placeholder="Que se passe-t-il sur le terrain ?"
-                className={`border-none resize-none focus-visible:ring-0 px-0 bg-transparent ${postBackground ? 'text-center font-bold text-2xl text-white placeholder:text-white/70 min-h-[150px] w-full flex items-center justify-center' : 'min-h-20 text-[15px]'}`}
+                className={`border-none resize-none focus-visible:ring-0 px-0 bg-transparent ${postBackground ? 'text-center font-bold text-2xl text-white placeholder:text-white/70 min-h-37.5 w-full flex items-center justify-center' : 'min-h-20 text-[15px]'}`}
                 value={caption}
                 onChange={handleContentChange}
                 disabled={isLoading}
