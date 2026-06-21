@@ -61,12 +61,12 @@ export default function UserProfileScreen() {
 
       // Fetch followers/following stats
       const { count: followers } = await supabase
-        .from('followers')
+        .from('follows')
         .select('*', { count: 'exact', head: true })
         .eq('following_id', id);
         
       const { count: following } = await supabase
-        .from('followers')
+        .from('follows')
         .select('*', { count: 'exact', head: true })
         .eq('follower_id', id);
 
@@ -76,7 +76,7 @@ export default function UserProfileScreen() {
       // Check if current user is following
       if (session?.user) {
         const { data: followData } = await supabase
-          .from('followers')
+          .from('follows')
           .select('id')
           .eq('follower_id', session.user.id)
           .eq('following_id', id)
@@ -100,7 +100,7 @@ export default function UserProfileScreen() {
       if (isFollowing) {
         // Unfollow
         await supabase
-          .from('followers')
+          .from('follows')
           .delete()
           .eq('follower_id', session.user.id)
           .eq('following_id', id);
@@ -110,7 +110,7 @@ export default function UserProfileScreen() {
       } else {
         // Follow
         await supabase
-          .from('followers')
+          .from('follows')
           .insert({
             follower_id: session.user.id,
             following_id: id

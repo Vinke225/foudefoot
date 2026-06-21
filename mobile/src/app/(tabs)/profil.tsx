@@ -50,12 +50,12 @@ export default function ProfilScreen() {
 
       // Fetch followers/following stats
       const { count: followers } = await supabase
-        .from('followers')
+        .from('follows')
         .select('*', { count: 'exact', head: true })
         .eq('following_id', session.user.id);
         
       const { count: following } = await supabase
-        .from('followers')
+        .from('follows')
         .select('*', { count: 'exact', head: true })
         .eq('follower_id', session.user.id);
 

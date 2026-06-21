@@ -500,7 +500,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   videoContainer: {
-    flex: 1,
+    width: '100%',
+    aspectRatio: 16 / 9,
     backgroundColor: '#000',
   },
   webview: {

@@ -364,7 +364,7 @@ export default function PrivateChatScreen() {
         )}
 
         {/* Input Area */}
-        <View className="bg-white border-t border-gray-100 p-2">
+        <View className="bg-white border-t border-gray-100 p-2" style={{ paddingBottom: Platform.OS === 'android' ? 24 : 16 }}>
           {imageUri && (
             <View className="relative w-24 h-24 ml-2 mb-2 rounded-xl overflow-hidden border border-gray-200">
               <Image source={{ uri: imageUri }} style={{ width: '100%', height: '100%' }} />

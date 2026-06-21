@@ -174,7 +174,7 @@ export function CreatePostModal({ visible, onClose, userProfile, onPostCreated }
           </View>
 
           {/* Toolbar (Bottom) */}
-          <View className="border-t border-gray-100 p-4 flex-row items-center gap-4">
+          <View className="border-t border-gray-100 p-4 flex-row items-center gap-4" style={{ paddingBottom: Platform.OS === 'android' ? 30 : 20 }}>
             <TouchableOpacity onPress={pickImage} disabled={loading} className="p-2 bg-gray-50 rounded-full">
               <Ionicons name="image-outline" size={24} color="#3B82F6" />
             </TouchableOpacity>
