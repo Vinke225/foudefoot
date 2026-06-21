@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ActivityIndicator, FlatList, TouchableOpacity, Image } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../providers/AuthProvider';
@@ -162,20 +162,27 @@ export default function UserProfileScreen() {
   };
 
   const renderHeader = () => (
-    <View className="mb-6 bg-white p-6 border-b border-gray-100 shadow-sm">
-      <TouchableOpacity 
-        onPress={() => router.back()}
-        className="mb-4"
-      >
-        <Ionicons name="arrow-back" size={24} color="#374151" />
-      </TouchableOpacity>
+    <View className="mb-6 bg-white border-b border-gray-100 shadow-sm overflow-hidden pb-6">
+      <View className="h-32 bg-gray-200 relative w-full">
+        {profile?.cover_url && (
+          <Image source={{ uri: profile.cover_url }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+        )}
+        <TouchableOpacity 
+          onPress={() => router.back()}
+          className="absolute top-4 left-4 bg-black/30 p-2 rounded-full"
+        >
+          <Ionicons name="arrow-back" size={24} color="#fff" />
+        </TouchableOpacity>
+      </View>
       
-      <View className="items-center">
-        <Avatar url={profile?.avatar} fallback={profile?.username || '?'} size={80} className="mb-4" />
+      <View className="items-center -mt-10 px-6">
+        <View className="bg-white rounded-full p-1 mb-3">
+          <Avatar url={profile?.avatar} fallback={profile?.username || '?'} size={80} />
+        </View>
         <Text className="text-2xl font-bold text-gray-900">{profile?.username || 'Utilisateur'}</Text>
         <Text className="text-gray-500 mt-1">{profile?.country || 'Sélectionnez votre pays'}</Text>
         {profile?.bio && (
-          <Text className="text-gray-700 mt-3 text-center px-4 leading-5">{profile.bio}</Text>
+          <Text className="text-gray-700 mt-3 text-center leading-5">{profile.bio}</Text>
         )}
       </View>
       

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ActivityIndicator, FlatList, TouchableOpacity, Image } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../providers/AuthProvider';
 import { PostCard } from '../../components/social/post-card';
@@ -70,17 +70,24 @@ export default function ProfilScreen() {
   };
 
   const renderHeader = () => (
-    <View className="mb-6 bg-white p-6 rounded-3xl border border-gray-100 shadow-sm mt-4">
-      <View className="items-center">
-        <Avatar url={profile?.avatar} fallback={profile?.username || '?'} size={80} className="mb-4" />
+    <View className="mb-6 bg-white rounded-3xl border border-gray-100 shadow-sm mt-4 overflow-hidden">
+      <View className="h-32 bg-gray-200 relative w-full">
+        {profile?.cover_url && (
+          <Image source={{ uri: profile.cover_url }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+        )}
+      </View>
+      <View className="items-center -mt-10 px-6">
+        <View className="bg-white rounded-full p-1 mb-3">
+          <Avatar url={profile?.avatar} fallback={profile?.username || '?'} size={80} />
+        </View>
         <Text className="text-2xl font-bold text-gray-900">{profile?.username || 'Utilisateur'}</Text>
         <Text className="text-gray-500 mt-1">{profile?.country || 'Sélectionnez votre pays'}</Text>
         {profile?.bio && (
-          <Text className="text-gray-700 mt-3 text-center px-4 leading-5">{profile.bio}</Text>
+          <Text className="text-gray-700 mt-3 text-center leading-5">{profile.bio}</Text>
         )}
       </View>
       
-      <View className="flex-row justify-around mt-6 pt-6 border-t border-gray-100">
+      <View className="flex-row justify-around mt-6 pt-6 border-t border-gray-100 px-6">
         <View className="items-center">
           <Text className="text-xl font-bold text-gray-900">{posts.length}</Text>
           <Text className="text-gray-500 text-sm">Publications</Text>
