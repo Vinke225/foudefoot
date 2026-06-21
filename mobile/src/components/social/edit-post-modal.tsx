@@ -12,12 +12,12 @@ interface EditPostModalProps {
 }
 
 export function EditPostModal({ visible, onClose, postId, initialCaption, onPostEdited }: EditPostModalProps) {
-  const [caption, setCaption] = useState(initialCaption);
+  const [caption, setCaption] = useState(initialCaption || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (visible) {
-      setCaption(initialCaption);
+      setCaption(initialCaption || '');
     }
   }, [visible, initialCaption]);
 
