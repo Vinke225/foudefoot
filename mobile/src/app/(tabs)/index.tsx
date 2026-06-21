@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, SafeAreaView, ActivityIndicator, FlatList, Text, RefreshControl, TouchableOpacity, Platform, StatusBar } from 'react-native';
+import { View, StyleSheet, SafeAreaView, ActivityIndicator, FlatList, Text, RefreshControl, TouchableOpacity, Platform, StatusBar, TextInput } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../providers/AuthProvider';
 import { PostCard } from '../../components/social/post-card';
@@ -14,6 +14,8 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [showCreatePost, setShowCreatePost] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -103,10 +105,30 @@ export default function HomeScreen() {
     <View className="mb-4">
       <View className="flex-row items-center justify-between mb-4 px-2">
         <Text className="text-2xl font-bold text-gray-900">Actualités</Text>
-        <TouchableOpacity className="bg-gray-100 p-2 rounded-full">
-          <Ionicons name="search" size={20} color="#374151" />
+        <TouchableOpacity className={`p-2 rounded-full ${showSearch ? 'bg-blue-100' : 'bg-gray-100'}`} onPress={() => setShowSearch(!showSearch)}>
+          <Ionicons name="search" size={20} color={showSearch ? "#2563eb" : "#374151"} />
         </TouchableOpacity>
       </View>
+      
+      {showSearch && (
+        <View className="px-2 mb-4">
+          <View className="bg-white flex-row items-center px-4 py-2 rounded-2xl border border-gray-200">
+            <Ionicons name="search-outline" size={20} color="#9ca3af" />
+            <TextInput
+              placeholder="Rechercher (texte, utilisateur)..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              className="flex-1 ml-2 text-gray-900 h-10"
+              autoFocus
+            />
+            {searchQuery.length > 0 && (
+              <TouchableOpacity onPress={() => setSearchQuery('')}>
+                <Ionicons name="close-circle" size={20} color="#9ca3af" />
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+      )}
       
       {/* Create Post Native Component */}
       <View className="bg-white p-4 rounded-3xl border border-gray-100 flex-row items-center shadow-sm">
@@ -137,10 +159,17 @@ export default function HomeScreen() {
     );
   }
 
+  const displayedPosts = showSearch && searchQuery.trim() 
+    ? posts.filter(p => 
+        (p.content && p.content.toLowerCase().includes(searchQuery.toLowerCase())) || 
+        (p.users?.username && p.users.username.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    : posts;
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={posts}
+        data={displayedPosts}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <PostCard 

@@ -160,6 +160,10 @@ export default function LiveTVScreen() {
            el.style.display = 'none';
         }
       });
+      // Override popups
+      window.open = function() { return null; };
+      // Disable link targets that open in new tabs
+      document.querySelectorAll('a[target="_blank"]').forEach(a => a.removeAttribute('target'));
     };
     
     const maximizePlayer = () => {

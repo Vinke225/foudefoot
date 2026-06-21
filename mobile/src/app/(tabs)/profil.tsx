@@ -125,7 +125,7 @@ export default function ProfilScreen() {
     <SafeAreaView style={styles.container}>
       <View className="flex-row items-center justify-between px-4 py-4 bg-white border-b border-gray-200">
         <Text className="text-xl font-bold">Mon Profil</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => setShowEditModal(true)}>
           <Ionicons name="settings-outline" size={24} color="#374151" />
         </TouchableOpacity>
       </View>
