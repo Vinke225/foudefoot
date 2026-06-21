@@ -18,18 +18,22 @@ interface PostCardProps {
 }
 
 const EMOJIS = [
-  { type: 'like', icon: '👍' },
-  { type: 'love', icon: '❤️' },
-  { type: 'haha', icon: '😂' },
+  { type: 'like', icon: '❤️' },
+  { type: 'football', icon: '⚽️' },
+  { type: 'fire', icon: '🔥' },
+  { type: 'shock', icon: '🤯' },
+  { type: 'laugh', icon: '😂' },
   { type: 'sad', icon: '😢' },
-  { type: 'angry', icon: '😡' }
+  { type: 'angry', icon: '😡' },
+  { type: 'goat', icon: '🐐' },
+  { type: 'card', icon: '🟥' },
 ];
 
 export function PostCard({ post, currentUserId, onLikeChange, onPostDeleted }: PostCardProps) {
   const [likesCount, setLikesCount] = useState(post.likes?.length || 0);
-  const [hasLiked, setHasLiked] = useState(
-    post.likes?.some((l: any) => l.user_id === currentUserId) || false
-  );
+  const currentUserLike = post.likes?.find((l: any) => l.user_id === currentUserId);
+  const [hasLiked, setHasLiked] = useState(!!currentUserLike);
+  const [reactionType, setReactionType] = useState(currentUserLike?.reaction_type || 'like');
   const [isLiking, setIsLiking] = useState(false);
   const [caption, setCaption] = useState(post.caption);
   
@@ -106,29 +110,41 @@ export function PostCard({ post, currentUserId, onLikeChange, onPostDeleted }: P
     };
   }, [post.id, currentUserId]);
 
-  const handleLike = async (reactionType = 'like') => {
+  const handleLike = async (newReactionType = 'like') => {
     if (!currentUserId || isLiking) return;
     
     setIsLiking(true);
     setShowEmojiPicker(false);
     
-    const newHasLiked = !hasLiked;
-    const delta = newHasLiked ? 1 : -1;
+    const isSameReaction = hasLiked && reactionType === newReactionType;
+    const newHasLiked = !isSameReaction;
     
-    // Optimistic UI update
+    let delta = 0;
+    if (isSameReaction) {
+       delta = -1;
+    } else if (!hasLiked) {
+       delta = 1;
+    }
+    
+    const prevReaction = reactionType;
+    const prevHasLiked = hasLiked;
+    
     setHasLiked(newHasLiked);
+    setReactionType(newReactionType);
     setLikesCount((prev: number) => prev + delta);
     if (onLikeChange) onLikeChange(post.id, delta, newHasLiked);
 
     try {
-      if (newHasLiked) {
-        await supabase.from('likes').insert({ post_id: post.id, user_id: currentUserId, reaction_type: reactionType });
-      } else {
-        await supabase.from('likes').delete().match({ post_id: post.id, user_id: currentUserId });
+      if (!prevHasLiked && newHasLiked) {
+         await supabase.from('likes').insert({ post_id: post.id, user_id: currentUserId, reaction_type: newReactionType });
+      } else if (prevHasLiked && !newHasLiked) {
+         await supabase.from('likes').delete().match({ post_id: post.id, user_id: currentUserId });
+      } else if (prevHasLiked && newHasLiked && prevReaction !== newReactionType) {
+         await supabase.from('likes').update({ reaction_type: newReactionType }).match({ post_id: post.id, user_id: currentUserId });
       }
     } catch (error) {
-      // Revert on error
-      setHasLiked(!newHasLiked);
+      setHasLiked(prevHasLiked);
+      setReactionType(prevReaction);
       setLikesCount((prev: number) => prev - delta);
     } finally {
       setIsLiking(false);
@@ -196,11 +212,15 @@ export function PostCard({ post, currentUserId, onLikeChange, onPostDeleted }: P
         <View className={`flex-row items-center bg-gray-50 rounded-full ${hasLiked ? 'bg-red-50' : ''}`}>
           <TouchableOpacity 
             className="px-3 py-2"
-            onPress={() => handleLike('like')}
+            onPress={() => handleLike(hasLiked ? reactionType : 'like')}
             onLongPress={() => setShowEmojiPicker(true)}
             delayLongPress={300}
           >
-            <Ionicons name={hasLiked ? "heart" : "heart-outline"} size={20} color={hasLiked ? "#EF4444" : "#4B5563"} />
+            {hasLiked ? (
+              <Text style={{ fontSize: 20 }}>{EMOJIS.find(e => e.type === reactionType)?.icon || '❤️'}</Text>
+            ) : (
+              <Text style={{ fontSize: 20, opacity: 0.6 }}>🤍</Text>
+            )}
           </TouchableOpacity>
           <TouchableOpacity 
             className="pr-4 py-2"
@@ -228,10 +248,10 @@ export function PostCard({ post, currentUserId, onLikeChange, onPostDeleted }: P
         
         {/* Emoji Picker Overlay */}
         {showEmojiPicker && (
-          <View className="absolute bottom-12 left-0 bg-white rounded-full flex-row px-2 py-1 shadow-lg border border-gray-100 z-50">
+          <View className="absolute bottom-12 left-0 bg-white rounded-2xl flex-row flex-wrap justify-center p-2 shadow-lg border border-gray-100 z-50 w-64">
             {EMOJIS.map(emoji => (
-              <TouchableOpacity key={emoji.type} onPress={() => handleLike(emoji.type)} className="p-2">
-                <Text style={{ fontSize: 24 }}>{emoji.icon}</Text>
+              <TouchableOpacity key={emoji.type} onPress={() => handleLike(emoji.type)} className="p-2 m-0.5 bg-gray-50 rounded-full">
+                <Text style={{ fontSize: 22 }}>{emoji.icon}</Text>
               </TouchableOpacity>
             ))}
           </View>

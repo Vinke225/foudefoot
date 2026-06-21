@@ -1,8 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Modal, SafeAreaView, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, Modal, SafeAreaView, FlatList, TouchableOpacity, ActivityIndicator, StatusBar, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Avatar } from '../ui/avatar';
 import { supabase } from '../../lib/supabase';
+
+const REACTIONS = [
+  { type: 'like', icon: '❤️' },
+  { type: 'football', icon: '⚽️' },
+  { type: 'fire', icon: '🔥' },
+  { type: 'shock', icon: '🤯' },
+  { type: 'laugh', icon: '😂' },
+  { type: 'sad', icon: '😢' },
+  { type: 'angry', icon: '😡' },
+  { type: 'goat', icon: '🐐' },
+  { type: 'card', icon: '🟥' },
+];
 
 interface LikesModalProps {
   visible: boolean;
@@ -41,18 +53,12 @@ export function LikesModal({ visible, onClose, postId }: LikesModalProps) {
   };
 
   const getEmojiForReaction = (reaction: string) => {
-    switch (reaction) {
-      case 'love': return '❤️';
-      case 'haha': return '😂';
-      case 'sad': return '😢';
-      case 'angry': return '😡';
-      default: return '👍';
-    }
+    return REACTIONS.find(r => r.type === reaction)?.icon || '❤️';
   };
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#fff', paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}>
         {/* Header */}
         <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-100">
           <View className="w-8" />

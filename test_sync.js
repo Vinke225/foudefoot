@@ -1,4 +1,5 @@
-const apiKey = 'bd7b1d0554f3b75d1ca387069f99abc0';
+require('dotenv').config();
+const apiKey = process.env.APIFOOTBALL_KEY;
 const importantLeagues = [1];
 let allFixtures = [];
 
