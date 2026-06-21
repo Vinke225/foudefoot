@@ -142,7 +142,7 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
                   </Button>
                   {showEmojiPicker && (
                     <div 
-                      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm"
+                      className="fixed inset-0 z-100 flex items-center justify-center bg-black/40 backdrop-blur-sm"
                       onClick={() => setShowEmojiPicker(false)}
                     >
                       <div 
@@ -169,7 +169,7 @@ export function CreatePost({ user }: { user: { id: string, username?: string, av
                   </Button>
                   {showGifPicker && (
                     <div 
-                      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm"
+                      className="fixed inset-0 z-100 flex items-center justify-center bg-black/40 backdrop-blur-sm"
                       onClick={() => setShowGifPicker(false)}
                     >
                       <div 
