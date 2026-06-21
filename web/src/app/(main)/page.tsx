@@ -56,7 +56,7 @@ export default async function Home() {
               <article key={post.id} className="bg-white p-6 rounded-3xl shadow-[0_2px_12px_rgba(0,0,0,0.02)] border border-gray-100">
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex gap-3 items-center">
-                    <Avatar className="w-11 h-11 border border-gray-100">
+                    <Avatar className="w-11 h-11 border border-gray-100" userId={post.user_id}>
                       <AvatarImage src={post.users?.avatar || ""} className="object-cover" />
                       <AvatarFallback>{post.users?.username?.[0] || "?"}</AvatarFallback>
                     </Avatar>

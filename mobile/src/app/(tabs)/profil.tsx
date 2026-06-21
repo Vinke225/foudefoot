@@ -78,7 +78,7 @@ export default function ProfilScreen() {
       </View>
       <View className="items-center -mt-10 px-6">
         <View className="bg-white rounded-full p-1 mb-3">
-          <Avatar url={profile?.avatar} fallback={profile?.username || '?'} size={80} />
+          <Avatar url={profile?.avatar} fallback={profile?.username || '?'} size={80} userId={profile?.id} />
         </View>
         <Text className="text-2xl font-bold text-gray-900">{profile?.username || 'Utilisateur'}</Text>
         <Text className="text-gray-500 mt-1">{profile?.country || 'Sélectionnez votre pays'}</Text>

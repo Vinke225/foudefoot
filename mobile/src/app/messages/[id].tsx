@@ -293,7 +293,7 @@ export default function PrivateChatScreen() {
         </TouchableOpacity>
         {otherUser ? (
           <>
-            <Avatar url={otherUser.avatar} fallback={otherUser.username || '?'} size={40} />
+            <Avatar url={otherUser.avatar} fallback={otherUser.username || '?'} size={40} userId={otherUser.id} />
             <Text className="text-[16px] font-bold text-gray-900 ml-3 flex-1" numberOfLines={1}>{otherUser.username}</Text>
           </>
         ) : (

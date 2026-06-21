@@ -2,16 +2,27 @@
 
 import * as React from "react"
 import { Avatar as AvatarPrimitive } from "@base-ui/react/avatar"
+import { useRealtime } from "@/components/providers/RealtimeProvider"
 
 import { cn } from "@/lib/utils"
 
 function Avatar({
   className,
   size = "default",
+  userId,
   ...props
 }: AvatarPrimitive.Root.Props & {
   size?: "default" | "sm" | "lg"
+  userId?: string
 }) {
+  let isOnline = false;
+  try {
+    const { onlineUsers } = useRealtime();
+    isOnline = userId ? onlineUsers.includes(userId) : false;
+  } catch (e) {
+    // We might be outside of RealtimeProvider
+  }
+
   return (
     <AvatarPrimitive.Root
       data-slot="avatar"
@@ -21,7 +32,10 @@ function Avatar({
         className
       )}
       {...props}
-    />
+    >
+      {props.children}
+      {isOnline && <AvatarBadge className="bg-green-500" />}
+    </AvatarPrimitive.Root>
   )
 }
 

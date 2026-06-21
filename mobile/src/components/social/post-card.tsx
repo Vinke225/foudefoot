@@ -162,7 +162,7 @@ export function PostCard({ post, currentUserId, onLikeChange, onPostDeleted }: P
               router.push(`/user/${post.user_id}`);
             }
           }}>
-            <Avatar url={post.users?.avatar} fallback={post.users?.username || '?'} size={40} />
+            <Avatar url={post.users?.avatar} fallback={post.users?.username || '?'} size={40} userId={post.user_id} />
           </TouchableOpacity>
           <View className="ml-3">
             <View className="flex-row items-center">

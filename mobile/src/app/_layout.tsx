@@ -4,6 +4,7 @@ import { useColorScheme } from 'react-native';
 import { Slot, useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
 import { AuthProvider, useAuth } from '../providers/AuthProvider';
+import { PresenceProvider } from '../providers/PresenceProvider';
 
 function RootLayoutNav() {
   const { session, isLoading } = useAuth();
@@ -36,7 +37,9 @@ function RootLayoutNav() {
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <RootLayoutNav />
+      <PresenceProvider>
+        <RootLayoutNav />
+      </PresenceProvider>
     </AuthProvider>
   );
 }

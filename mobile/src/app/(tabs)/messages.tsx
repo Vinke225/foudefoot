@@ -67,7 +67,7 @@ export default function MessagesScreen() {
         className={`flex-row items-center p-4 border-b border-gray-50 ${isUnread ? 'bg-blue-50/30' : 'bg-white'}`}
         onPress={() => router.push(`/messages/${item.id}`)}
       >
-        <Avatar url={otherParticipant?.avatar} fallback={otherParticipant?.username || '?'} size={52} />
+        <Avatar url={otherParticipant?.avatar} fallback={otherParticipant?.username || '?'} size={52} userId={otherParticipant?.id} />
         <View className="flex-1 ml-3">
           <View className="flex-row justify-between items-center mb-1">
             <Text className={`text-[16px] ${isUnread ? 'font-black text-black' : 'font-bold text-gray-900'}`}>

@@ -68,7 +68,7 @@ export default async function MessagesPage() {
                   href={`/messages/${convo.id}`}
                   className="flex items-center gap-4 p-3 rounded-2xl hover:bg-white transition-colors group cursor-pointer border border-transparent hover:border-gray-100 hover:shadow-[0_2px_10px_rgba(0,0,0,0.02)]"
                 >
-                  <Avatar className="w-14 h-14 border border-gray-100 shrink-0">
+                  <Avatar className="w-14 h-14 border border-gray-100 shrink-0" userId={otherUser?.id}>
                     <AvatarImage src={otherUser?.avatar || undefined} className="object-cover" />
                     <AvatarFallback className="text-lg bg-gray-100 text-gray-600 font-bold">{otherUser?.username?.[0] || "?"}</AvatarFallback>
                   </Avatar>
