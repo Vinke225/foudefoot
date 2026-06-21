@@ -7,11 +7,26 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { updateProfile } from "@/actions/profile";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
 
 export function EditProfileModal({ profile }: { profile: { avatar?: string | null, cover_url?: string | null, username?: string, country?: string | null, bio?: string | null } | null }) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const supabase = createClient();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    if (window.confirm("Êtes-vous sûr de vouloir vous déconnecter ?")) {
+      setIsLoggingOut(true);
+      await supabase.auth.signOut();
+      setOpen(false);
+      router.push("/login");
+      router.refresh();
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -102,11 +117,22 @@ export function EditProfileModal({ profile }: { profile: { avatar?: string | nul
             {error && <p className="text-red-500 text-sm font-semibold">{error}</p>}
           </div>
           
-          <DialogFooter className="px-6 py-4 border-t border-gray-50 bg-gray-50/50">
+          <DialogFooter className="px-6 py-4 border-t border-gray-50 bg-gray-50/50 flex flex-row justify-between gap-3 sm:justify-between items-center w-full">
+            <Button 
+              type="button" 
+              variant="outline"
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600 rounded-xl"
+            >
+              {isLoggingOut ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+              Déconnexion
+            </Button>
+
             <Button 
               type="submit" 
               disabled={isLoading}
-              className="bg-primary hover:bg-primary/90 text-white rounded-xl px-6 h-11 font-bold shadow-[0_4px_14px_rgba(30,143,69,0.3)] w-full"
+              className="bg-primary hover:bg-primary/90 text-white rounded-xl px-6 h-11 font-bold shadow-[0_4px_14px_rgba(30,143,69,0.3)]"
             >
               {isLoading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
               Enregistrer

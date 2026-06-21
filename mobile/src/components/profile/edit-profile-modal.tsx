@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, View, Text, TextInput, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform, ActivityIndicator, Image, ScrollView, StatusBar } from 'react-native';
+import { Modal, View, Text, TextInput, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform, ActivityIndicator, Image, ScrollView, StatusBar, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../lib/supabase';
 import * as ImagePicker from 'expo-image-picker';
@@ -33,6 +33,26 @@ export function EditProfileModal({ visible, onClose, userId, initialData, onProf
   const [coverFileUri, setCoverFileUri] = useState<string | null>(null);
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = () => {
+    Alert.alert(
+      "Déconnexion",
+      "Êtes-vous sûr de vouloir vous déconnecter ?",
+      [
+        { text: "Annuler", style: "cancel" },
+        { 
+          text: "Déconnexion", 
+          style: "destructive", 
+          onPress: async () => {
+            setIsLoggingOut(true);
+            await supabase.auth.signOut();
+            onClose();
+          } 
+        }
+      ]
+    );
+  };
 
   useEffect(() => {
     if (visible) {
@@ -222,6 +242,21 @@ export function EditProfileModal({ visible, onClose, userId, initialData, onProf
                   style={{ minHeight: 80, textAlignVertical: 'top' }}
                 />
               </View>
+
+              <TouchableOpacity 
+                onPress={handleLogout}
+                disabled={isLoggingOut}
+                className="mt-2 mb-8 bg-red-50 py-3.5 rounded-xl border border-red-100 flex-row items-center justify-center"
+              >
+                {isLoggingOut ? (
+                  <ActivityIndicator size="small" color="#EF4444" />
+                ) : (
+                  <>
+                    <Ionicons name="log-out-outline" size={20} color="#EF4444" />
+                    <Text className="text-red-500 font-bold ml-2">Déconnexion</Text>
+                  </>
+                )}
+              </TouchableOpacity>
             </View>
           </ScrollView>
 
