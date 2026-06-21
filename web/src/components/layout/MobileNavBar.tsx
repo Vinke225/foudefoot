@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Home, Trophy, PlusSquare, Bell, User, MessageSquare, Tv, Calendar, BarChart3 } from "lucide-react";
+import { Home, Plus, Bell, User, MessageSquare, Tv } from "lucide-react";
 import { useRealtime } from "@/components/providers/RealtimeProvider";
 import { CreatePostModal } from "@/components/social/CreatePostModal";
 import { cn } from "@/lib/utils";
@@ -19,7 +19,7 @@ export function MobileNavBar() {
   const navItems = [
     { icon: Home, label: "Accueil", href: "/" },
     { icon: Tv, label: "Live TV", href: "/livetv" },
-    { icon: PlusSquare, label: "Créer", href: "#", isAction: true },
+    { icon: Plus, label: "Créer", href: "#", isAction: true },
     { icon: MessageSquare, label: "Chat", href: "/messages" },
     { icon: Bell, label: "Notifs", href: "/notifications" },
     { icon: User, label: "Profil", href: "/profil" },
@@ -37,7 +37,7 @@ export function MobileNavBar() {
               className={cn(
                 "flex items-center justify-center transition-all duration-300 ease-spring cursor-pointer",
                 item.isAction 
-                  ? "w-12 h-12 bg-primary text-white rounded-xl shadow-lg shadow-primary/30 transform active:scale-95 -mt-6" 
+                  ? "w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg shadow-blue-600/40 transform active:scale-95 -mt-8 flex items-center justify-center border-4 border-white" 
                   : "w-10 h-10 rounded-full active:scale-90",
                 isActive && !item.isAction ? "text-primary" : "text-gray-500",
                 !item.isAction && "hover:bg-gray-100"
@@ -46,7 +46,7 @@ export function MobileNavBar() {
               <Icon 
                 strokeWidth={isActive || item.isAction ? 2.5 : 2} 
                 className={cn(
-                  item.isAction ? "w-6 h-6" : "w-5 h-5 transition-transform duration-300",
+                  item.isAction ? "w-7 h-7" : "w-5 h-5 transition-transform duration-300",
                   isActive && !item.isAction ? "scale-110" : ""
                 )} 
               />
