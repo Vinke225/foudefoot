@@ -50,31 +50,7 @@ export default function RegisterScreen() {
     setLoading(false);
   }
 
-  async function signInWithGoogle() {
-    setLoading(true);
-    try {
-      const redirectUrl = makeRedirectUri({
-        scheme: 'foudefoot',
-        path: 'auth-callback',
-      });
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: redirectUrl,
-        },
-      });
 
-      if (error) throw error;
-
-      if (data.url) {
-        await WebBrowser.openAuthSessionAsync(data.url, redirectUrl);
-      }
-    } catch (error: any) {
-      Alert.alert('Erreur Google', error.message);
-    } finally {
-      setLoading(false);
-    }
-  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -85,7 +61,7 @@ export default function RegisterScreen() {
             
             <ScrollView style={styles.rulesContainer}>
               <Text style={styles.ruleText}>Pour rejoindre Fou de Foot, vous devez accepter les règles suivantes :</Text>
-              <Text style={styles.ruleItem}>• Je certifie avoir plus de 18 ans.</Text>
+              <Text style={styles.ruleItem}>• Je certifie avoir 18 ans et plus.</Text>
               <Text style={styles.ruleItem}>• Je m'engage à ne publier aucun contenu à caractère sexuel ou pornographique.</Text>
               <Text style={styles.ruleItem}>• Je m'engage à ne publier aucun contenu raciste, haineux ou insultant.</Text>
               <Text style={styles.ruleItem}>• Je comprends que les administrateurs se réservent le droit de bannir tout utilisateur ne respectant pas ces règles.</Text>
@@ -207,17 +183,6 @@ export default function RegisterScreen() {
                 {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.submitButtonText}>Valider</Text>}
               </TouchableOpacity>
             </View>
-
-            <View style={styles.dividerContainer}>
-              <View style={styles.divider} />
-              <Text style={styles.dividerText}>Ou</Text>
-              <View style={styles.divider} />
-            </View>
-
-            <TouchableOpacity style={styles.googleButton} onPress={signInWithGoogle} disabled={loading}>
-              <Ionicons name="logo-google" size={20} color="#000" style={styles.googleIcon} />
-              <Text style={styles.googleButtonText}>Continuer avec Google</Text>
-            </TouchableOpacity>
 
           </View>
 
@@ -384,38 +349,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-  dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 24,
-  },
-  divider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: 'rgba(255,255,255,0.1)',
-  },
-  dividerText: {
-    color: 'rgba(255,255,255,0.5)',
-    marginHorizontal: 16,
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  googleButton: {
-    flexDirection: 'row',
-    height: 50,
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  googleIcon: {
-    marginRight: 12,
-  },
-  googleButtonText: {
-    color: '#000',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
+
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.8)',
@@ -439,7 +373,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 12,
     padding: 16,
-    maxHeight: 250,
+    maxHeight: 350,
     marginBottom: 20,
   },
   ruleText: {

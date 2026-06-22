@@ -6,6 +6,7 @@ import { PostCard } from '../../components/social/post-card';
 import { Avatar } from '../../components/ui/avatar';
 import { Ionicons } from '@expo/vector-icons';
 import { EditProfileModal } from '../../components/profile/edit-profile-modal';
+import { SettingsModal } from '../../components/profile/settings-modal';
 
 export default function ProfilScreen() {
   const { session } = useAuth();
@@ -15,6 +16,7 @@ export default function ProfilScreen() {
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
 
   useEffect(() => {
     fetchProfileData();
@@ -125,7 +127,7 @@ export default function ProfilScreen() {
     <SafeAreaView style={styles.container}>
       <View className="flex-row items-center justify-between px-4 py-4 bg-white border-b border-gray-200">
         <Text className="text-xl font-bold">Mon Profil</Text>
-        <TouchableOpacity onPress={() => setShowEditModal(true)}>
+        <TouchableOpacity onPress={() => setShowSettingsModal(true)}>
           <Ionicons name="settings-outline" size={24} color="#374151" />
         </TouchableOpacity>
       </View>
@@ -154,6 +156,11 @@ export default function ProfilScreen() {
           onProfileUpdated={fetchProfileData}
         />
       )}
+      
+      <SettingsModal 
+        visible={showSettingsModal} 
+        onClose={() => setShowSettingsModal(false)} 
+      />
     </SafeAreaView>
   );
 }

@@ -90,7 +90,7 @@ export function GifPicker({ visible, onClose, onGifSelect }: GifPickerProps) {
                 value={search}
                 onChangeText={setSearch}
                 placeholder="Rechercher un GIF..."
-                className="flex-1 ml-2 text-[15px] h-8"
+                className="flex-1 ml-2 text-[15px] min-h-[40px] py-1"
                 autoCapitalize="none"
               />
             </View>

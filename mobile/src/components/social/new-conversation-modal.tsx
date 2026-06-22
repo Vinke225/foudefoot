@@ -64,7 +64,7 @@ export function NewConversationModal({ visible, onClose, currentUserId }: NewCon
         .from('conversations')
         .select('id')
         .or(`and(user1_id.eq.${currentUserId},user2_id.eq.${otherUserId}),and(user1_id.eq.${otherUserId},user2_id.eq.${currentUserId})`)
-        .single();
+        .maybeSingle();
 
       if (existingConvo) {
         onClose();
