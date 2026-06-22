@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Home, Trophy, Bell, MessageSquare, User, Settings, ChevronRight, Tv, Calendar, BarChart3, ShieldAlert } from "lucide-react";
+import { Home, Bell, MessageSquare, User, Settings, ChevronRight, Tv, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CreatePostModal } from "@/components/social/CreatePostModal";
