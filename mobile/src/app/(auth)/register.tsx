@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, Modal } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,10 +17,17 @@ export default function RegisterScreen() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showEula, setShowEula] = useState(false);
+  const [eulaAccepted, setEulaAccepted] = useState(false);
 
   const router = useRouter();
 
   async function signUpWithEmail() {
+    if (!eulaAccepted) {
+      setShowEula(true);
+      return;
+    }
+
     setLoading(true);
     const { data, error } = await supabase.auth.signUp({
       email: email,
@@ -28,6 +35,8 @@ export default function RegisterScreen() {
       options: {
         data: {
           username: username,
+          eula_accepted: true,
+          eula_accepted_at: new Date().toISOString()
         }
       }
     });
@@ -69,6 +78,54 @@ export default function RegisterScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Modal visible={showEula} animationType="slide" transparent={true}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Conditions d'Utilisation</Text>
+            
+            <ScrollView style={styles.rulesContainer}>
+              <Text style={styles.ruleText}>Pour rejoindre Fou de Foot, vous devez accepter les règles suivantes :</Text>
+              <Text style={styles.ruleItem}>• Je certifie avoir plus de 18 ans.</Text>
+              <Text style={styles.ruleItem}>• Je m'engage à ne publier aucun contenu à caractère sexuel ou pornographique.</Text>
+              <Text style={styles.ruleItem}>• Je m'engage à ne publier aucun contenu raciste, haineux ou insultant.</Text>
+              <Text style={styles.ruleItem}>• Je comprends que les administrateurs se réservent le droit de bannir tout utilisateur ne respectant pas ces règles.</Text>
+            </ScrollView>
+
+            <TouchableOpacity 
+              style={styles.checkboxContainer} 
+              onPress={() => setEulaAccepted(!eulaAccepted)}
+              activeOpacity={0.8}
+            >
+              <View style={[styles.checkbox, eulaAccepted && styles.checkboxChecked]}>
+                {eulaAccepted && <Ionicons name="checkmark" size={16} color="#fff" />}
+              </View>
+              <Text style={styles.checkboxLabel}>
+                J'accepte ces conditions et je comprends qu'en cas de non-respect, mon compte sera suspendu.
+              </Text>
+            </TouchableOpacity>
+
+            <View style={styles.modalActions}>
+              <TouchableOpacity 
+                style={styles.modalCancelButton} 
+                onPress={() => { setShowEula(false); setEulaAccepted(false); }}
+              >
+                <Text style={styles.modalCancelButtonText}>Annuler</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.modalConfirmButton, !eulaAccepted && styles.modalConfirmButtonDisabled]} 
+                onPress={() => {
+                  setShowEula(false);
+                  signUpWithEmail();
+                }}
+                disabled={!eulaAccepted}
+              >
+                <Text style={styles.modalConfirmButtonText}>Confirmer</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
@@ -356,6 +413,103 @@ const styles = StyleSheet.create({
   },
   googleButtonText: {
     color: '#000',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  modalContent: {
+    backgroundColor: '#111113',
+    borderColor: 'rgba(255,255,255,0.1)',
+    borderWidth: 1,
+    borderRadius: 24,
+    padding: 24,
+  },
+  modalTitle: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  rulesContainer: {
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    borderRadius: 12,
+    padding: 16,
+    maxHeight: 250,
+    marginBottom: 20,
+  },
+  ruleText: {
+    color: '#d1d5db',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 12,
+  },
+  ruleItem: {
+    color: '#9ca3af',
+    fontSize: 14,
+    marginBottom: 8,
+    lineHeight: 20,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 24,
+  },
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: '#6b7280',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+    marginTop: 2,
+  },
+  checkboxChecked: {
+    backgroundColor: '#1E8F45',
+    borderColor: '#1E8F45',
+  },
+  checkboxLabel: {
+    color: '#d1d5db',
+    flex: 1,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  modalActions: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  modalCancelButton: {
+    flex: 1,
+    height: 50,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalCancelButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  modalConfirmButton: {
+    flex: 1,
+    height: 50,
+    backgroundColor: '#1E8F45',
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalConfirmButtonDisabled: {
+    opacity: 0.5,
+  },
+  modalConfirmButtonText: {
+    color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
   },

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Modal, SafeAreaView, KeyboardAvoidingView, Platform, FlatList, ActivityIndicator, StatusBar } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Avatar } from '../ui/avatar';
 import { supabase } from '../../lib/supabase';
 
@@ -17,6 +18,7 @@ export function CommentsModal({ visible, onClose, postId, currentUserId, onComme
   const [loading, setLoading] = useState(true);
   const [newComment, setNewComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     if (!visible || !postId) return;
@@ -144,7 +146,10 @@ export function CommentsModal({ visible, onClose, postId, currentUserId, onComme
           )}
 
           {/* Input Area */}
-          <View className="border-t border-gray-100 p-3 flex-row items-center bg-white">
+          <View 
+            className="border-t border-gray-100 p-3 flex-row items-center bg-white"
+            style={{ paddingBottom: Platform.OS === 'android' ? Math.max(insets.bottom, 16) : Math.max(insets.bottom, 12) }}
+          >
             <TextInput
               className="flex-1 bg-gray-50 rounded-full px-4 py-2.5 text-[15px]"
               placeholder="Ajouter un commentaire..."

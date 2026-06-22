@@ -1,0 +1,8 @@
+node_modules/
+.env
+.env.*
+security-reports/
+*.apk
+.DS_Store
+mobile/android/
+mobile/ios/

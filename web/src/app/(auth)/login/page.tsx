@@ -16,6 +16,8 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showEula, setShowEula] = useState(false);
+  const [eulaAccepted, setEulaAccepted] = useState(false);
 
   const supabase = createClient();
   const router = useRouter();
@@ -46,6 +48,12 @@ export default function LoginPage() {
 
     try {
       if (isSignUp) {
+        if (!eulaAccepted) {
+          setShowEula(true);
+          setLoading(false);
+          return;
+        }
+
         const { error: signUpError } = await supabase.auth.signUp({
           email,
           password,
@@ -64,6 +72,8 @@ export default function LoginPage() {
           await supabase.from('users').insert({
             id: user.id,
             username: username || email.split('@')[0],
+            eula_accepted: true,
+            eula_accepted_at: new Date().toISOString(),
           });
         }
         
@@ -106,6 +116,60 @@ export default function LoginPage() {
 
   return (
     <div className="relative w-full min-h-screen flex items-center justify-center overflow-y-auto bg-zinc-950 py-10">
+      
+      {/* EULA Modal */}
+      {showEula && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="bg-[#111113] border border-white/10 rounded-2xl p-6 max-w-lg w-full shadow-2xl animate-in fade-in zoom-in-95">
+            <h2 className="text-2xl font-bold text-white mb-4">Conditions d'Utilisation</h2>
+            
+            <div className="bg-white/5 rounded-xl p-4 mb-6 max-h-60 overflow-y-auto">
+              <p className="text-gray-300 text-sm mb-3 font-medium">Pour rejoindre Fou de Foot, vous devez accepter les règles suivantes :</p>
+              <ul className="list-disc list-inside text-gray-400 text-sm space-y-2">
+                <li>Je certifie avoir <strong className="text-white">plus de 18 ans</strong>.</li>
+                <li>Je m'engage à ne publier <strong className="text-white">aucun contenu à caractère sexuel ou pornographique</strong>.</li>
+                <li>Je m'engage à ne publier <strong className="text-white">aucun contenu raciste, haineux ou insultant</strong>.</li>
+                <li>Je comprends que les administrateurs se réservent le droit de bannir tout utilisateur ne respectant pas ces règles.</li>
+              </ul>
+            </div>
+
+            <label className="flex items-start gap-3 mb-6 cursor-pointer group">
+              <div className="relative flex items-center">
+                <input 
+                  type="checkbox" 
+                  className="peer sr-only"
+                  checked={eulaAccepted}
+                  onChange={(e) => setEulaAccepted(e.target.checked)}
+                />
+                <div className="w-6 h-6 border-2 border-gray-500 rounded bg-transparent peer-checked:bg-primary peer-checked:border-primary transition-all"></div>
+                <svg className="absolute w-4 h-4 text-white left-1 top-1 opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+              <span className="text-sm text-gray-300 leading-snug group-hover:text-white transition-colors">
+                J'accepte ces conditions et je comprends qu'en cas de non-respect, mon compte sera suspendu.
+              </span>
+            </label>
+
+            <div className="flex gap-3">
+              <button 
+                onClick={() => { setShowEula(false); setEulaAccepted(false); }}
+                className="flex-1 h-12 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-colors"
+              >
+                Annuler
+              </button>
+              <button 
+                onClick={(e) => {
+                  setShowEula(false);
+                  handleAuth(e as any);
+                }}
+                disabled={!eulaAccepted}
+                className="flex-1 h-12 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl shadow-[0_0_15px_rgba(30,143,69,0.3)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Confirmer l'inscription
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Background Image: Dark Stadium */}
       <div 
