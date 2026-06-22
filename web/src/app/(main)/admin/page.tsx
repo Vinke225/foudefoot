@@ -5,7 +5,6 @@ import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { ShieldAlert, FileText, Ban, CheckCircle } from "lucide-react";
 // @ts-ignore
-import html2pdf from "html2pdf.js";
 
 interface UserProfile {
   id: string;
@@ -88,51 +87,7 @@ export default function AdminPage() {
     }
   };
 
-  const exportEulaPdf = (user: UserProfile) => {
-    const element = document.createElement("div");
-    element.innerHTML = `
-      <div style="padding: 40px; font-family: Arial, sans-serif; color: #000;">
-        <h1 style="color: #1E8F45; text-align: center; border-bottom: 2px solid #1E8F45; padding-bottom: 10px;">Fou de Foot - Attestation d'Acceptation</h1>
-        <br/>
-        <h3>Informations de l'utilisateur</h3>
-        <p><strong>ID Unique :</strong> ${user.id}</p>
-        <p><strong>Pseudonyme :</strong> ${user.username}</p>
-        <p><strong>Date d'inscription :</strong> ${new Date(user.created_at).toLocaleString('fr-FR')}</p>
-        
-        <br/>
-        <h3>Consentement aux Conditions d'Utilisation (EULA)</h3>
-        <p>L'utilisateur susmentionné a certifié et accepté les règles de la plateforme Fou de Foot à la date du :</p>
-        <p style="background: #f3f4f6; padding: 10px; border-left: 4px solid #1E8F45; font-weight: bold;">
-          ${user.eula_accepted_at ? new Date(user.eula_accepted_at).toLocaleString('fr-FR') : 'Non renseigné'}
-        </p>
 
-        <br/>
-        <h3>Règles acceptées :</h3>
-        <ul style="line-height: 1.6;">
-          <li>L'utilisateur certifie avoir <strong>plus de 18 ans</strong>.</li>
-          <li>L'utilisateur s'engage à ne publier <strong>aucun contenu à caractère sexuel ou pornographique</strong>.</li>
-          <li>L'utilisateur s'engage à ne publier <strong>aucun contenu raciste, haineux ou insultant</strong>.</li>
-          <li>L'utilisateur comprend et accepte que les administrateurs se réservent le droit de le bannir de la plateforme en cas de non-respect de ces règles.</li>
-        </ul>
-        
-        <br/><br/><br/>
-        <p style="text-align: center; font-size: 12px; color: #666;">
-          Ce document constitue une preuve numérique de l'acceptation des règles par l'utilisateur.<br/>
-          Généré le ${new Date().toLocaleString('fr-FR')} par l'administration.
-        </p>
-      </div>
-    `;
-
-    const opt = {
-      margin:       10,
-      filename:     `EULA_${user.username}_${user.id.substring(0,6)}.pdf`,
-      image:        { type: 'jpeg' as const, quality: 0.98 },
-      html2canvas:  { scale: 2 },
-      jsPDF:        { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const }
-    };
-
-    html2pdf().set(opt).from(element).save();
-  };
 
   if (loading) {
     return <div className="flex h-screen items-center justify-center bg-zinc-950 text-white">Chargement du panneau...</div>;
@@ -210,8 +165,8 @@ export default function AdminPage() {
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <button 
-                          onClick={() => exportEulaPdf(user)}
-                          title="Exporter PDF d'acceptation"
+                          onClick={() => router.push(`/admin/eula/${user.id}`)}
+                          title="Voir le Certificat Légal"
                           disabled={!user.eula_accepted}
                           className="p-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors disabled:opacity-30"
                         >
