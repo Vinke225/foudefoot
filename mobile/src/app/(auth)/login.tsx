@@ -74,6 +74,29 @@ export default function LoginScreen() {
     }
   }
 
+  async function handleForgotPassword() {
+    if (!email) {
+      Alert.alert('Email requis', 'Veuillez saisir votre adresse email dans le champ prévu à cet effet, puis cliquez à nouveau sur "Mot de passe oublié ?".');
+      return;
+    }
+
+    setLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: 'https://foudefoot.vercel.app/update-password', // Redirige vers le site web pour modifier
+    });
+    
+    setLoading(false);
+    
+    if (error) {
+      Alert.alert('Erreur', error.message);
+    } else {
+      Alert.alert(
+        'Email envoyé !', 
+        'Vérifiez votre boîte mail (et vos spams). Un lien vous a été envoyé pour créer un nouveau mot de passe.'
+      );
+    }
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView 
@@ -157,7 +180,7 @@ export default function LoginScreen() {
               <Text style={styles.googleButtonText}>Continuer avec Google</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.forgotPassword}>
+            <TouchableOpacity style={styles.forgotPassword} onPress={handleForgotPassword} disabled={loading}>
               <Text style={styles.forgotPasswordText}>Mot de passe oublié ?</Text>
             </TouchableOpacity>
 

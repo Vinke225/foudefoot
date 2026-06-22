@@ -1,10 +1,46 @@
 "use client";
 
+import { useState } from "react";
+import { createClient } from "@/utils/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ShieldCheck, KeyRound } from "lucide-react";
+import { ShieldCheck, KeyRound, CheckCircle } from "lucide-react";
 
 export default function SecurityPage() {
+  const supabase = createClient();
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+
+  const handleUpdatePassword = async () => {
+    setError(null);
+    setSuccess(false);
+
+    if (password.length < 6) {
+      setError("Le mot de passe doit contenir au moins 6 caractères.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Les mots de passe ne correspondent pas.");
+      return;
+    }
+
+    setLoading(true);
+    const { error: updateError } = await supabase.auth.updateUser({ password });
+    
+    if (updateError) {
+      setError(updateError.message);
+    } else {
+      setSuccess(true);
+      setPassword("");
+      setConfirmPassword("");
+    }
+    setLoading(false);
+  };
+
   return (
     <div className="flex flex-col h-full bg-transparent p-6 pb-20">
       <h1 className="text-2xl font-black text-black tracking-tight mb-8">Mot de passe et sécurité</h1>
@@ -19,21 +55,47 @@ export default function SecurityPage() {
           </div>
           
           <div className="bg-white rounded-3xl shadow-[0_2px_12px_rgba(0,0,0,0.02)] border border-gray-100 p-6 space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-600 ml-1">Ancien mot de passe</label>
-              <Input type="password" placeholder="••••••••" className="rounded-xl h-12 bg-gray-50/50 border-gray-200" />
-            </div>
+            
+            {error && (
+              <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm font-medium mb-2 border border-red-100">
+                {error}
+              </div>
+            )}
+
+            {success && (
+              <div className="bg-green-50 text-green-700 p-4 rounded-xl text-sm font-bold mb-2 border border-green-100 flex items-center gap-2">
+                <CheckCircle className="w-5 h-5" />
+                Votre mot de passe a été mis à jour avec succès !
+              </div>
+            )}
+
             <div className="space-y-2">
               <label className="text-sm font-semibold text-gray-600 ml-1">Nouveau mot de passe</label>
-              <Input type="password" placeholder="••••••••" className="rounded-xl h-12 bg-gray-50/50 border-gray-200" />
+              <Input 
+                type="password" 
+                placeholder="••••••••" 
+                className="rounded-xl h-12 bg-gray-50/50 border-gray-200" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-semibold text-gray-600 ml-1">Confirmer le mot de passe</label>
-              <Input type="password" placeholder="••••••••" className="rounded-xl h-12 bg-gray-50/50 border-gray-200" />
+              <Input 
+                type="password" 
+                placeholder="••••••••" 
+                className="rounded-xl h-12 bg-gray-50/50 border-gray-200"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
             </div>
             <div className="pt-4">
-              <Button className="w-full rounded-xl h-12 font-bold text-[15px] shadow-sm">
-                Mettre à jour le mot de passe
+              <Button 
+                onClick={handleUpdatePassword}
+                disabled={loading || !password || !confirmPassword}
+                className="w-full rounded-xl h-12 font-bold text-[15px] shadow-sm bg-primary hover:bg-primary/90 text-white"
+              >
+                {loading ? "Mise à jour..." : "Mettre à jour le mot de passe"}
               </Button>
             </div>
           </div>
@@ -54,8 +116,8 @@ export default function SecurityPage() {
                 Protégez votre compte avec une étape supplémentaire lors de la connexion.
               </p>
             </div>
-            <Button variant="outline" className="rounded-xl h-11 px-6 font-bold shrink-0">
-              Activer la 2FA
+            <Button variant="outline" className="rounded-xl h-11 px-6 font-bold shrink-0 text-gray-500">
+              Bientôt disponible
             </Button>
           </div>
         </section>
