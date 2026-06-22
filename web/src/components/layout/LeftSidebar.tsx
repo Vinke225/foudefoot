@@ -3,13 +3,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Home, Trophy, Bell, MessageSquare, User, Settings, ChevronRight, Tv, Calendar, BarChart3 } from "lucide-react";
+import { Home, Trophy, Bell, MessageSquare, User, Settings, ChevronRight, Tv, Calendar, BarChart3, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CreatePostModal } from "@/components/social/CreatePostModal";
 import { useRealtime } from "@/components/providers/RealtimeProvider";
 
-export function LeftSidebar({ profile }: { profile: { avatar?: string | null, username?: string, country?: string | null } | null }) {
+export function LeftSidebar({ profile }: { profile: { avatar?: string | null, username?: string, country?: string | null, role?: string } | null }) {
   const { unreadCount } = useRealtime();
   const pathname = usePathname();
   
@@ -21,6 +21,11 @@ export function LeftSidebar({ profile }: { profile: { avatar?: string | null, us
     { icon: User, label: "Profil", href: "/profil" },
     { icon: Settings, label: "Paramètres", href: "/parametres" },
   ];
+
+  if (profile?.role === 'admin') {
+    navItems.push({ icon: ShieldAlert, label: "Administration", href: "/admin" });
+  }
+
   return (
     <div className="w-65 h-screen sticky top-0 bg-white/80 backdrop-blur-xl pt-8 px-6 pb-6 flex flex-col hide-scrollbar overflow-y-auto shrink-0 border-r border-gray-100">
       
