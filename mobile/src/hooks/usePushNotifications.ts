@@ -29,8 +29,8 @@ export const usePushNotifications = (session: any): PushNotificationState => {
     Notifications.Notification | undefined
   >();
 
-  const notificationListener = useRef<any>();
-  const responseListener = useRef<any>();
+  const notificationListener = useRef<any>(null);
+  const responseListener = useRef<any>(null);
 
   async function registerForPushNotificationsAsync() {
     let token;
