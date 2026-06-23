@@ -5,11 +5,15 @@ import { Slot, useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
 import { AuthProvider, useAuth } from '../providers/AuthProvider';
 import { PresenceProvider } from '../providers/PresenceProvider';
+import { usePushNotifications } from '../hooks/usePushNotifications';
 
 function RootLayoutNav() {
   const { session, isLoading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
+  
+  // Initialize Push Notifications
+  usePushNotifications();
 
   useEffect(() => {
     if (isLoading) return;

@@ -35,11 +35,25 @@
             "imageWidth": 200
           }
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/icon.png",
+          "color": "#ffffff"
+        }
       ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "ed957e63-1f07-431d-be4c-3a92d3f783d2"
+      }
+    },
+    "owner": "foudefoot"
   }
 }

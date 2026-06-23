@@ -16,17 +16,25 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const router = useRouter();
 
   async function signInWithEmail() {
     setLoading(true);
+    setErrorMessage('');
     const { error } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
     });
 
-    if (error) Alert.alert('Erreur', error.message);
+    if (error) {
+      let msg = error.message;
+      if (msg.includes('Invalid login credentials')) msg = 'Email ou mot de passe incorrect.';
+      if (msg.includes('Email not confirmed')) msg = 'Veuillez confirmer votre adresse email via le lien envoyé.';
+      setErrorMessage(msg);
+    }
     setLoading(false);
   }
 
@@ -76,24 +84,23 @@ export default function LoginScreen() {
 
   async function handleForgotPassword() {
     if (!email) {
-      Alert.alert('Email requis', 'Veuillez saisir votre adresse email dans le champ prévu à cet effet, puis cliquez à nouveau sur "Mot de passe oublié ?".');
+      setErrorMessage('Veuillez saisir votre adresse email, puis cliquez sur "Mot de passe oublié ?".');
       return;
     }
 
     setLoading(true);
+    setErrorMessage('');
+    setSuccessMessage('');
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://foudefoot.vercel.app/update-password', // Redirige vers le site web pour modifier
+      redirectTo: 'https://foudefoot.vercel.app/update-password',
     });
     
     setLoading(false);
     
     if (error) {
-      Alert.alert('Erreur', error.message);
+      setErrorMessage(error.message);
     } else {
-      Alert.alert(
-        'Email envoyé !', 
-        'Vérifiez votre boîte mail (et vos spams). Un lien vous a été envoyé pour créer un nouveau mot de passe.'
-      );
+      setSuccessMessage('Email envoyé ! Vérifiez votre boîte mail pour réinitialiser votre mot de passe.');
     }
   }
 
@@ -122,6 +129,18 @@ export default function LoginScreen() {
 
           <View style={styles.formContainer}>
             <Text style={styles.formTitle}>Se connecter</Text>
+
+            {errorMessage ? (
+              <View style={{ backgroundColor: 'rgba(239, 68, 68, 0.2)', borderColor: '#ef4444', borderWidth: 1, padding: 12, borderRadius: 8, marginBottom: 16 }}>
+                <Text style={{ color: '#fca5a5', textAlign: 'center', fontWeight: 'bold' }}>{errorMessage}</Text>
+              </View>
+            ) : null}
+
+            {successMessage ? (
+              <View style={{ backgroundColor: 'rgba(34, 197, 94, 0.2)', borderColor: '#22c55e', borderWidth: 1, padding: 12, borderRadius: 8, marginBottom: 16 }}>
+                <Text style={{ color: '#86efac', textAlign: 'center', fontWeight: 'bold' }}>{successMessage}</Text>
+              </View>
+            ) : null}
 
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Email</Text>

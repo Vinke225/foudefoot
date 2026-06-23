@@ -19,6 +19,8 @@ export default function RegisterScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [showEula, setShowEula] = useState(false);
   const [eulaAccepted, setEulaAccepted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const router = useRouter();
 
@@ -29,6 +31,9 @@ export default function RegisterScreen() {
     }
 
     setLoading(true);
+    setErrorMessage('');
+    setSuccessMessage('');
+    
     const { data, error } = await supabase.auth.signUp({
       email: email,
       password: password,
@@ -42,10 +47,13 @@ export default function RegisterScreen() {
     });
 
     if (error) {
-      Alert.alert('Erreur', error.message);
+      let msg = error.message;
+      if (msg.includes('Email not confirmed') || msg.includes('Email rate limit exceeded')) msg = 'Veuillez confirmer votre adresse email via le lien envoyé.';
+      if (msg.toLowerCase().includes('already registered')) msg = 'Cet email est déjà utilisé.';
+      if (msg.includes('Password should be at least')) msg = 'Le mot de passe doit contenir au moins 6 caractères.';
+      setErrorMessage(msg);
     } else {
-      Alert.alert('Succès', 'Votre compte a été créé. Vous pouvez vous connecter.');
-      router.replace('/(auth)/login');
+      setSuccessMessage('Inscription réussie ! Vérifiez votre boîte mail pour valider votre compte.');
     }
     setLoading(false);
   }
@@ -125,6 +133,18 @@ export default function RegisterScreen() {
 
           <View style={styles.formContainer}>
             <Text style={styles.formTitle}>Créer un compte</Text>
+
+            {errorMessage ? (
+              <View style={{ backgroundColor: 'rgba(239, 68, 68, 0.2)', borderColor: '#ef4444', borderWidth: 1, padding: 12, borderRadius: 8, marginBottom: 16 }}>
+                <Text style={{ color: '#fca5a5', textAlign: 'center', fontWeight: 'bold' }}>{errorMessage}</Text>
+              </View>
+            ) : null}
+
+            {successMessage ? (
+              <View style={{ backgroundColor: 'rgba(34, 197, 94, 0.2)', borderColor: '#22c55e', borderWidth: 1, padding: 12, borderRadius: 8, marginBottom: 16 }}>
+                <Text style={{ color: '#86efac', textAlign: 'center', fontWeight: 'bold' }}>{successMessage}</Text>
+              </View>
+            ) : null}
 
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Pseudo</Text>
