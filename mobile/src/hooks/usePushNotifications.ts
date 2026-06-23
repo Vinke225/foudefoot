@@ -10,7 +10,7 @@ export interface PushNotificationState {
   notification?: Notifications.Notification;
 }
 
-export const usePushNotifications = (): PushNotificationState => {
+export const usePushNotifications = (session: any): PushNotificationState => {
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldPlaySound: true,
@@ -81,19 +81,8 @@ export const usePushNotifications = (): PushNotificationState => {
   }
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then(async (token) => {
+    registerForPushNotificationsAsync().then((token) => {
       setExpoPushToken(token);
-      
-      // Save the token to Supabase if the user is authenticated
-      if (token?.data) {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user?.id) {
-          await supabase
-            .from('users')
-            .update({ expo_push_token: token.data })
-            .eq('id', session.user.id);
-        }
-      }
     });
 
     notificationListener.current =
@@ -103,7 +92,6 @@ export const usePushNotifications = (): PushNotificationState => {
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        // Handle notification tap here (e.g., routing)
         console.log(response);
       });
 
@@ -116,6 +104,19 @@ export const usePushNotifications = (): PushNotificationState => {
       }
     };
   }, []);
+
+  // Save the token to Supabase whenever the user logs in
+  useEffect(() => {
+    if (expoPushToken?.data && session?.user?.id) {
+      supabase
+        .from('users')
+        .update({ expo_push_token: expoPushToken.data })
+        .eq('id', session.user.id)
+        .then(({ error }) => {
+          if (error) console.error('Error saving push token:', error);
+        });
+    }
+  }, [expoPushToken, session]);
 
   return {
     expoPushToken,

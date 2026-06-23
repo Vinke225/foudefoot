@@ -12,8 +12,8 @@ function RootLayoutNav() {
   const segments = useSegments();
   const router = useRouter();
   
-  // Initialize Push Notifications
-  usePushNotifications();
+  // Initialize Push Notifications (passing session so it saves token on login)
+  usePushNotifications(session);
 
   useEffect(() => {
     if (isLoading) return;
