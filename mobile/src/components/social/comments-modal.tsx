@@ -106,7 +106,8 @@ export function CommentsModal({ visible, onClose, postId, currentUserId, onComme
       <SafeAreaView style={{ flex: 1, backgroundColor: '#fff', paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}>
         <KeyboardAvoidingView 
           style={{ flex: 1 }} 
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : StatusBar.currentHeight || 24}
         >
           {/* Header */}
           <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-100">
